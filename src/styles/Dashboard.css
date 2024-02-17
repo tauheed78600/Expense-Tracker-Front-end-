@@ -1,0 +1,26 @@
+#div-modify-expense{
+    margin-left: 30%;
+    width:500px;
+    height: 700px;
+    z-index: 10;
+    background-color: darkblue;
+    font-size: 17px;
+    color: white;
+    position: absolute;
+    display: flex;
+    visibility: hidden;
+    border-radius: 2pt solid;
+}
+#div-filter-expense{
+    margin-left: 30%;
+    width:500px;
+    height: 700px;
+    z-index: 10;
+    background-color: darkblue;
+    font-size: 17px;
+    color: white;
+    position: absolute;
+     display: flex;
+    visibility: hidden;
+    border-radius: 2pt solid;
+}
