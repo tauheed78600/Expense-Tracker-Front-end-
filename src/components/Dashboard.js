@@ -1,8 +1,11 @@
 import ModifyExpense from "../components/ModifyExpense.js";
-import "../styles/Dashboard.css";
+import "../styles/Dashboard.css"
+import "../styles/FilterExpense.css"
+import "../styles/ModifyExpense.css"
 import { useEffect, useState } from "react";
 import FilterExpense from "../components/FilterExpense.js";
 import axios from 'axios';
+import { AlertTriangle } from "lucide-react";
 
 export default function DashBoard({ userId }) {
     console.log('DashBoard component rendered with userId:', userId); 
@@ -21,6 +24,25 @@ export default function DashBoard({ userId }) {
     ]);
 
     const [expenses, setExpenses] = useState([]);
+    const [budget, setBudget] = useState(0);
+    const [remainingExpense, setRemainingExpense] = useState(0);
+    const [budgetGoal, setBudgetGoal] = useState(0);
+    const [displayedBudgetGoal, setDisplayedBudgetGoal] = useState(0); 
+
+    const handleSetBudgetGoal = async () => {
+        try {
+            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${budgetGoal}&userId=${userId}`);
+            if (response.data)
+            {
+                alert("Budget Goal set successfully!!")
+                console.log("Budget goal set successfully:", response.data);
+            }
+            // Update the displayed budget goal state
+            setBudget(budgetGoal);
+        } catch (error) {
+          console.error('Error setting budget goal:', error);
+        }
+      };
 
     useEffect(() => {
         setExpenses(masterExpenses);
@@ -29,21 +51,33 @@ export default function DashBoard({ userId }) {
 
     useEffect(() => {
         const fetchExpenses = async () => {
-          console.log('Fetching expenses for user:', userId); // Add this line
-          const userId = localStorage.getItem('userId')
-          console.log("userID 123456 is ", userId)
-          try {
-            const response = await axios.get(`http://localhost:3000/expense/${userId}`);
-            console.log('API response:', response.data); // Add this line
-            setExpenses(response.data);
-          } catch (error) {
-            console.error('Error fetching expenses:', error);
-          }
+            try {
+                const response = await axios.get(`http://localhost:3000/expenses/${userId}`);
+                // const response = await axios.get(`http://localhost:3000/expenses/3`);/
+                setExpenses(response.data);
+                console.log('Expenses fetched:', response.data);
+            } catch (error) {
+                console.error('Error fetching expenses:', error);
+            }
         };
-    
-        if (userId) {
-          fetchExpenses();
-        }
+        
+        fetchExpenses();
+    }, [userId])
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/total/${userId}`);
+                console.log("response data in monthly budget", response.data)
+                setBudget(response.data.monthly_budget);
+                setRemainingExpense(response.data.remaining_budget);
+                localStorage.setItem("userId", response.data.userId)
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
     }, [userId]);
 
     const [sendExpense, setSendExpense] = useState([]);
@@ -60,6 +94,7 @@ export default function DashBoard({ userId }) {
             newExpense.paymentMode
         ];
         setExpenses(prevExpenses => [...prevExpenses, transformedNewExpense]);
+        setRemainingExpense(prevRemaining => prevRemaining - parseFloat(newExpense.amount));
         var divExpense = document.getElementById("div-modify-expense");
         if (divExpense.style.visibility === 'visible' || divExpense.style.visibility === "") {
             divExpense.style.visibility = 'hidden';
@@ -185,51 +220,58 @@ export default function DashBoard({ userId }) {
         }
     }
 
-    return (
-        <>
-            <div id="div-modify-expense">
-                <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} loadExpense={sendExpense} />
-            </div>
-            <div id="div-filter-expense">
-                <FilterExpense onFilterExpense={modifyFilterExpense} expenseData={expenses} />
-            </div>
+     return (
+    <>
+      <div id="div-modify-expense">
+        <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} loadExpense={sendExpense} />
+      </div>
+      <div id="div-filter-expense">
+        <FilterExpense onFilterExpense={modifyFilterExpense} expenseData={expenses} />
+      </div>
 
-            <div id="expense-table">
-                <button onClick={handleAddExpense}>Add Expense</button><br />
-                <button onClick={handleFilterExpense}>Filter</button>
-                <button onClick={resetFilter}>Reset Filter</button>
-                <table>
-                    <tbody>
-                        <tr>
-                            {tableHead.map((head, index) => (
-                                <th key={index} style={{ userSelect: "none" }} onClick={() => { sortTableBy(head); }}>
-                                    {head}
-                                </th>
-                            ))}
-                        </tr>
-                        {expenses.map((row, index) => {
-                            // Ensure row is an array before calling slice
-                            if (Array.isArray(row)) {
-                                return (
-                                    <tr key={index}>
-                                        {row.slice(2).map((value, cellIndex) => (
-                                            <td key={cellIndex}>{value}</td>
-                                        ))}
-                                        <td>
-                                            <button onClick={() => handleEditExpense(index)}>Edit</button>
-                                            <button onClick={() => handleDeleteExpense(index)}>Delete</button>
-                                        </td>
-                                    </tr>
-                                );
-                            } else {
-                                // If row is not an array, log an error and return null
-                                console.error('Expected row to be an array, but received:', row);
-                                return null;
-                            }
-                        })}
-                    </tbody>
-                </table>
-            </div>
-        </>
-    );
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div>Monthly Budget: {budget}</div>
+        <div>
+          <input
+            type="number"
+            value={budgetGoal}
+            onChange={(e) => setBudgetGoal(e.target.value)}
+            placeholder="Set Budget Goal"
+          />
+          <button onClick={handleSetBudgetGoal}>Set Budget Goal</button>
+        </div>
+        <div>Remaining Budget: {remainingExpense}</div>
+      </div>
+
+      <div id="expense-table">
+        <button onClick={handleAddExpense}>Add Expense</button><br />
+        <button onClick={handleFilterExpense}>Filter</button>
+        <button onClick={resetFilter}>Reset Filter</button>
+        <table>
+          <tbody>
+            <tr>
+              {tableHead.map((head, index) => (
+                <th key={index} style={{ userSelect: "none" }} onClick={() => { sortTableBy(head); }}>
+                  {head}
+                </th>
+              ))}
+            </tr>
+            {expenses.map((expense, index) => (
+              <tr key={index}>
+                <td>{expense.date}</td>
+                <td>{expense.category}</td>
+                <td>{expense.merchant}</td>
+                <td>{expense.amount}</td>
+                <td>{expense.paymentMode}</td>
+                <td>
+                  <button onClick={() => handleEditExpense(index)}>Edit</button>
+                  <button onClick={() => handleDeleteExpense(index)}>Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 }

@@ -20,7 +20,8 @@ function Navbar({ setCurrentPage }) {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    setIsExpanded(false); // Optionally collapse the navbar after selecting a page
+    console.log('Navbar currentPage updated:', page);
+    // setIsExpanded(false); // Optionally collapse the navbar after selecting a page
   };
 
   return (

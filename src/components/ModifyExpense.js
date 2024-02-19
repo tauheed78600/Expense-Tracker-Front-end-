@@ -97,10 +97,12 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         {
 
             apiURL = "http://localhost:3000/expenses/addExpense";
+           
+            const userId = localStorage.getItem("userId")
 
            const expenseData = {
                 // Assuming you want to set the expenseId to  1
-                userId:  1, // Assuming you want to set the userId to  1
+                userId:  userId, // Assuming you want to set the userId to  1
                 date: modifyExpenseData.date,
                 category: modifyExpenseData.category,
                 merchant: modifyExpenseData.merchant,

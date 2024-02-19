@@ -1,26 +1,91 @@
-#div-modify-expense{
-    margin-left: 30%;
-    width:500px;
-    height: 700px;
-    z-index: 10;
-    background-color: darkblue;
-    font-size: 17px;
-    color: white;
+/* Existing styles */
+#div-modify-expense {
+    margin-left:   30%;
+    width:   500px;
+    height:   700px;
+    z-index:   10;
+    background-color: #f2f2f2; /* Light grey background */
+    font-size:   17px;
+    color: black; /* Black text for better contrast */
     position: absolute;
     display: flex;
     visibility: hidden;
-    border-radius: 2pt solid;
+    border-radius:   2pt solid;
+    border:   1px solid #ddd; /* Light grey border */
 }
-#div-filter-expense{
-    margin-left: 30%;
-    width:500px;
-    height: 700px;
-    z-index: 10;
-    background-color: darkblue;
-    font-size: 17px;
-    color: white;
+
+#div-filter-expense {
+    margin-left:   30%;
+    width:   500px;
+    height:   700px;
+    z-index:   10;
+    background-color: #f2f2f2; /* Light grey background */
+    font-size:   17px;
+    color: black; /* Black text for better contrast */
     position: absolute;
-     display: flex;
+    display: flex;
     visibility: hidden;
-    border-radius: 2pt solid;
+    border-radius:   2pt solid;
+    border:   1px solid #ddd; /* Light grey border */
+}
+
+/* New styles for tables and buttons */
+#expense-table {
+    width:  100%;
+    margin-top:  20px;
+    border-collapse: collapse;
+}
+
+#expense-table th,
+#expense-table td {
+    border:  1px solid #ddd;
+    padding:  8px;
+    text-align: left;
+}
+
+#expense-table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#expense-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#expense-table tr:hover {
+    background-color: #ddd;
+}
+
+#expense-table button {
+    background-color: #4CAF50;
+    color: white;
+    padding:  5px  10px;
+    border: none;
+    border-radius:  5px;
+    cursor: pointer;
+    margin-right:  5px;
+}
+
+#expense-table button:hover {
+    background-color: #45a049;
+}
+
+/* Styles for the budget goal input and button */
+.budget-goal-input {
+    margin-right:  10px;
+    padding:  5px;
+    font-size:  16px;
+}
+
+.budget-goal-button {
+    background-color: #008CBA;
+    color: white;
+    padding:  5px  10px;
+    border: none;
+    border-radius:  5px;
+    cursor: pointer;
+}
+
+.budget-goal-button:hover {
+    background-color: #007B9A;
 }
