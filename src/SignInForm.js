@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import * as Components from './Components';
 import axios from 'axios';
 import ForgotPasswordModal from './modals/forgotPasswordModal';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthContext';
  
 const SignInForm = ({ onLoginSuccess }) => {
@@ -61,11 +61,10 @@ const SignInForm = ({ onLoginSuccess }) => {
         login();
         console.log('Login API response:', response.data);
         localStorage.setItem('accessToken', response.data.accessToken)
+        console.log(response)
         // Handle successful signup (e.g., redirect, show message)
         console.log(response.data);
-        onLoginSuccess(response.data.userId); 
-        localStorage.setItem('accessToken', response.data.accessToken)
-        localStorage.setItem('userId', response.data.userId)
+        onLoginSuccess(response.data); 
         navigate('/dashboard');
       } catch (error) {
         // Handle errors (e.g., show error message)

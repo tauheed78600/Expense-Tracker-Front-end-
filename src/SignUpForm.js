@@ -56,6 +56,7 @@ const SignUpForm = () => {
 
     if (validateForm()) {
       try {
+        var monthlyBudget = 0
         const response = await axios.post('http://localhost:3000/total/register/', {
           email,
           password,
@@ -114,3 +115,4 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
+
