@@ -1,0 +1,136 @@
+/* Dashboard.css */
+#transaction-div {
+  margin-left: 10%;
+}
+#budget-options {
+  margin-left: -10%;
+}
+/* Existing styles */
+#div-modify-expense {
+  margin-left:   30%;
+  width:   500px;
+  height:   700px;
+  z-index:   10;
+  background-color: #d60606; /* Light grey background */
+  font-size:   17px;
+  color: black; /* Black text for better contrast */
+  position: absolute;
+  display: flex;
+  visibility: hidden;
+  border-radius:   2pt solid;
+  border:   1px solid #ddd; /* Light grey border */
+}
+
+#div-filter-expense {
+  margin-left:   30%;
+  width:   500px;
+  height:   700px;
+  z-index:   10;
+  background-color: #d60606; /* Light grey background */
+  font-size:   17px;
+  color: black; /* Black text for better contrast */
+  position: absolute;
+  display: flex;
+  visibility: hidden;
+  border-radius:   2pt solid;
+  border:   1px solid #ddd; /* Light grey border */
+}
+
+/* New styles for tables and buttons */
+#expense-table {
+  width:   100%;
+  margin-top:   20px;
+  border-collapse: collapse;
+}
+
+#expense-table th,
+#expense-table td {
+  border:   1px solid #ddd;
+  padding:   8px;
+  text-align: left;
+}
+
+#expense-table th {
+  background-color: #e26f6f;
+  color: white;
+}
+
+#expense-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#expense-table tr:hover {
+  background-color: #ddd;
+}
+
+#expense-table button {
+  background-color: #e26f6f;
+  color: white;
+  padding:   5px   10px;
+  border: none;
+  border-radius:   5px;
+  cursor: pointer;
+  margin-right:   5px;
+}
+
+#expense-table button:hover {
+  background-color: #e26f6f;
+}
+
+/* Styles for the budget goal input and button */
+.budget-goal-input {
+  margin-right:   10px;
+  padding:   5px;
+  font-size:   16px;
+}
+
+.budget-goal-button {
+  background-color: #008CBA;
+  color: white;
+  padding:   5px   10px;
+  border: none;
+  border-radius:   5px;
+  cursor: pointer;
+}
+
+.budget-goal-button:hover {
+  background-color: #007B9A;
+}
+
+/* Additional styles for the layout */
+.app-container {
+  display: flex;
+}
+
+.grow {
+  flex-grow:   1;
+}
+
+
+#expense-table-page-selector {
+  height: 100px;
+  display: flex;
+  margin-top: 10px;
+}
+.expense-table-selector-button {
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 10px;
+  height: 30px !important;
+}
+
+#expense-table-options {
+  margin-left: -10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+#expense-table-options-button {
+  border-radius: 0px;
+  margin-right: 50px;
+}
