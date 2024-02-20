@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Auth from './Auth';
 import Dashboard from './components/Dashboard';
-import Transactions from './components/Transaction';
+import Transactions from './components/Transactions';
 import Analytics from './components/Analytics';
 import Logout from './components/Logout';
 import Navbar from './components/Navbar';
@@ -34,14 +34,15 @@ function App() {
         <Route path="/auth" element={<Auth onLoginSuccess={handleLoginSuccess} setUserId={setUserId} />} />
         <Route path="/dashboard" element={
           <PrivateRoute userId={userId}>
-            <Navbar setCurrentPage={setCurrentPage} />
-            <main className="grow">
-              {/* <Dashboard userId={userId} /> */}
-              {currentPage === 'dashboard' && <Dashboard userId={userId} /> }
-              {currentPage === 'transaction' && <Transactions />}
-              {currentPage === 'analytics' && <Analytics />}
-              {currentPage === 'logout' && <Logout />}
-            </main>
+            <div className="app-container">
+              <Navbar setCurrentPage={setCurrentPage} />
+              <main className="grow">
+                {currentPage === 'dashboard' && <Dashboard userId={userId} /> }
+                {currentPage === 'transactions' && <Transactions userId = {localStorage.getItem("userId")}/>}
+                {currentPage === 'analytics' && <Analytics userId = {localStorage.getItem("userId")}/>}
+                {currentPage === 'logout' && <Logout />}
+              </main>
+            </div>
           </PrivateRoute>
         } />
         {/* Add other routes as needed */}

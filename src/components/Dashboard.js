@@ -2,10 +2,10 @@ import ModifyExpense from "../components/ModifyExpense.js";
 import "../styles/Dashboard.css"
 import "../styles/FilterExpense.css"
 import "../styles/ModifyExpense.css"
+import "../styles/NotificationPanel.css"
 import { useEffect, useState } from "react";
 import FilterExpense from "../components/FilterExpense.js";
 import axios from 'axios';
-import { AlertTriangle } from "lucide-react";
 
 export default function DashBoard({ userId }) {
     console.log('DashBoard component rendered with userId:', userId); 
@@ -72,6 +72,29 @@ export default function DashBoard({ userId }) {
                 setBudget(response.data.monthly_budget);
                 setRemainingExpense(response.data.remaining_budget);
                 localStorage.setItem("userId", response.data.userId)
+                const emailId = response.data.email
+                console.log(emailId)
+
+                if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-goal-ninereached`, { email: emailId  });
+                    if (response)
+                    {
+                        console.log("response: " , response.data)
+                    alert("Budget goal has been reached for this month")
+                    }
+                  }
+            
+                  // Check if the user has exceeded their monthly budget
+                  if (response.data.remaining_budget <=   0) {
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  });
+                    if (response)
+                    {
+                        console.log("response: " , response.data)
+                        alert("Budget goal has been reached for this month")
+                    }
+                  }
+
+
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -84,7 +107,7 @@ export default function DashBoard({ userId }) {
 
     const modifyAddExpense = (newExpense) => {
         // Transform newExpense into an array if it's not already
-        const transformedNewExpense = [
+        /*const transformedNewExpense = [
             newExpense.expenseId,
             newExpense.userId,
             newExpense.date,
@@ -92,9 +115,11 @@ export default function DashBoard({ userId }) {
             newExpense.merchant,
             newExpense.amount,
             newExpense.paymentMode
-        ];
-        setExpenses(prevExpenses => [...prevExpenses, transformedNewExpense]);
-        setRemainingExpense(prevRemaining => prevRemaining - parseFloat(newExpense.amount));
+        ];*/
+        setExpenses(prevExpenses => [...prevExpenses, newExpense]);
+        console.log(expenses);
+        console.log(remainingExpense);
+        setRemainingExpense(prevRemaining => prevRemaining - parseFloat(newExpense[5]));
         var divExpense = document.getElementById("div-modify-expense");
         if (divExpense.style.visibility === 'visible' || divExpense.style.visibility === "") {
             divExpense.style.visibility = 'hidden';

@@ -5,6 +5,7 @@ import {
   BarChart3Icon,
   LayoutDashboard,
   LogOut,
+  BellDot // Import the Notification icon
 } from "lucide-react";
 import { motion } from "framer-motion";
 import RightArrowIcon from "./../assets/icons/rightArrow.svg";
@@ -17,9 +18,11 @@ const variants = {
 
 function Navbar({ setCurrentPage }) {
   const [isExpanded, setIsExpanded] = React.useState(true);
+  const [currentPage, setCurrentPageState] = React.useState('dashboard'); // State to track the current page
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    setCurrentPageState(page); // Update the current page state
     console.log('Navbar currentPage updated:', page);
     // setIsExpanded(false); // Optionally collapse the navbar after selecting a page
   };
@@ -45,28 +48,35 @@ function Navbar({ setCurrentPage }) {
         <span className={!isExpanded ? "hidden" : "block"}>Expense Tracker</span>
       </div>
       <div className="flex flex-col space-y-8 mt-12">
-        <div className="nav-links w-full" onClick={() => handlePageChange('dashboard')}>
+        <div className={`nav-links w-full ${currentPage === 'dashboard' ? 'active' : ''}`} onClick={() => handlePageChange('dashboard')}>
           <div className="flex space-x-3 w-full p-2 rounded bg-[#FF8C8C] text-white">
             <LayoutDashboard />
-            <span className={!isExpanded ? "hidden" : "block"}>Dashboard</span>
-          </div>
-        </div>
-
-        <div className="nav-links w-full" onClick={() => handlePageChange('transactions')}>
-          <div className="flex space-x-3 w-full p-2 rounded">
-            <ArrowLeftRightIcon />
             <span className={!isExpanded ? "hidden" : "block"}>Transactions</span>
           </div>
         </div>
 
-        <div className="nav-links w-full" onClick={() => handlePageChange('analytics')}>
+        <div className={`nav-links w-full ${currentPage === 'transactions' ? 'active' : ''}`} onClick={() => handlePageChange('transactions')}>
+          <div className="flex space-x-3 w-full p-2 rounded">
+            <ArrowLeftRightIcon />
+            <span className={!isExpanded ? "hidden" : "block"}>Dashboard</span>
+          </div>
+        </div>
+
+        <div className={`nav-links w-full ${currentPage === 'analytics' ? 'active' : ''}`} onClick={() => handlePageChange('analytics')}>
           <div className="flex space-x-3 w-full p-2 rounded ">
             <BarChart3Icon />
             <span className={!isExpanded ? "hidden" : "block"}>Analytics</span>
           </div>
         </div>
 
-        <div className="nav-links w-full" onClick={() => handlePageChange('logout')}>
+        <div className={`nav-links w-full ${currentPage === 'notifications' ? 'active' : ''}`} onClick={() => handlePageChange('notifications')}>
+          <div className="flex space-x-3 w-full p-2 rounded">
+            <BellDot /> {/* Replace with the actual icon component */}
+            <span className={!isExpanded ? "hidden" : "block"}>Notifications</span>
+          </div>
+        </div>
+
+        <div className={`nav-links w-full ${currentPage === 'logout' ? 'active' : ''}`} onClick={() => handlePageChange('logout')}>
           <div className="flex space-x-3 w-full p-2 rounded  ">
             <LogOut />
             <span className={!isExpanded ? "hidden" : "block"}>
@@ -74,6 +84,8 @@ function Navbar({ setCurrentPage }) {
             </span>
           </div>
         </div>
+
+        
       </div>
     </motion.div>
   );

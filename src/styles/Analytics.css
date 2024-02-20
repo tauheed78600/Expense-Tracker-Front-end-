@@ -1,0 +1,29 @@
+/* Analytics.css */
+.analytics-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding:  20px;
+  }
+  
+  .chart-row {
+    display: flex;
+    justify-content: space-between;
+    width:  100%;
+    margin-bottom:  20px;
+  }
+  
+  .chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width:  50%;
+  }
+  
+  .chart {
+    width:  100%;
+    max-width:  400px;
+    height: auto;
+    margin-bottom:  20px;
+  }
+  

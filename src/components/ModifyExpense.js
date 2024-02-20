@@ -93,12 +93,13 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         const formData = new FormData();
         var apiURL = "";
         var updateRow = [];
+        const userId = localStorage.getItem("userId")
         if(loadExpense.length === 0)
         {
 
             apiURL = "http://localhost:3000/expenses/addExpense";
            
-            const userId = localStorage.getItem("userId")
+            
 
            const expenseData = {
                 // Assuming you want to set the expenseId to  1
@@ -111,16 +112,18 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             };
             axios.post(apiURL, expenseData, ).then((response) => {
                 alert("Expense Added Successfully!");
+                updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId, 
+                    modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant, 
+                    modifyExpenseData.amount, modifyExpenseData.payment_mode]
+                console.log("updateRow", updateRow)
+                onAddExpense(updateRow);
                 console.log(response)
                 // Assuming onAddExpense is a function to update the UI
                 onAddExpense(response.data);
             }).catch((error) => {
                 alert(error.message);
             });
-            updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId, 
-                modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant, 
-                modifyExpenseData.amount, modifyExpenseData.payment_mode]
-            onAddExpense(updateRow);
+            
         }
         else
         {
@@ -129,7 +132,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
 
             const expenseData = {
             // Assuming you want to set the expenseId to  1
-                userId:  1, // Assuming you want to set the userId to  1
+                userId:  userId, // Assuming you want to set the userId to  1
                 date: modifyExpenseData.date,
                 category: modifyExpenseData.category,
                 merchant: modifyExpenseData.merchant,
@@ -138,15 +141,16 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             };
             axios.put(apiURL, expenseData,).then((response) => {
                 alert("Expense Updated Successfully!");
+                updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId, 
+                    modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant, 
+                    modifyExpenseData.amount, modifyExpenseData.payment_mode]
+                onEditExpense(modifyExpenseData.index, updateRow);
                 // Assuming onEditExpense is a function to update the UI
                 onEditExpense(modifyExpenseData.index, response.data);
             }).catch((error) => {
                 alert(error.message);
             });
-            updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId, 
-                modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant, 
-                modifyExpenseData.amount, modifyExpenseData.payment_mode]
-            onEditExpense(modifyExpenseData.index, updateRow);
+            
         }
         
     }
