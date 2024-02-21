@@ -31,6 +31,7 @@ const handleLogout = () => {
   };
 
 return (
+  
 <div className="container">
 {/* <div className="logout-container">
         <button className="logout-btn" onClick={handleLogout}>
@@ -38,7 +39,7 @@ return (
           Logout
         </button>
         </div> */}
-    <h1>User Dashboard</h1>
+    <div className='h1'><h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1></div>
     <div className="section" id="name-section">
     <label htmlFor="name">UserName:</label>
     <div id="name" className="info">{userData.user_name || 'Loading...'}</div>

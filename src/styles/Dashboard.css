@@ -6,17 +6,27 @@ body {
    }
    .container {
     width: 100vw;
-    height: 100vh;
+    height: 90dvh;
     padding: 20px;
     background-color: #fff;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px;
    }
-   h1 {
+   .userDash{
+    margin: 0%;
+   }
+   .h1 {
     grid-column: 1 / -1;
-    text-align: center;
+    width: 100%;
     color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
    }
    .section {
     display: flex;
