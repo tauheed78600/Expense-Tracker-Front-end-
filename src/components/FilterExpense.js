@@ -9,6 +9,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { getCategories } from "./categories";
+import { Filter } from "lucide-react";
 export default function FilterExpense({ onFilterExpense, expenseData, showFilter, setShowFilter }) {
     const [filterState, setFilterState] = useState(false);
     var categories = getCategories();
@@ -127,7 +128,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
-                Filter Expense
+                <Filter/>
             </Button>
 
             <Modal show={showFilter} onHide={handleClose}>
@@ -140,24 +141,26 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                         <Form.Label column sm={2}>
                         Date From
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={4}>
                         <Form.Control id = "modify-filter-date-from" name = "dateFrom" type="date" 
                         placeholder="" value={filterData.dateFrom} onClick={setDateLimitFrom}
                         onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/>
                         </Col>
-                        <Form.Label id = "modify-expense-date-error" column sm={2}>
-                        </Form.Label>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3" controlId="formHorizontalDateTo">
+                        
                         <Form.Label column sm={2}>
                         Date To
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={4}>
                         <Form.Control id= "modify-filter-date-to" name = "dateTo" type="date" 
                         placeholder="" value={filterData.dateTo} onClick={setDateLimitTo}
                         onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/>
                         </Col>
+                        
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mb-3" controlId="formHorizontalDateTo">
+                        <Form.Label id = "modify-expense-date-error" column sm={2}>
+                        </Form.Label>
                         <Form.Label id = "modify-expense-date-error" column sm={2}>
                         </Form.Label>
                     </Form.Group>

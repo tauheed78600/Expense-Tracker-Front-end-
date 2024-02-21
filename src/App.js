@@ -56,6 +56,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        
         <Route path="/auth" element={<Auth onLoginSuccess={handleLoginSuccess} setUserId={setUserId} />} />
         <Route path="/dashboard" element={
           localStorage.getItem('accessToken') ? (

@@ -1,20 +1,68 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import axios from 'axios';
 
 function MonthlyBudgetModal() {
   const [show, setShow] = useState(false);
-  const [budget, setBudget] = useState(0);
+  const [currentBudget, setCurrentBudget] = useState(0);
+  const [remainingBudget, setRemainingBudget] = useState(0);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+        const userId = localStorage.getItem('userId');
+        try {
+            const response = await axios.get(`http://localhost:3000/total/${userId}`);
+            console.log("response data in monthly budget", response.data)
+            if(response.data.monthly_budget !== undefined)
+                setCurrentBudget(response.data.monthly_budget);
+            else
+                setCurrentBudget(0);
+            if(response.data.remaining_budget !== undefined)
+                setRemainingBudget(response.data.remaining_budget);
+            else
+                setRemainingBudget(0);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+    
+    fetchUserData();
+}, [show]);
+
+  const [newBudget, setNewBudget ] = useState(0);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSave = () => {
-    
+  const handleBudgetChange = (e) => {
+    setNewBudget(e.target.value);
   }
+
+
+
+  const handleSave = async () => {
+        const userId = localStorage.getItem('userId');
+        try {
+            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`);
+            console.log(response);
+            if (response.status===200)
+            {
+                alert("Budget Goal set successfully!!")
+                console.log("Budget goal set successfully:", response.data);
+            }
+            // Update the displayed budget goal state
+            setCurrentBudget(newBudget);
+            setRemainingBudget(newBudget-currentBudget+remainingBudget);
+        } catch (error) {
+          console.error('Error setting budget goal:', error);
+        }
+      };
+
+  
 
   return (
     <>
@@ -29,14 +77,20 @@ function MonthlyBudgetModal() {
         <Modal.Body>
         <Form>
             <Form.Group as={Row} className="mb-3" controlId="formBudget">
-                <Form.Label column sm={2}>
-                    Current Budget
+                <Form.Label column sm={4}>
+                    Current Budget: {currentBudget}
                 </Form.Label>
-                <Form.Label column sm={2}>
-                    Remaining Budget
+                
+            </Form.Group>
+            <Form.Group as={Row} className="mb-3" controlId="formBudget">
+            <Form.Label column sm={4}>
+                    Remaining Budget: {remainingBudget}
                 </Form.Label>
+                
+            </Form.Group>
+            <Form.Group as={Row} className="mb-3" controlId="formBudgetInput">
                 <Col sm={10}>
-                <Form.Control name = "monthlyBudget" placeholder="" value={budget}/>
+                <Form.Control name = "monthlyBudget" placeholder="" value={newBudget} onChange={(e)=>{handleBudgetChange(e)}}/>
                 </Col>
                 <Form.Label id = "monthly-budget-error" column sm={2}>
                 </Form.Label>

@@ -10,6 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getCategories } from "./categories";
+import { Plus } from "lucide-react";
 export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, show, setShow})
 {
     const errorMessage = {
@@ -191,7 +192,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
-                Add Expense
+                <Plus/>
             </Button>
 
             <Modal show={show} onHide={handleClose}>

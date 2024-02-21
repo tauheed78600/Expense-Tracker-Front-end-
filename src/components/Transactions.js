@@ -9,6 +9,15 @@ import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
 import MonthlyBudgetModal from "./MonthlyBudgetModal.js";
+import {
+    RotateCcw,
+    Pencil,
+    Delete,
+    ArrowBigRight,
+    ArrowBigLeft
+  } from "lucide-react";
+
+
 export default function Transactions({ userId }) {
     console.log('DashBoard component rendered with userId:', userId); 
     const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
@@ -32,7 +41,7 @@ export default function Transactions({ userId }) {
 
     const totalPages = () => 
     {
-        return Math.round(expenses.length/itemCount);
+        return Math.ceil(expenses.length/itemCount);
     }
 
     const gotoFirstPage = () => {
@@ -53,9 +62,6 @@ export default function Transactions({ userId }) {
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
 
-    const [budget, setBudget] = useState(0);
-    const [remainingExpense, setRemainingExpense] = useState(0);
-    const [budgetGoal, setBudgetGoal] = useState(0);
     // const [displayedBudgetGoal, setDisplayedBudgetGoal] = useState(0); 
     const [dailyReportDate, setDailyReportDate] = useState('');
     // State to hold the user's input for the monthly report month and year
@@ -97,20 +103,7 @@ export default function Transactions({ userId }) {
       
     
 
-    const handleSetBudgetGoal = async () => {
-        try {
-            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${budgetGoal}&userId=${userId}`);
-            if (response.data)
-            {
-                alert("Budget Goal set successfully!!")
-                console.log("Budget goal set successfully:", response.data);
-            }
-            // Update the displayed budget goal state
-            setBudget(budgetGoal);
-        } catch (error) {
-          console.error('Error setting budget goal:', error);
-        }
-      };
+    
 
       const workSheetName = 'Worksheet-1';
     const workBookName = 'MyWorkBook';
@@ -268,8 +261,6 @@ export default function Transactions({ userId }) {
                 console.log('Expenses fetched:', newArray);
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
-                setBudget(response.data.monthly_budget);
-                setRemainingExpense(response.data.remaining_budget)
                 const emailId = response.data.email
                 console.log(emailId)    
 
@@ -311,44 +302,7 @@ export default function Transactions({ userId }) {
         fetchExpenses();
     }, [userId])
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:3000/total/${userId}`);
-                console.log("response data in monthly budget", response.data)
-                setBudget(response.data.monthly_budget);
-                setRemainingExpense(response.data.remaining_budget);
-                localStorage.setItem("userId", response.data.userId);
-                const emailId = response.data.email
-                console.log("email id after response",emailId)
-
-                if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-goal-ninereached`, { email: emailId  });
-                    if (response)
-                    {
-                        console.log("response: " , response.data)
-                    alert("Budget goal has been reached for this month")
-                    }
-                  }
-            
-                  // Check if the user has exceeded their monthly budget
-                  if (response.data.remaining_budget <=   0) {
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  });
-                    if (response)
-                    {
-                        console.log("response: " , response.data)
-                        alert("Budget goal has been reached for this month")
-                    }
-                  }
-
-
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-            }
-        };
-
-        fetchUserData();
-    }, [userId]);
+    
 
     const [sendExpense, setSendExpense] = useState([]);
 
@@ -356,7 +310,6 @@ export default function Transactions({ userId }) {
         var newMasterExpense = [...masterExpenses, newExpense];
         setMasterExpenses(newMasterExpense)
         setExpenses(newMasterExpense);
-        setRemainingExpense(prevRemaining => prevRemaining - parseFloat(newExpense[5]));
     };
 
     const modifyEditExpense = (index, newExpense) => {
@@ -387,14 +340,6 @@ export default function Transactions({ userId }) {
         setExpenses(masterExpenses);
     }
 
-    const handleFilterExpense = () => {
-        var divExpense = document.getElementById("div-filter-expense");
-        if (divExpense.style.visibility === 'hidden' || divExpense.style.visibility === "") {
-            divExpense.style.visibility = 'visible';
-        } else {
-            divExpense.style.visibility = "hidden";
-        }
-    }
 
 
     const handleEditExpense = (index) => {
@@ -460,7 +405,6 @@ export default function Transactions({ userId }) {
             setExpenses(newArray);
         }
     }
-
      return (
         <div id = "transaction-div">
             <div id="div-modify-expense">
@@ -470,21 +414,6 @@ export default function Transactions({ userId }) {
                 
             </div>
 
-            <div id="budget-options">
-                <MonthlyBudgetModal/>
-            {/*<div>Monthly Budget: {budget}</div>
-            <div>
-              <input
-                type="number"
-                value={budgetGoal}
-                onChange={(e) => setBudgetGoal(e.target.value)}
-                placeholder="Set Budget Goal"
-                className="budget-goal-input"
-              />
-              <button className="set-budget-button" onClick={handleSetBudgetGoal}>Set Budget Goal</button>
-            </div>
-     <div className="remaining-budget-display">Remaining Budget: {remainingExpense}</div>*/}
-     </div>
 
             <div id = "expense-table">
                         <div id= "expense-table-options">
@@ -493,13 +422,13 @@ export default function Transactions({ userId }) {
                             <FilterExpense onFilterExpense={modifyFilterExpense} 
                             expenseData={expenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
                             <button className="expense-table-button expense-table-options-button" 
-                            id = "reset-filter-button" onClick={resetFilter}>Reset Filter</button>
-                            
+                            id = "reset-filter-button" onClick={resetFilter}><RotateCcw/></button>
+                            <MonthlyBudgetModal/>
                         </div>
                         <table>
                         <tbody>
                             <tr>
-                                <th className="expense-table-th expense-table-th-td expense-table-index">#</th>
+                                <th className="expense-table-index">#</th>
                                 {
                                     tableHead.map((head, index) => (
                                         <>
@@ -526,23 +455,26 @@ export default function Transactions({ userId }) {
                                             <td className="expense-table-th-td" key={cellIndex}>{value}</td>
                                         )})
                                         }
-                                        <td className="expense-table-th-td">
-                                            <button className="expense-table-button" onClick={() => handleEditExpense(index)}>Edit</button>
-                                            <button className="expense-table-button" onClick={() => handleDeleteExpense(index)}>Delete</button>
+                                        <td className="expense-table-th-td expense-table-edit-delete">
+                                            <button className="expense-table-button" onClick={() => handleEditExpense(index)}><Pencil/></button>
+                                            <button className="expense-table-button" onClick={() => handleDeleteExpense(index)}><Delete/></button>
                                         </td>
                                     </tr>
                                         );
                                 })
                         }
-                        <div id="expense-table-page-selector">
-                            <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>{"<<"}</button>
-                            <button className="expense-table-button expense-table-selector-button" onClick={decreasePageCounter}>{"<"}</button>
-                            <button className="expense-table-button expense-table-selector-button" onClick={increasePageCounter}>{">"}</button>
-                            <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{">>"}</button>
-                        </div>
+                        
                         
                         </tbody>
+                        
                         </table>
+                        {expenses.length > 10 &&    <div id="page-selector">
+                                            <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>0</button>
+                                            <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>
+                                            <button className="expense-table-button expense-table-selector-button">{pageCounter}</button>
+                                            <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>
+                                            <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>
+                                        </div>}  
                     </div>
     </div>
   );
