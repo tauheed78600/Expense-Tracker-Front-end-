@@ -7,6 +7,9 @@ import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import { getCategories } from "./categories";
 export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, show, setShow})
 {
     const errorMessage = {
@@ -16,6 +19,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         amount:  "modify-expense-amount-error",
         payment_mode: "modify-expense-payment-error"
     };
+    var categories = getCategories();
     const [modifyExpenseData, setModifyExpenseData] = useState(
         {
             index: "",
@@ -182,8 +186,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
     const closeModifyExpense = () => {
         handleClose();
     }
-
-    
     
 
     return (
@@ -212,6 +214,33 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalCategory">
                         <Form.Label column sm={2}>
+                            Category
+                        </Form.Label>
+                        <Col sm={10}>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {modifyExpenseData.category !== "" ? modifyExpenseData.category : "Choose Category"}
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                                    {
+                                        categories.map((cat, index) => {
+                                            return (
+                                                <Dropdown.Item name = "category" value={cat} key = {index} 
+                                                onClick={(e)=>{handleModifyExpenseChange(e.target.name, cat)}}>
+                                                    {cat}</Dropdown.Item>
+                                            )
+                                        })
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Col>
+                        <Form.Label id = "modify-expense-category-error" column sm={2}>
+                        </Form.Label>
+                    </Form.Group>
+
+                    {/*<Form.Group as={Row} className="mb-3" controlId="formHorizontalCategory">
+                        <Form.Label column sm={2}>
                         Category
                         </Form.Label>
                         <Col sm={10}>
@@ -220,7 +249,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         </Col>
                         <Form.Label id = "modify-expense-category-error" column sm={2}>
                         </Form.Label>
-                    </Form.Group>
+                        </Form.Group>*/}
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalMerchant">
                         <Form.Label column sm={2}>

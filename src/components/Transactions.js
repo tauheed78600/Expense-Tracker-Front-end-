@@ -8,9 +8,11 @@ import FilterExpense from "../components/FilterExpense.js";
 import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
+import MonthlyBudgetModal from "./MonthlyBudgetModal.js";
 export default function Transactions({ userId }) {
     console.log('DashBoard component rendered with userId:', userId); 
     const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
+    
 
     const itemCount = 10;
     const [pageCounter, setPageCounter] = useState(1);
@@ -351,7 +353,7 @@ export default function Transactions({ userId }) {
     const [sendExpense, setSendExpense] = useState([]);
 
     const modifyAddExpense = (newExpense) => {
-        var newMasterExpense = [newExpense, ...masterExpenses];
+        var newMasterExpense = [...masterExpenses, newExpense];
         setMasterExpenses(newMasterExpense)
         setExpenses(newMasterExpense);
         setRemainingExpense(prevRemaining => prevRemaining - parseFloat(newExpense[5]));
@@ -469,7 +471,8 @@ export default function Transactions({ userId }) {
             </div>
 
             <div id="budget-options">
-            <div>Monthly Budget: {budget}</div>
+                <MonthlyBudgetModal/>
+            {/*<div>Monthly Budget: {budget}</div>
             <div>
               <input
                 type="number"
@@ -480,14 +483,18 @@ export default function Transactions({ userId }) {
               />
               <button className="set-budget-button" onClick={handleSetBudgetGoal}>Set Budget Goal</button>
             </div>
-            <div className="remaining-budget-display">Remaining Budget: {remainingExpense}</div>
-          </div>
+     <div className="remaining-budget-display">Remaining Budget: {remainingExpense}</div>*/}
+     </div>
 
             <div id = "expense-table">
                         <div id= "expense-table-options">
-                            <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} loadExpense={sendExpense} show={show} setShow={setShow}/>
-                            <FilterExpense onFilterExpense={modifyFilterExpense} expenseData={expenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
-                            <button className="expense-table-button expense-table-options-button" id = "reset-filter-button" onClick={resetFilter}>Reset Filter</button>
+                            <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
+                            loadExpense={sendExpense} show={show} setShow={setShow}/>
+                            <FilterExpense onFilterExpense={modifyFilterExpense} 
+                            expenseData={expenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
+                            <button className="expense-table-button expense-table-options-button" 
+                            id = "reset-filter-button" onClick={resetFilter}>Reset Filter</button>
+                            
                         </div>
                         <table>
                         <tbody>

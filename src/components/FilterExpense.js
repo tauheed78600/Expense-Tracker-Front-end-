@@ -7,8 +7,11 @@ import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { getCategories } from "./categories";
 export default function FilterExpense({ onFilterExpense, expenseData, showFilter, setShowFilter }) {
     const [filterState, setFilterState] = useState(false);
+    var categories = getCategories();
     const [filterData, setFilterData] = useState({
         dateFrom: "",
         dateTo: "",
@@ -158,19 +161,34 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                         <Form.Label id = "modify-expense-date-error" column sm={2}>
                         </Form.Label>
                     </Form.Group>
-
-
+                    
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalCategory">
                         <Form.Label column sm={2}>
-                        Category
+                            Category
                         </Form.Label>
                         <Col sm={10}>
-                        <Form.Control name = "category" placeholder="" value={filterData.category} 
-                        onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {filterData.category !== "" ? filterData.category: "Choose Category"}
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                                    {
+                                        categories.map((cat, index) => {
+                                            return (
+                                                <Dropdown.Item name = "category" value={cat} key = {index} 
+                                                onClick={(e)=>{handleFilterChange(e.target.name, cat)}}>
+                                                    {cat}</Dropdown.Item>
+                                            )
+                                        })
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </Col>
                         <Form.Label id = "modify-expense-category-error" column sm={2}>
                         </Form.Label>
                     </Form.Group>
+
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalMerchant">
                         <Form.Label column sm={2}>

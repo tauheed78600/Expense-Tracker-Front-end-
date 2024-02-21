@@ -5,7 +5,7 @@ import {
   BarChart3Icon,
   LayoutDashboard,
   LogOut,
-  BellDot // Import the Notification icon
+  ClipboardPlus,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import RightArrowIcon from "./../assets/icons/rightArrow.svg";
@@ -73,16 +73,9 @@ function Navbar({ setCurrentPage }) {
           </div>
         </div>
 
-        <div className={`nav-links w-full ${currentPage === 'notifications' ? 'active' : ''}`} onClick={() => handlePageChange('notifications')}>
-          <div className="flex space-x-3 w-full p-2 rounded">
-            <BellDot /> {/* Replace with the actual icon component */}
-            <span className={!isExpanded ? "hidden" : "block"}>Notifications</span>
-          </div>
-        </div>
-
         <div className={`nav-links w-full ${currentPage === 'reportgenerate' ? 'active' : ''}`} onClick={() => handlePageChange('reportgenerate')}>
           <div className="flex space-x-3 w-full p-2 rounded  ">
-            <LogOut />
+            <ClipboardPlus />
             <span className={!isExpanded ? "hidden" : "block"}>
               Report Generate
             </span>
