@@ -80,6 +80,15 @@ function Navbar({ setCurrentPage }) {
           </div>
         </div>
 
+        <div className={`nav-links w-full ${currentPage === 'reportgenerate' ? 'active' : ''}`} onClick={() => handlePageChange('reportgenerate')}>
+          <div className="flex space-x-3 w-full p-2 rounded  ">
+            <LogOut />
+            <span className={!isExpanded ? "hidden" : "block"}>
+              Report Generate
+            </span>
+          </div>
+        </div>
+
         <div className={`nav-links w-full ${currentPage === 'logout' ? 'active' : ''}`} onClick={() => handlePageChange('logout')}>
           <div className="flex space-x-3 w-full p-2 rounded  ">
             <LogOut />

@@ -135,11 +135,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         {
             axios.post(apiURL,expenseData, ).then((response) => {
                 alert("Expense Added Successfully!");
-                console.log(response);
                 updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
-                console.log("updateRow", updateRow)
                 onAddExpense(updateRow);
                 resetData();
                 closeModifyExpense();
@@ -162,7 +160,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 paymentMode: modifyExpenseData.payment_mode,
                 expenseId: 1001
             };
-            console.log(expenseData.userId);
             axios.put(apiURL, expenseData,).then((response) => {
                 alert("Expense Updated Successfully!");
                 updateRow = [userId, modifyExpenseData.expenseId,
@@ -206,7 +203,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         Date
                         </Form.Label>
                         <Col sm={10}>
-                        {console.log(modifyExpenseData.date)}
                         <Form.Control name = "date" type="date" placeholder="" value={modifyExpenseData.date} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
                         </Col>

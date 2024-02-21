@@ -4,14 +4,13 @@ import '../styles/Dashboard.css';
 import 'material-icons/iconfont/material-icons.css';
 
 
-const DashBoard = ({ userId }) => {
+const Dashboard = ({ userId }) => {
 const [userData, setUserData] = useState({});
 
 useEffect(() => {
 const fetchData = async () => {
     try {
     const response = await axios.get(`http://localhost:3000/total/getUser/${userId}`);
-    console.log("response.data in getUsers", response.data)
     setUserData(response.data);
     } catch (error) {
     console.error('Error fetching user data:', error);
@@ -26,14 +25,29 @@ const updateField = () => {
 console.log('Update field function called');
 };
 
+const handleLogout = () => {
+    localStorage.clear()
+    window.location.href = "/auth"
+  };
+
 return (
 <div className="container">
+<div className="logout-container">
+        <button className="logout-btn" onClick={handleLogout}>
+          <span className="material-icons">logout</span>
+          Logout
+        </button>
+        </div>
     <h1>User Dashboard</h1>
     <div className="section" id="name-section">
     <label htmlFor="name">UserName:</label>
     <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">insert_emoticon</span>
     </div>
+    {/* <button className="logout-btn" onClick={handleLogout}>
+        <span className="material-icons">logout</span>
+        Logout
+      </button> */}
     <div className="section" id="budget-section">
     <label htmlFor="monthly_budget">Monthly Budget:</label>
     <div id="monthly_budget" className="info">{userData.monthly_budget || 'Loading...'}</div>
@@ -63,4 +77,4 @@ return (
 );
 };
 
-export default DashBoard;
+export default Dashboard;
