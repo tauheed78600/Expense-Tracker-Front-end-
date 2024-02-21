@@ -134,7 +134,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(loadExpense.length === 0)
         {
             axios.post(apiURL,expenseData, ).then((response) => {
-                alert("Expense Added Successfully!");
+                console.log("response after edit expense1234", response.data.status)
+                console.log("response.data.status", response.data.status)   
+                    alert("Expense Added Successfully!");
+
                 updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
@@ -143,7 +146,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-                alert(error.message);
+                console.log("inside catch")
+                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
             });
         }
         else
@@ -160,7 +164,13 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 paymentMode: modifyExpenseData.payment_mode,
                 expenseId: 1001
             };
-            axios.put(apiURL, expenseData,).then((response) => {
+                const response = axios.put(apiURL, expenseData,).then((response) => {
+                    console.log("response after edit expense", response.status)
+                if (response.status === 400)
+                {
+                    alert("Budget Limit Exceeded")
+                }
+
                 alert("Expense Updated Successfully!");
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,

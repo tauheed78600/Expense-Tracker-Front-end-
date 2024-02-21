@@ -98,10 +98,11 @@ export default function Transactions({ userId }) {
     const handleSetBudgetGoal = async () => {
         try {
             const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${budgetGoal}&userId=${userId}`);
-            if (response.data)
+            console.log("inside setBudget Goal response", response.data)
+            if (response.status === 400)
             {
-                alert("Budget Goal set successfully!!")
-                console.log("Budget goal set successfully:", response.data);
+                alert('Error setting budget goal:', response.data.message)
+                console.error('Error setting budget goal:', response.data.message);
             }
             // Update the displayed budget goal state
             setBudget(budgetGoal);
@@ -110,7 +111,7 @@ export default function Transactions({ userId }) {
         }
       };
 
-      const workSheetName = 'Worksheet-1';
+    const workSheetName = 'Worksheet-1';
     const workBookName = 'MyWorkBook';
     const myInputId = 'myInput';
     const workbook = new Excel.Workbook();
@@ -278,7 +279,7 @@ export default function Transactions({ userId }) {
                     const response = await axios.post(`http://localhost:3000/total/send-email/budget-goal-ninereached`, { email: emailId  });
                     if (response)
                     {
-                        alert("Budget goal has been  90% reached for this month");
+                        // alert("Budget goal has been  90% reached for this month");
                         // Store the current month in local storage to prevent sending the email again
                         localStorage.setItem('lastMonthNineReachedEmailSent', currentMonth.toString());
                     }
@@ -294,7 +295,7 @@ export default function Transactions({ userId }) {
                     if (response)
                     {
                         console.log("response: " , response.data)
-                        alert("Budget goal has been reached for this month")
+                        // alert("Budget goal has been reached for this month")
                         localStorage.setItem('lastMonthEmailSent', currentMonth.toString());
                     }
                   }
