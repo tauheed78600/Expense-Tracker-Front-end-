@@ -45,7 +45,7 @@ function Navbar({ setCurrentPage }) {
 
       <div className="logo-div flex space-x-4 items-center">
         <img src={Logo} />
-        <span className={!isExpanded ? "hidden" : "block"}>Expense Tracker</span>
+        <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>Expense Tracker</span>
       </div>
 
       
@@ -54,13 +54,13 @@ function Navbar({ setCurrentPage }) {
           <div className={`nav-links w-full ${currentPage === 'dashboard' ? 'active' : ''}`} onClick={() => handlePageChange('dashboard')}>
             <div className="flex space-x-3 w-full p-2 rounded">
               <ArrowLeftRightIcon />
-            <span className={!isExpanded ? "hidden" : "block"}>Dashboard</span>
+            <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>Dashboard</span>
           </div>
         </div>
         <div className={`nav-links w-full ${currentPage === 'transactions' ? 'active' : ''}`} onClick={() => handlePageChange('transactions')}>
           <div className="flex space-x-3 w-full p-2 rounded">
             <LayoutDashboard />
-            <span className={!isExpanded ? "hidden" : "block"}>Transactions</span>
+            <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>Transactions</span>
           </div>
         </div>
 
@@ -69,14 +69,14 @@ function Navbar({ setCurrentPage }) {
         <div className={`nav-links w-full ${currentPage === 'analytics' ? 'active' : ''}`} onClick={() => handlePageChange('analytics')}>
           <div className="flex space-x-3 w-full p-2 rounded ">
             <BarChart3Icon />
-            <span className={!isExpanded ? "hidden" : "block"}>Analytics</span>
+            <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>Analytics</span>
           </div>
         </div>
 
         <div className={`nav-links w-full ${currentPage === 'reportgenerate' ? 'active' : ''}`} onClick={() => handlePageChange('reportgenerate')}>
           <div className="flex space-x-3 w-full p-2 rounded  ">
             <ClipboardPlus />
-            <span className={!isExpanded ? "hidden" : "block"}>
+            <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>
               Report Generate
             </span>
           </div>
@@ -85,7 +85,7 @@ function Navbar({ setCurrentPage }) {
         <div className={`nav-links w-full ${currentPage === 'logout' ? 'active' : ''}`} onClick={() => handlePageChange('logout')}>
           <div className="flex space-x-3 w-full p-2 rounded  ">
             <LogOut />
-            <span className={!isExpanded ? "hidden" : "block"}>
+            <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>
               Log Out
             </span>
           </div>

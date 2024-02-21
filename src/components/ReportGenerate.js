@@ -2,8 +2,26 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
+import PopupModal from './PopupModal';
 
 const ReportGenerate = ({ expenses }) => {
+
+  const [popupState, setPopupState] = useState(false);
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    
+
+    const masterContent = {
+        "error": {
+          "head": "Error",
+          "body": "Please enter a valid date!"
+      },
+
+  }
+
+  const [content, setContent] = useState(masterContent["error"]);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [paymentModeFilter, setPaymentModeFilter] = useState('');
   const [merchantFilter, setMerchantFilter] = useState('');
@@ -31,7 +49,8 @@ const ReportGenerate = ({ expenses }) => {
         const dailyExpenses = filterDailyExpenses(inputDate);
         saveExcel(dailyExpenses);
     } else {
-        alert('Please enter a valid date.');
+        setContent(masterContent["error"]);
+        setPopupState(true);
     }
 };
 
@@ -128,6 +147,7 @@ const filterDailyExpenses = (date) => {
 
   return (
     <div>
+      <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="report-container">
         <div className="report-input">
           <label htmlFor="categoryFilter">Category:</label>

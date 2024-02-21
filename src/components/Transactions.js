@@ -17,9 +17,32 @@ import {
     ArrowBigLeft
   } from "lucide-react";
 
+  import PopupModal from "./PopupModal.js";
+
 
 export default function Transactions({ userId }) {
-    console.log('DashBoard component rendered with userId:', userId); 
+
+    const [popupState, setPopupState] = useState(false);
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    
+
+    const masterContent = {
+        "budgetExceededError": {
+          "head": "Error",
+          "body": "Budget goal has been reached for this month"
+      },
+      "ninetyError": {
+        "head": "Error",
+        "body": "Budget goal has been  90% reached for this month"
+      }
+
+
+  }
+
+  const [content, setContent] = useState(masterContent["error"]);
     const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
     
 
@@ -35,6 +58,22 @@ export default function Transactions({ userId }) {
     });
     const [masterExpenses, setMasterExpenses] = useState([
     ]);
+
+    const[dummyRowLength, setDummyRowLength] = useState(0);
+
+    const getDummyRows = () => {
+        var rows = [];
+        for(var i = 0; i < dummyRowLength; i++)
+        {
+            var row = [];
+            for(var j = 0; j < 6; j++)
+            {
+                row.push("");
+            }
+            rows.push(row);
+        }
+        return rows;
+    }
 
     const [expenses, setExpenses] = useState([]);
     
@@ -62,183 +101,16 @@ export default function Transactions({ userId }) {
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
 
-    // const [displayedBudgetGoal, setDisplayedBudgetGoal] = useState(0); 
-    const [dailyReportDate, setDailyReportDate] = useState('');
-    // State to hold the user's input for the monthly report month and year
-    const [monthlyReportMonth, setMonthlyReportMonth] = useState('');
-    const [monthlyReportYear, setMonthlyReportYear] = useState('');
-    const [periodStartDate, setPeriodStartDate] = useState('');
-    const [periodEndDate, setPeriodEndDate] = useState('');
-    const [categoryFilter, setCategoryFilter] = useState('');
-    const [paymentModeFilter, setPaymentModeFilter] = useState('');
-    const [merchantFilter, setMerchantFilter] = useState('');
 
-    
-    const filterExpensesByCategory = (category) => {
-        return expenses.filter(expense => expense.category === category);
-      };
-      
-      const filterExpensesByPaymentMode = (paymentMode) => {
-        return expenses.filter(expense => expense.paymentMode === paymentMode);
-      };
-      
-      const filterExpensesByMerchant = (merchant) => {
-        return expenses.filter(expense => expense.merchant === merchant);
-      };
-      
-      const handleCategoryReport = () => {
-        const filteredExpenses = filterExpensesByCategory(categoryFilter);
-        saveExcel(filteredExpenses);
-      };
-      
-      const handlePaymentModeReport = () => {
-        const filteredExpenses = filterExpensesByPaymentMode(paymentModeFilter);
-        saveExcel(filteredExpenses);
-      };
-      
-      const handleMerchantReport = () => {
-        const filteredExpenses = filterExpensesByMerchant(merchantFilter);
-        saveExcel(filteredExpenses);
-      };
-      
-    
-
-    
-
-      const workSheetName = 'Worksheet-1';
-    const workBookName = 'MyWorkBook';
-    const myInputId = 'myInput';
-    const workbook = new Excel.Workbook();
-
-    const columns = [
-        { header: 'Expense ID', key: 'expenseId' },
-        { header: 'User ID', key: 'userId' },
-        { header: 'Date', key: 'date' },
-        { header: 'Category', key: 'category' },
-        { header: 'Merchant', key: 'merchant' },
-        { header: 'Amount', key: 'amount' },
-        { header: 'Payment Mode', key: 'paymentMode' }
-    ];
-
-    const saveExcel = async (expenses) => {
-        try {
-            const myInput = document.getElementById(myInputId);
-            const fileName = myInput.value || workBookName;
-
-            // creating one worksheet in workbook
-            const workbook = new Excel.Workbook();
-            const worksheet = workbook.addWorksheet(workSheetName);
-
-            // add worksheet columns
-            worksheet.columns = columns;
-
-            // updated the font for first row.
-            worksheet.getRow(1).font = { bold: true };
-
-            // loop through all of the columns and set the alignment with width.
-            worksheet.columns.forEach(column => {
-                column.width = column.header.length +   5;
-                column.alignment = { horizontal: 'center' };
-            });
-
-            let expensesArray = Array.isArray(expenses) ? expenses : [expenses];
-
-            // loop through data and add each one to worksheet
-            expensesArray.forEach(singleData => {
-                // Ensure singleData is an object with keys matching the columns
-                if (typeof singleData === 'object' && singleData !== null) {
-                    worksheet.addRow(singleData);
-                } else {
-                    console.error('Invalid expense data:', singleData);
-                }
-            });
-            // loop through all of the rows and set the outline style.
-            worksheet.eachRow({ includeEmpty: false }, row => {
-                const currentCell = row._cells;
-                currentCell.forEach(singleCell => {
-                    const cellAddress = singleCell._address;
-                    worksheet.getCell(cellAddress).border = {
-                        top: { style: 'thin' },
-                        left: { style: 'thin' },
-                        bottom: { style: 'thin' },
-                        right: { style: 'thin' }
-                    };
-                });
-            });
-
-            // write the content using writeBuffer
-            const buf = await workbook.xlsx.writeBuffer();
-
-            // download the processed file
-            saveAs(new Blob([buf]), `${fileName}.xlsx`);
-        } catch (error) {
-            console.error('<<<ERRROR>>>', error);
-            console.error('Something Went Wrong', error.message);
-        }
-    }
-
-    const filterDailyExpenses = (date) => {
-        return expenses.filter(expense => {
-            const expenseDate = new Date(expense.date);
-            return expenseDate.getDate() === date.getDate() &&
-                   expenseDate.getMonth() === date.getMonth() &&
-                   expenseDate.getFullYear() === date.getFullYear();
-        });
-    };
-
-    // Function to filter expenses for a specific month
-    const filterMonthlyExpenses = (month, year) => {
-        return expenses.filter(expense => {
-            const expenseDate = new Date(expense.date);
-            return expenseDate.getMonth() === month &&
-                   expenseDate.getFullYear() === year;
-        });
-    };
-
-    const handleDailyReport = () => {
-        const inputDate = new Date(dailyReportDate);
-        if (!isNaN(inputDate.getDate())) {
-            const dailyExpenses = filterDailyExpenses(inputDate);
-            saveExcel(dailyExpenses);
-        } else {
-            alert('Please enter a valid date.');
-        }
-    };
-
-    // Function to handle the monthly report generation
-    const handleMonthlyReport = () => {
-        const inputMonth = parseInt(monthlyReportMonth,  10) -  1; // Months are  0-indexed in JavaScript
-        const inputYear = parseInt(monthlyReportYear,  10);
-        if (!isNaN(inputMonth) && !isNaN(inputYear)) {
-            const monthlyExpenses = filterMonthlyExpenses(inputMonth, inputYear);
-            saveExcel(monthlyExpenses);
-        } else {
-            alert('Please enter a valid month and year.');
-        }
-    };
-
-    const filterPeriodExpenses = (startDate, endDate) => {
-        return expenses.filter(expense => {
-            const expenseDate = new Date(expense.date);
-            return expenseDate >= startDate && expenseDate <= endDate;
-        });
-    };
-
-    const handlePeriodReport = () => {
-        const start = new Date(periodStartDate);
-        const end = new Date(periodEndDate);
-        if (!isNaN(start.getDate()) && !isNaN(end.getDate()) && start <= end) {
-            console.log("handlePeriodExpense", start.getDate(), start.getDate())
-            const periodExpenses = filterPeriodExpenses(start, end);
-            saveExcel(periodExpenses);
-        } else {
-            alert('Please enter valid start and end dates.');
-        }
-    };
 
     useEffect(() => {
+        
         setExpenses(masterExpenses);
     }, []);
+
+    useEffect(()=> {
+        setDummyRowLength(itemCount-expenses.length%itemCount);
+    }, [expenses]);
 
 
     useEffect(() => {
@@ -258,11 +130,9 @@ export default function Transactions({ userId }) {
                         row.amount, row.paymentMode]);
                 }
                 
-                console.log('Expenses fetched:', newArray);
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
-                const emailId = response.data.email
-                console.log(emailId)    
+                const emailId = response.data.email   
 
                 if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
                     const currentMonth = new Date().getMonth();
@@ -271,7 +141,8 @@ export default function Transactions({ userId }) {
                     const response = await axios.post(`http://localhost:3000/total/send-email/budget-goal-ninereached`, { email: emailId  });
                     if (response)
                     {
-                        alert("Budget goal has been  90% reached for this month");
+                        setContent(masterContent["ninetyError"]);
+                        setPopupState(true);
                         // Store the current month in local storage to prevent sending the email again
                         localStorage.setItem('lastMonthNineReachedEmailSent', currentMonth.toString());
                     }
@@ -286,8 +157,9 @@ export default function Transactions({ userId }) {
                     const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  });
                     if (response)
                     {
+                        setContent(masterContent["budgetExceededError"]);
+                        setPopupState(true);
                         console.log("response: " , response.data)
-                        alert("Budget goal has been reached for this month")
                         localStorage.setItem('lastMonthEmailSent', currentMonth.toString());
                     }
                   }
@@ -407,13 +279,6 @@ export default function Transactions({ userId }) {
     }
      return (
         <div id = "transaction-div">
-            <div id="div-modify-expense">
-                
-            </div>
-            <div id="div-filter-expense">
-                
-            </div>
-
 
             <div id = "expense-table">
                         <div id= "expense-table-options">
@@ -463,17 +328,34 @@ export default function Transactions({ userId }) {
                                         );
                                 })
                         }
+                        {
+                            pageCounter === totalPages() && getDummyRows().map((row, index) => {
+                                return (
+                                    <tr key = {(itemCount-dummyRowLength)+index}>
+                                        <td className="expense-table-index expense-table-th-td" key={0} >{""}</td>
+                                        {
+                                            row.map((value, cellIndex) => {
+                                                return (
+                                                    <td className="expense-table-th-td" key={cellIndex+1}>{value}</td>
+                                                )
+                                                
+                                            })
+                                        }
+                                    </tr>
+                                )
+                            })
+                        }
                         
                         
                         </tbody>
                         
                         </table>
                         {expenses.length > 10 &&    <div id="page-selector">
-                                            <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>0</button>
+                                            {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}
                                             <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>
-                                            <button className="expense-table-button expense-table-selector-button">{pageCounter}</button>
+                                            <button className="expense-table-button expense-table-selector-button" style={{"backgroundColor":"white", "color":"black"}}>{pageCounter}</button>
                                             <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>
-                                            <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>
+                                            {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>}
                                         </div>}  
                     </div>
     </div>

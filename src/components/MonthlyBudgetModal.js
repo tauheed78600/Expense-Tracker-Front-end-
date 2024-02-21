@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
+import PopupModal from './PopupModal';
 
 function MonthlyBudgetModal() {
   const [show, setShow] = useState(false);
@@ -16,7 +17,6 @@ function MonthlyBudgetModal() {
         const userId = localStorage.getItem('userId');
         try {
             const response = await axios.get(`http://localhost:3000/total/${userId}`);
-            console.log("response data in monthly budget", response.data)
             if(response.data.monthly_budget !== undefined)
                 setCurrentBudget(response.data.monthly_budget);
             else
@@ -42,22 +42,45 @@ function MonthlyBudgetModal() {
     setNewBudget(e.target.value);
   }
 
+  const [popupState, setPopupState] = useState(false);
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    
+
+    const masterContent = {
+      "updateSuccess": {
+          "head": "Success",
+          "body": "Budget updated successfully!",
+        },
+        "error": {
+          "head": "Error",
+          "body": "Could not update budget!"
+      },
+
+  }
+
+  const [content, setContent] = useState(masterContent["error"]);
+
 
 
   const handleSave = async () => {
         const userId = localStorage.getItem('userId');
         try {
             const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`);
-            console.log(response);
             if (response.status===200)
             {
-                alert("Budget Goal set successfully!!")
+                setContent(masterContent["updateSuccess"]);
+                setPopupState(true);
                 console.log("Budget goal set successfully:", response.data);
             }
             // Update the displayed budget goal state
             setCurrentBudget(newBudget);
             setRemainingBudget(newBudget-currentBudget+remainingBudget);
         } catch (error) {
+          setContent(masterContent["updateSuccess"]);
+          setPopupState(true);
           console.error('Error setting budget goal:', error);
         }
       };
@@ -69,7 +92,7 @@ function MonthlyBudgetModal() {
       <Button variant="primary" onClick={handleShow}>
         Set Budget
       </Button>
-
+      <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Set Budget</Modal.Title>

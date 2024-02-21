@@ -10,9 +10,23 @@ import Row from 'react-bootstrap/Row';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { getCategories } from "./categories";
 import { Filter } from "lucide-react";
+import PopupModal from "./PopupModal";
 export default function FilterExpense({ onFilterExpense, expenseData, showFilter, setShowFilter }) {
+    const masterContent = {
+        "amountError":{
+            "head": "Error",
+            "body": "Amount is not a number!"
+        },
+        "filterError": {
+            "head": "Error",
+            "body": "Choose at least one filter option!"
+        }
+
+    }
+    const [content, setContent] = useState(masterContent["filterError"]);
     const [filterState, setFilterState] = useState(false);
     var categories = getCategories();
+    const [popupState, setPopupState] = useState(false);
     const [filterData, setFilterData] = useState({
         dateFrom: "",
         dateTo: "",
@@ -32,6 +46,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         });
     }
     const setDateLimitFrom = () => {
+        console.log(filterData.dateTo);
         if(filterData.dateTo !== "")
             document.getElementById("modify-filter-date-from").max = filterData.dateTo;
         else
@@ -43,13 +58,24 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         document.getElementById("modify-filter-date-to").max = currentDate();
     }
     
-    const closeFilterExpense = () => {
-        setFilterState(false);
-        resetFilterData();
-    }
 
     const handleFilterChange = (name, value) => {
-        setFilterState(true);
+        var flag = false;
+        if(value === "")
+        {
+            for(const val in filterData)
+            {
+                if(filterData[val] !== "")
+                {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        if(flag || value !== "")
+            setFilterState(true);
+        else
+            setFilterState(false);
         setFilterData({...filterData, [name]: value})
     }
 
@@ -82,9 +108,17 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     const handleFilterSubmit = (e) => {
         e.preventDefault();
         var newArray = expenseData;
+        console.log(filterState);
         if(!filterState)
         {
-            alert("Choose Filter option");
+            setContent(masterContent["filterError"]);
+            setPopupState(true);
+            return;
+        }
+        if(filterData.amount !== "" && isNaN(filterData.amount))
+        {
+            setContent(masterContent["amountError"]);
+            setPopupState(true);
             return;
         }
         if(filterData.dateFrom)
@@ -117,16 +151,18 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
 
     const handleClose = () => {
         resetFilterData();
-        setShowFilter(false);}
+        setShowFilter(false);
+    }
     const handleShow = () => setShowFilter(true);
 
-    const closeModifyExpense = () => {
-        handleClose();
+    const handlePopupState = (state) => {
+        setPopupState(state);
     }
 
 
     return (
         <>
+            <PopupModal state={popupState} setState={handlePopupState} content={content}/>
             <Button variant="primary" onClick={handleShow}>
                 <Filter/>
             </Button>
