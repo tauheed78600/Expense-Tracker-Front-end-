@@ -131,26 +131,45 @@ const filterDailyExpenses = (date) => {
       <div className="report-container">
         <div className="report-input">
           <label htmlFor="categoryFilter">Category:</label>
-          <input
-            type="text"
-            id="categoryFilter"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="report-input"
-          />
+<select
+      id="categoryFilter"
+      value={categoryFilter}
+      onChange={(e) => setCategoryFilter(e.target.value)}
+      className="report-input"
+    >
+      <option value="">Select a category</option>
+      <option value="Supermarket">Supermarket</option>
+      <option value="Gas Station">Gas Station</option>
+      <option value="Restaurant">Restaurant</option>
+      <option value="Online Retailer">Online Retailer</option>
+      <option value="Airline">Airline</option>
+      <option value="Healthcare Provider">Healthcare Provider</option>
+      <option value="Salons and Spa">Salons and Spa</option>
+      <option value="Home Improvement">Home Improvement</option>
+      <option value="Store">Store</option>
+      <option value="Subscription Service">Subscription Service</option>
+      <option value="Miscellaneous">Miscellaneous</option>
+      <option value="Other">Other</option>
+    </select>
+
           <button className="report-button" onClick={handleCategoryReport}>Generate Category Report</button>
         </div>
       </div>
       <div className="report-container">
         <div className="report-input">
           <label htmlFor="paymentModeFilter">Payment Mode:</label>
-          <input
-            type="text"
-            id="paymentModeFilter"
-            value={paymentModeFilter}
-            onChange={(e) => setPaymentModeFilter(e.target.value)}
-            className="report-input"
-          />
+              <select
+      id="paymentModeFilter"
+      value={paymentModeFilter}
+      onChange={(e) => setPaymentModeFilter(e.target.value)}
+      className="report-input"
+    >
+      <option value="">Select a payment mode</option>
+      <option value="Credit">Credit</option>
+      <option value="Debit">Debit</option>
+      <option value="UPI">UPI</option>
+      <option value="Cash">Cash</option>
+    </select>
           <button className="report-button" onClick={handlePaymentModeReport}>Generate Payment Mode Report</button>
         </div>
       </div>
