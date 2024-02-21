@@ -1,0 +1,115 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+   }
+   .container {
+    width: 100vw;
+    height: 100vh;
+    padding: 20px;
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+   }
+   h1 {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #333;
+   }
+   .section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 25px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    border: 1px solid #d2d2d3;
+    border-radius: 5px;
+    box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2);
+   }
+   .section:first-child {
+    border-left: 7px solid #246dec;
+   }
+   .section:nth-child(2) {
+    border-left: 7px solid #f5b74f;
+   }
+   .section:nth-child(3) {
+    border-left: 7px solid #367952;
+   }
+   .section:nth-child(4) {
+    border-left: 7px solid #cc3c43;
+   }
+   .section:nth-child(5) {
+    border-left: 7px solid #e8fd07;
+   }
+   .section > span {
+    font-size: 20px;
+    font-weight: 600;
+   }
+   .section-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   }
+   .section-text > p {
+    font-size: 18px;
+    margin-right: 10px;
+   }
+   .section > span {
+    font-size: 35px;
+    margin-right: 10px;
+   }
+   .update-btn {
+    background-color: #01060b;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+   }
+   .update-btn:hover {
+    background-color: #000408;
+   }
+   .update-section {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+   }
+
+   /* Transactions.css */
+/* ... other styles ... */
+
+/* Transactions.css */
+/* ... other styles ... */
+
+.logout-container {
+  position: absolute;
+  top:  10px;
+  right:  10px;
+}
+
+.logout-btn {
+  background-color: #f44336; /* Red */
+  border: none;
+  color: white;
+  padding:  10px  30px; /* Adjusted padding for a shorter button */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size:  16px;
+  cursor: pointer;
+  border-radius:  4px;
+}
+
+.logout-btn:hover {
+  background-color: #da190b; /* Darker red */
+}
+
+
+   .nav-links.active {
+    background-color: #FF8C8C; /* Change this to the color you want for the active item */
+  }
+   
