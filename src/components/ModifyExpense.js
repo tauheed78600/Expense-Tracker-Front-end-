@@ -197,7 +197,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 localStorage.removeItem('expenseId');
 
             }).catch((error) => {
-                console.log("inside catch", error)
+                setContent(masterContent["editError"]);
+                setPopupState(true);
             });
         }
         
@@ -235,6 +236,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         "budgetLimitExceeded": {
             "head": "Error",
             "body": "Budget Limit Exceeded"
+        },
+        "editError": {
+            "head": "Error",
+            "body": "Could not edit expense!"
         }
 
     }

@@ -45,7 +45,11 @@ export default function Transactions({ userId }) {
       "deleteError": {
         "head": "Error",
         "body": "Could not delete expense!"
-      } 
+      },
+      "fetchError": {
+        "head": "Error",
+        "body": "Could not fetch data!"
+      }
 
 
   }
@@ -177,7 +181,8 @@ export default function Transactions({ userId }) {
 
 
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                setContent(masterContent["fetchError"]);
+                setPopupState(true);
             }
         };
         

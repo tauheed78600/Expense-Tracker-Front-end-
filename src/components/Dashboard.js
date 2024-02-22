@@ -5,25 +5,40 @@ import 'material-icons/iconfont/material-icons.css';
 
 
 const Dashboard = ({ userId }) => {
+
+  const masterContent = {
+    "fetchError":{
+        "head": "Error",
+        "body": "Could not fetch data"
+    }
+
+}
+const [popupState, setPopupState] = useState(false);
+const handlePopupState = (state) => {
+  setPopupState(state);
+}
+
+
+
+const [content, setContent] = useState(masterContent["fetchError"]);
 const [userData, setUserData] = useState({});
 
 useEffect(() => {
+
+  
 const fetchData = async () => {
     try {
     const response = await axios.get(`http://localhost:3000/total/getUser/${userId}`);
     setUserData(response.data);
     } catch (error) {
-    console.error('Error fetching user data:', error);
+    setContent(masterContent["fetchError"]);
+    setPopupState(true);
     }
 };
 
 fetchData();
 }, [userId]);
 
-const updateField = () => {
-// TODO Implement the logic to update the user data
-console.log('Update field function called');
-};
 
 const handleLogout = () => {
     localStorage.clear()
