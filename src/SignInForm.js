@@ -14,6 +14,8 @@ const SignInForm = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+
+  
  
   const validateForm = () => {
     let isValid = true;
@@ -88,13 +90,14 @@ const response = await axios.post('http://localhost:3000/total/forgotPassword/',
   };
  
   const toggleForgotPasswordModal = () => {
+    navigate("/forgotPassword")
     setShowForgotPasswordModal(!showForgotPasswordModal);
   };
  
   return (
     <>
       <Components.Form onSubmit={handleSubmit}>
-        <Components.Title>Sign In</Components.Title>
+        <Components.Title1>Sign In</Components.Title1>
         <Components.Input
           type='text'
           placeholder='Username'
@@ -110,9 +113,9 @@ const response = await axios.post('http://localhost:3000/total/forgotPassword/',
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
         <Components.Button type='submit'>Sign In</Components.Button>
-        <Components.Button type='button' onClick={toggleForgotPasswordModal}>
+        {/* <Components.Button type='button' onClick={toggleForgotPasswordModal}>
           Forgot your password?
-        </Components.Button>
+        </Components.Button> */}
       </Components.Form>
       {/* Render the Forgot Password modal */}
       <ForgotPasswordModal

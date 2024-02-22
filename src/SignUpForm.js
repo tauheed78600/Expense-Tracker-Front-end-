@@ -56,12 +56,12 @@ const SignUpForm = () => {
 
     if (validateForm()) {
       try {
-        var monthlyBudget = 0
+        // var monthlyBudget = 0
         const response = await axios.post('http://localhost:3000/total/register/', {
           email,
           password,
           monthlyBudget,
-          username // Changed from name to username
+          username 
         });
 
         
@@ -87,7 +87,7 @@ const SignUpForm = () => {
         value={username} // Changed from name to username
         onChange={(e) => setUsername(e.target.value)} // Changed from setName to setUsername
       />
-      {usernameError && <p style={{ color: 'red' }}>{usernameError}</p>} // Changed from nameError to usernameError
+      {usernameError && <p style={{ color: 'red' }}>{usernameError}</p>}
       <Components.Input
         type='email'
         placeholder='Email'

@@ -1,10 +1,26 @@
-// Analytics.js
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'chart.js/auto';
 import axios from 'axios';
-import "../styles/Analytics.css"
-
+import "../styles/Analytics.css";
+import PopupModal from './PopupModal';
+ 
 const Analytics = ({ userId }) => {
+ 
+  const masterContent = {
+    "fetchError":{
+        "head": "Error",
+        "body": "Could not fetch data"
+    }
+ 
+}
+const [popupState, setPopupState] = useState(false);
+const handlePopupState = (state) => {
+  setPopupState(state);
+}
+ 
+ 
+ 
+const [content, setContent] = useState(masterContent["fetchError"]);
   const [expensesData, setExpensesData] = useState({});
   const chartRefs = {
     lineChart: null,
@@ -12,7 +28,7 @@ const Analytics = ({ userId }) => {
     pieChart: null,
     pieChart1: null,
   };
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,7 +36,7 @@ const Analytics = ({ userId }) => {
         const categoriesResponse = await axios.get(`http://localhost:3000/api/data1/${userId}`);
         const merchantsResponse = await axios.get(`http://localhost:3000/api/data2/${userId}`);
         const paymentModesResponse = await axios.get(`http://localhost:3000/api/data3/${userId}`);
-
+ 
         setExpensesData({
           expenses: expensesResponse.data,
           categories: categoriesResponse.data,
@@ -28,21 +44,22 @@ const Analytics = ({ userId }) => {
           paymentModes: paymentModesResponse.data,
         });
       } catch (error) {
-        console.error('Error fetching data:', error);
+        setContent(masterContent["fetchError"]);
+        setPopupState(true);
       }
     };
-
+ 
     fetchData();
   }, [userId]);
-
+ 
   useEffect(() => {
     if (expensesData.expenses) {
       createLineChart('lineChart', expensesData.expenses, 'date', 'amount');
       createBarChart('barChart', expensesData.merchants, 'merchant', 'amount');
-      createPieChart('pieChart', expensesData.categories, 'category', 'totalAmount');
-      createPieChart('pieChart1', expensesData.paymentModes, 'paymentMode', 'totalAmount');
+      // createPieChart('pieChart', expensesData.categories, 'category', 'totalAmount');
+      // createPieChart('pieChart1', expensesData.paymentModes, 'paymentMode', 'totalAmount');
     }
-
+ 
     // Cleanup function to destroy chart instances
     return () => {
       Object.values(chartRefs).forEach(chart => {
@@ -52,7 +69,7 @@ const Analytics = ({ userId }) => {
       });
     };
   }, [expensesData]);
-
+ 
   const createLineChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     if (chartRefs[canvasId]) {
@@ -80,7 +97,7 @@ const Analytics = ({ userId }) => {
       }
     });
   };
-
+ 
   const createBarChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     if (chartRefs[canvasId]) {
@@ -108,9 +125,9 @@ const Analytics = ({ userId }) => {
       }
     });
   };
-
-
-  
+ 
+ 
+ 
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     console.log(`Creating pie chart for ${canvasId}`); // Add this line
@@ -133,19 +150,20 @@ const Analytics = ({ userId }) => {
         responsive: true
       }
     });
-    console.log(`Pie chart for ${canvasId} created`); 
+    console.log(`Pie chart for ${canvasId} created`);
   };
-
+ 
   return (
     <div className="analytics-container">
+      <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="lineChart" className="chart"></canvas>
+          <canvas id="lineChart"  className="chart" st></canvas>
         </div>
-        <div className="chart-column">
+        {/* <div className="chart-column">
           <canvas id="pieChart" className="chart"></canvas>
           <canvas id="pieChart1" className="chart"></canvas>
-        </div>
+        </div> */}
       </div>
       <div className="chart-row">
         <div className="chart-column">
@@ -155,5 +173,5 @@ const Analytics = ({ userId }) => {
     </div>
   );
 };
-
+ 
 export default Analytics;

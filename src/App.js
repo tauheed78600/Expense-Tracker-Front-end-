@@ -69,7 +69,7 @@ function App() {
                 {currentPage === 'analytics' && <Analytics userId={localStorage.getItem("userId")} />}
                 {currentPage === 'reportgenerate' && <ReportGenerate expenses={expenses}/>}
               </main>
-            </div>
+            </div>  
           ) : (
             <Navigate to="/auth" />
           )

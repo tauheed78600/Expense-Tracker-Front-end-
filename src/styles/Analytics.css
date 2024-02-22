@@ -1,66 +1,45 @@
-/* Analytics.css */
-.analytics-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding:  20px;
-  }
-  
-  .chart-row {
-    display: flex;
-    justify-content: space-between;
-    width:  100%;
-    margin-bottom:  20px;
-  }
-  /* Analytics.css */
 
 /* Analytics.css */
-
+ 
 .analytics-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   padding:  20px;
+  height: 500px;
 }
-
+ 
 .chart-row {
   display: flex;
-  justify-content: space-around;
   width:  100%;
   margin-bottom:  20px;
 }
-
+ 
+/* #lineChart.chart{
+  height: auto;
+  width: auto;
+} */
 .chart-column {
   flex:  1;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
+  display: flex;
   align-items: center;
+  height: 250%;
+  width:  50%; /* Ensure each column takes up half the width of the row */
 }
-
+ 
 .chart {
-  width:  400px; /* Adjust the width as needed */
-  height:  400px; /* Adjust the height as needed */
-  margin:  10px;
+  width:  150%; /* Make the chart responsive to the column width */
+  max-width:  500px; /* Maximum width of the chart */
+  height: 800px; /* Adjust the height automatically based on the content */
+  margin-bottom:  10px; /* Adjusted margin for better spacing */
+  max-height: 800px;
 }
-
-/* Optional: Add some styling to the canvas elements */
+ 
 .chart canvas {
   border:  1px solid #3a1616;
   box-shadow:  2px  2px  5px rgba(0,  0,  0,  0.1);
 }
-
-  .chart-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width:  50%;
-  }
-  
-  .chart {
-    width:  100%;
-    max-width:  400px;
-    height: auto;
-    margin-bottom:  20px;
-  }
-  
+ 
