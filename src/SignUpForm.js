@@ -87,7 +87,7 @@ const SignUpForm = () => {
         value={username} // Changed from name to username
         onChange={(e) => setUsername(e.target.value)} // Changed from setName to setUsername
       />
-      {usernameError && <p style={{ color: 'red' }}>{usernameError}</p>} // Changed from nameError to usernameError
+      {usernameError && <p style={{ color: 'red' }}>{usernameError}</p>}
       <Components.Input
         type='email'
         placeholder='Email'

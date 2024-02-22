@@ -202,7 +202,8 @@ margin-right:   10px;
 
 /* Styles for the report buttons */
 .report-button {
-background: linear-gradient(to right, #009fff, #ec2f4b);
+/* background: linear-gradient(to right, #009fff, #ec2f4b); */
+background: linear-gradient(to right, #ffc0cb, #e26f6f);
 border: none;
 color: white;
 padding:   10px   20px;
@@ -243,3 +244,88 @@ justify-content: center;
 align-items: center;
 }
 
+/* --------------------------------------------------------------------------------------------- */
+/* Typography */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Color Scheme */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #f8f9fa;
+  --error-color: #dc3545;
+}
+
+/* Spacing and Layout */
+.report-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom:  20px;
+  padding:  20px;
+  background-color: var(--secondary-color);
+  border-radius:  5px;
+  box-shadow:  0  2px  4px rgba(0,  0,  0,  0.1);
+}
+
+/* Buttons */
+.report-button {
+  padding: 6px 12px;
+  font-size:  16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius:  4px;
+  cursor: pointer;
+  transition: background-color  0.3s ease, transform  0.3s ease;
+  box-shadow:  0  2px  4px rgba(0,  0,  0,  0.1);
+}
+
+.report-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+  box-shadow:  0  4px  8px rgba(0,  0,  0,  0.2);
+}
+
+.report-button:active {
+  transform: translateY(0);
+  box-shadow:  0  2px  4px rgba(0,  0,  0,  0.1);
+}
+
+/* Forms */
+.report-input {
+  flex:  1;
+  margin-right:  10px;
+}
+
+.report-input input,
+.report-input select {
+  padding:  10px;
+  font-size:  16px;
+  border:  1px solid #ccc;
+  border-radius:  4px;
+  width:  100%;
+  box-sizing: border-box;
+  margin-bottom:  10px;
+}
+
+/* Error Messages */
+.error-message {
+  color: var(--error-color);
+  font-weight: bold;
+  margin-bottom:  10px;
+}
+
+/* Responsive Design */
+@media (max-width:  768px) {
+  .report-container {
+    flex-direction: column;
+  }
+
+  .report-input {
+    margin-right:  0;
+  }
+}
