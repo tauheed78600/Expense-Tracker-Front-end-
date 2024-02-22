@@ -156,7 +156,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(loadExpense.length === 0)
         {
             axios.post(apiURL,expenseData, ).then((response) => {
-                
+                setContent(masterContent["add"]);
+                setPopupState(true);
                 updateRow = [modifyExpenseData.userId, response.data.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
@@ -165,13 +166,15 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-                console.log("inside catch")
+                
+                setContent(masterContent["budgetLimitExceeded"]);
+                setPopupState(true);
             });
         }
         else
         {
             apiURL = "http://localhost:3000/expenses/updateExpense";
- 
+            
             const expenseData = {
             // Assuming you want to set the expenseId to  1
                 userId:  userId, // Assuming you want to set the userId to  1
@@ -183,6 +186,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 expenseId: localStorage.getItem("expenseId")
             };
             axios.put(apiURL, expenseData,).then((response) => {
+                setContent(masterContent["update"]);
+                setPopupState(true);
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
@@ -227,6 +232,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             "head": "Error",
             "body": "Amount is not a number!"
         },
+        "budgetLimitExceeded": {
+            "head": "Error",
+            "body": "Budget Limit Exceeded"
+        }
 
     }
 
