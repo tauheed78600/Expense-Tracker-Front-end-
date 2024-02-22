@@ -41,7 +41,11 @@ export default function Transactions({ userId }) {
       "delete": {
         "head": "Error",
         "body": "Successfully deleted!"
-      }
+      },
+      "deleteError": {
+        "head": "Error",
+        "body": "Could not delete expense!"
+      } 
 
 
   }
@@ -166,7 +170,6 @@ export default function Transactions({ userId }) {
                     {
                         setContent(masterContent["budgetExceededError"]);
                         setPopupState(true);
-                        console.log("response: " , response.data)
                         localStorage.setItem('lastMonthEmailSent', currentMonth.toString());
                     }
                   }
@@ -206,7 +209,6 @@ export default function Transactions({ userId }) {
             user_id: localStorage.getItem("userId")
         }}).
         then((response) => {
-            console.log(response);
             setContent(masterContent["delete"]);
             setPopupState(true);
             setExpenses(prevArray => {
@@ -214,10 +216,10 @@ export default function Transactions({ userId }) {
                 newArray.splice(index,   1);
                 return newArray;
             });
-            console.log(expenses.length);
             
         }).catch((error) => {
-            console.log(error.message);
+            setContent(masterContent["deleteError"]);
+            setPopupState(true);
         });
         
     }
@@ -235,7 +237,6 @@ export default function Transactions({ userId }) {
     const handleEditExpense = (index) => {
         
         index = index+(pageCounter-1)*itemCount;
-        console.log(index);
         setShow(true);
         setSendExpense([index, ...expenses[index]]);
     }
