@@ -156,9 +156,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(loadExpense.length === 0)
         {
             axios.post(apiURL,expenseData, ).then((response) => {
-                alert("Expense Added Successfully!");
                 
-                updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId,
+                updateRow = [modifyExpenseData.userId, response.data.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
                 onAddExpense(updateRow);
@@ -167,7 +166,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 
             }).catch((error) => {
                 console.log("inside catch")
-                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
             });
         }
         else
@@ -185,7 +183,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 expenseId: localStorage.getItem("expenseId")
             };
             axios.put(apiURL, expenseData,).then((response) => {
-                alert("Expense Updated Successfully!");
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
@@ -196,7 +193,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
 
             }).catch((error) => {
                 console.log("inside catch", error)
-                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
             });
         }
         
