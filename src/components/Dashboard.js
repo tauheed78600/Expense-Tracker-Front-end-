@@ -32,13 +32,13 @@ const handleLogout = () => {
 
 return (
 <div className="container">
-<div className="logout-container">
+{/* <div className="logout-container">
         <button className="logout-btn" onClick={handleLogout}>
           <span className="material-icons">logout</span>
           Logout
         </button>
-        </div>
-    <h1>User Dashboard</h1>
+        </div> */}
+    <div className='h1'><h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1></div>
     <div className="section" id="name-section">
     <label htmlFor="name">UserName:</label>
     <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
@@ -62,16 +62,6 @@ return (
     <label htmlFor="email">Email:</label>
     <div id="email" className="info">{userData.email || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">mail</span>
-    </div>
-    <div className="update-section">
-    <label htmlFor="update_option">Select section to update:</label>
-    <select id="update_option">
-        <option value="name">Name</option>
-        <option value="monthly_budget">Monthly Budget</option>
-        <option value="user_name">User Name</option>
-        <option value="email">Email</option>
-    </select>
-    <button className="update-btn" onClick={updateField}>Update</button>
     </div>
 </div>
 );

@@ -16,10 +16,10 @@ const Analytics = ({ userId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const expensesResponse = await axios.get(`http://localhost:8000/api/data/${userId}`);
-        const categoriesResponse = await axios.get(`http://localhost:8000/api/data1/${userId}`);
-        const merchantsResponse = await axios.get(`http://localhost:8000/api/data2/${userId}`);
-        const paymentModesResponse = await axios.get(`http://localhost:8000/api/data3/${userId}`);
+        const expensesResponse = await axios.get(`http://localhost:3000/api/data/${userId}`);
+        const categoriesResponse = await axios.get(`http://localhost:3000/api/data1/${userId}`);
+        const merchantsResponse = await axios.get(`http://localhost:3000/api/data2/${userId}`);
+        const paymentModesResponse = await axios.get(`http://localhost:3000/api/data3/${userId}`);
 
         setExpensesData({
           expenses: expensesResponse.data,
@@ -109,8 +109,11 @@ const Analytics = ({ userId }) => {
     });
   };
 
+
+  
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
+    console.log(`Creating pie chart for ${canvasId}`); // Add this line
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }
@@ -121,7 +124,7 @@ const Analytics = ({ userId }) => {
         datasets: [{
           label: 'Expenses by Category',
           data: data.map(item => item[valueKey]),
-          backgroundColor: 'rgba(255,   206,   86,   0.2)',
+          backgroundColor: 'rgba(248,   206,   86,   0.2)',
           borderColor: 'rgba(255,   206,   86,   1)',
           borderWidth:   1
         }]
@@ -130,6 +133,7 @@ const Analytics = ({ userId }) => {
         responsive: true
       }
     });
+    console.log(`Pie chart for ${canvasId} created`); 
   };
 
   return (

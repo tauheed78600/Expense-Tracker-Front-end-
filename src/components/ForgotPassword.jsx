@@ -5,6 +5,15 @@ import '../styles/ForgotPassword.css'; // Import the CSS file
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [popupState, setPopupState] = useState(false);
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    const content = {
+        "head": "Error",
+        "body": "Check your Email for verification Link"
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -17,7 +26,9 @@ const ForgotPassword = () => {
             );
             if (response)
             {
-                alert("Check your Email for verification Link")
+                
+                setPopupState(true);
+
             }
             setMessage(response.data.message);
         } catch (error) {
@@ -26,6 +37,8 @@ const ForgotPassword = () => {
     };
 
     return (
+        <>
+        <PopupModal state={popupState} setState={handlePopupState} content={content}/>
         <div className="forgot-password-container">
             <h2>Forgot Password</h2>
             <form onSubmit={handleSubmit}>
@@ -40,6 +53,8 @@ const ForgotPassword = () => {
             </form>
             {message && <p className="message">{message}</p>}
         </div>
+        </>
+        
     );
 };
 

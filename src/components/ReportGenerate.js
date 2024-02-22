@@ -2,8 +2,26 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
+import PopupModal from './PopupModal';
 
 const ReportGenerate = ({ expenses }) => {
+
+  const [popupState, setPopupState] = useState(false);
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    
+
+    const masterContent = {
+        "error": {
+          "head": "Error",
+          "body": "Please enter a valid date!"
+      },
+
+  }
+
+  const [content, setContent] = useState(masterContent["error"]);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [paymentModeFilter, setPaymentModeFilter] = useState('');
   const [merchantFilter, setMerchantFilter] = useState('');
@@ -31,7 +49,8 @@ const ReportGenerate = ({ expenses }) => {
         const dailyExpenses = filterDailyExpenses(inputDate);
         saveExcel(dailyExpenses);
     } else {
-        alert('Please enter a valid date.');
+        setContent(masterContent["error"]);
+        setPopupState(true);
     }
 };
 
@@ -128,29 +147,49 @@ const filterDailyExpenses = (date) => {
 
   return (
     <div>
+      <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="report-container">
         <div className="report-input">
           <label htmlFor="categoryFilter">Category:</label>
-          <input
-            type="text"
-            id="categoryFilter"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="report-input"
-          />
+<select
+      id="categoryFilter"
+      value={categoryFilter}
+      onChange={(e) => setCategoryFilter(e.target.value)}
+      className="report-input"
+    >
+      <option value="">Select a category</option>
+      <option value="Supermarket">Supermarket</option>
+      <option value="Gas Station">Gas Station</option>
+      <option value="Restaurant">Restaurant</option>
+      <option value="Online Retailer">Online Retailer</option>
+      <option value="Airline">Airline</option>
+      <option value="Healthcare Provider">Healthcare Provider</option>
+      <option value="Salons and Spa">Salons and Spa</option>
+      <option value="Home Improvement">Home Improvement</option>
+      <option value="Store">Store</option>
+      <option value="Subscription Service">Subscription Service</option>
+      <option value="Miscellaneous">Miscellaneous</option>
+      <option value="Other">Other</option>
+    </select>
+
           <button className="report-button" onClick={handleCategoryReport}>Generate Category Report</button>
         </div>
       </div>
       <div className="report-container">
         <div className="report-input">
           <label htmlFor="paymentModeFilter">Payment Mode:</label>
-          <input
-            type="text"
-            id="paymentModeFilter"
-            value={paymentModeFilter}
-            onChange={(e) => setPaymentModeFilter(e.target.value)}
-            className="report-input"
-          />
+              <select
+      id="paymentModeFilter"
+      value={paymentModeFilter}
+      onChange={(e) => setPaymentModeFilter(e.target.value)}
+      className="report-input"
+    >
+      <option value="">Select a payment mode</option>
+      <option value="Credit">Credit</option>
+      <option value="Debit">Debit</option>
+      <option value="UPI">UPI</option>
+      <option value="Cash">Cash</option>
+    </select>
           <button className="report-button" onClick={handlePaymentModeReport}>Generate Payment Mode Report</button>
         </div>
       </div>

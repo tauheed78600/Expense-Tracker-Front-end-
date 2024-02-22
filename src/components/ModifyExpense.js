@@ -7,6 +7,11 @@ import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import { getCategories } from "./categories";
+import { Plus } from "lucide-react";
+import PopupModal from "./PopupModal";
 export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, show, setShow})
 {
     const errorMessage = {
@@ -16,6 +21,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         amount:  "modify-expense-amount-error",
         payment_mode: "modify-expense-payment-error"
     };
+    var categories = getCategories();
+    const [popupState, setPopupState] = useState(false);
     const [modifyExpenseData, setModifyExpenseData] = useState(
         {
             index: "",
@@ -92,6 +99,14 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
 
     
     const handleModifyExpenseChange = (name, value) => {
+        if(value === "")
+        {
+            document.getElementById(errorMessage[name]).innerHTML = name + " cannoty be empty!";
+        }
+        else
+        {
+            document.getElementById(errorMessage[name]).innerHTML = "";
+        }
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
     const handleModifyExpense = (e) => {
@@ -116,7 +131,14 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         }
         if(!flag)
         {
-            alert("One or more fields empty");
+            setContent(masterContent["error"]);
+            setPopupState(true);
+            return;
+        }
+        if(modifyExpenseData.amount !== "" && isNaN(modifyExpenseData.amount))
+        {
+            setContent(masterContent["amountError"]);
+            setPopupState(true);
             return;
         }
         var apiURL = "http://localhost:3000/expenses/addExpense";
@@ -134,10 +156,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(loadExpense.length === 0)
         {
             axios.post(apiURL,expenseData, ).then((response) => {
-                console.log("response after edit expense1234", response.data.status)
-                console.log("response.data.status", response.data.status)   
-                    alert("Expense Added Successfully!");
-
+                alert("Expense Added Successfully!");
+                
                 updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
@@ -162,15 +182,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 merchant: modifyExpenseData.merchant,
                 amount: modifyExpenseData.amount,
                 paymentMode: modifyExpenseData.payment_mode,
-                expenseId: 1001
+                expenseId: localStorage.getItem("expenseId")
             };
-                const response = axios.put(apiURL, expenseData,).then((response) => {
-                    console.log("response after edit expense", response.status)
-                if (response.status === 400)
-                {
-                    alert("Budget Limit Exceeded")
-                }
-
+            axios.put(apiURL, expenseData,).then((response) => {
                 alert("Expense Updated Successfully!");
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
@@ -178,8 +192,11 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 onEditExpense(modifyExpenseData.index, updateRow);
                 closeModifyExpense();
                 resetData();
+                localStorage.removeItem('expenseId');
+
             }).catch((error) => {
-                alert(error.message);
+                console.log("inside catch", error)
+                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
             });
         }
         
@@ -193,14 +210,39 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         handleClose();
     }
 
-    
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    const masterContent = {
+        "add": {
+            "head": "Success",
+            "body": "Expense added successfully!"
+        },
+        "update":{
+            "head": "Success",
+            "body": "Expense updated successfully!"
+        },
+        "error": {
+            "head": "Error",
+            "body": "One or more fields empty!"
+        },
+        "amountError":{
+            "head": "Error",
+            "body": "Amount is not a number!"
+        },
+
+    }
+
+    const [content, setContent] = useState(masterContent["error"]);
     
 
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
-                Add Expense
+                <Plus/>
             </Button>
+            <PopupModal state={popupState} setState={handlePopupState} content={content}/>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -213,23 +255,40 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         Date
                         </Form.Label>
                         <Col sm={10}>
-                        <Form.Control name = "date" type="date" placeholder="" value={modifyExpenseData.date} 
+                        <Form.Control id ="modify-expense-date" onClick={setDateLimit} name = "date" type="date" placeholder="" value={modifyExpenseData.date} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
-                        </Col>
-                        <Form.Label id = "modify-expense-date-error" column sm={2}>
+                        <Form.Label id = "modify-expense-date-error" column sm={12}>
                         </Form.Label>
+                        </Col>
+                        
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalCategory">
                         <Form.Label column sm={2}>
-                        Category
+                            Category
                         </Form.Label>
                         <Col sm={10}>
-                        <Form.Control name = "category" placeholder="" value={modifyExpenseData.category} 
-                        onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
-                        </Col>
-                        <Form.Label id = "modify-expense-category-error" column sm={2}>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {modifyExpenseData.category !== "" ? modifyExpenseData.category : "Choose Category"}
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                                    {
+                                        categories.map((cat, index) => {
+                                            return (
+                                                <Dropdown.Item name = "category" value={cat} key = {index} 
+                                                onClick={(e)=>{handleModifyExpenseChange(e.target.name, cat)}}>
+                                                    {cat}</Dropdown.Item>
+                                            )
+                                        })
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Form.Label id = "modify-expense-category-error" column sm={12}>
                         </Form.Label>
+                        </Col>
+                        
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalMerchant">
@@ -239,9 +298,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         <Col sm={10}>
                         <Form.Control name = "merchant" placeholder="" value={modifyExpenseData.merchant} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
-                        </Col>
-                        <Form.Label id = "modify-expense-merchant-error" column sm={2}>
+                        <Form.Label id = "modify-expense-merchant-error" column sm={12}>
                         </Form.Label>
+                        </Col>
+                        
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalAmount">
                         <Form.Label column sm={2}>
@@ -250,9 +310,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         <Col sm={10}>
                         <Form.Control name = "amount" placeholder="" value={modifyExpenseData.amount} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
-                        </Col>
-                        <Form.Label id = "modify-expense-amount-error" column sm={2}>
+                        <Form.Label id = "modify-expense-amount-error" column sm={12}>
                         </Form.Label>
+                        </Col>
+                        
                     </Form.Group>
                     <fieldset>
                         <Form.Group as={Row} className="mb-3">
@@ -296,7 +357,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                             name="payment_mode"
                             id="mode4"
                             />
+                            <Form.Label id = "modify-expense-payment-error" column sm={12}>
+                        </Form.Label>
                         </Col>
+                        
                         </Form.Group>
                     </fieldset>
                     </Form>
@@ -310,54 +374,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 </Button>
                 </Modal.Footer>
             </Modal>
-            {/*<button id = "close-button-modify" onClick={closeModifyExpense}>Close</button>
-            <form onSubmit={handleModifyExpense}>
-
-                <label>Date</label>
-                <input name = "date" id = "modify-expense-date" type ="date" 
-                value={modifyExpenseData.date} onClick = {setDateLimit} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/><br/>
-                <label id = "modify-expense-date-error"></label><br/>
-
-                <label>Category</label>
-                <input name = "category" value={modifyExpenseData.category} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/><br/>
-                <label id = "modify-expense-category-error"></label><br/>
-
-                <label>Merchant</label>
-                <input name = "merchant" value={modifyExpenseData.merchant} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/><br/>
-                <label id = "modify-expense-merchant-error"></label><br/>
-
-                <label>Amount</label>
-                <input name = "amount" value={modifyExpenseData.amount} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/><br/>
-                <label id = "modify-expense-amount-error"></label><br/>
-
-                <label>Payment Mode</label>
-                <input type="radio" id="mode1" name="payment_mode" value="Credit" 
-                checked={modifyExpenseData.payment_mode === 'Credit'} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}} />
-                <label htmlFor="mode1">Credit</label>
-
-                <input type="radio" id="mode2" name="payment_mode" value="Debit" 
-                checked={modifyExpenseData.payment_mode === 'Debit'} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}} />
-                <label htmlFor="mode2">Debit</label>
-
-                <input type="radio" id="mode3" name="payment_mode" value="UPI" 
-                checked={modifyExpenseData.payment_mode === 'UPI'} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}} />
-                <label htmlFor="mode3">UPI</label>
-
-                <input type="radio" id="mode4" name="payment_mode" value="Cash" 
-                checked={modifyExpenseData.payment_mode === 'Cash'} 
-                onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}} />
-                <label id ="cash">Cash</label><br/>
-
-                <label id = "modify-expense-payment-error"></label>
-                <input type="submit"/>
-            </form>*/}
         </>
     )
 }

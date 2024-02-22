@@ -38,19 +38,32 @@
 
 /* New styles for tables and buttons */
 #expense-table {
+  margin-left: -5%;
   width:   100%;
-  margin-top:   20px;
   border-collapse: collapse;
 }
 
 #expense-table th,
 #expense-table td {
-  border:   1px solid #ddd;
-  padding:   8px;
+  border:   2px solid #ddd;
+  padding:   4px;
   text-align: left;
 }
 
+.expense-table-th-td {
+  height: 45px;
+  width: 200px;
+}
+
+.expense-table-edit-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #expense-table th {
+  user-select: none;
+  text-align: center;
   background-color: #e26f6f;
   color: white;
 }
@@ -70,14 +83,25 @@
   border: none;
   border-radius:   5px;
   cursor: pointer;
-  margin-right:   5px;
+  margin-right:   7px;
+}
+
+#table-foot {
+  justify-content: center;
+}
+
+.expense-table-index {
+  width: 50px;
+  text-align: center !important;
 }
 
 #expense-table button:hover {
   background-color: #e26f6f;
 }
 
-#expense-table-page-selector {
+#page-selector {
+  margin-left: -10%;
+  justify-content: center;
   height: 100px;
   display: flex;
   margin-top: 10px;
@@ -204,9 +228,6 @@ box-shadow:   0   5px   15px rgba(0,   0,   0,   0.2);
 display: flex;
 }
 
-.grow {
-flex-grow:   1;
-}
 
 /* Overlay styles */
 .overlay {

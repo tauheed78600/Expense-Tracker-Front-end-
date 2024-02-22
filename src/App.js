@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import axios from 'axios'; // Import axios for making API calls
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './index.css';
+import Homepage from './components/Homepage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -56,6 +57,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Homepage />} /> {/* Add this line for the homepage route */}
         <Route path="/auth" element={<Auth onLoginSuccess={handleLoginSuccess} setUserId={setUserId} />} />
         <Route path="/dashboard" element={
           localStorage.getItem('accessToken') ? (
@@ -66,11 +68,10 @@ function App() {
                 {currentPage === 'transactions' && <Transactions userId={localStorage.getItem("userId")} />}
                 {currentPage === 'analytics' && <Analytics userId={localStorage.getItem("userId")} />}
                 {currentPage === 'reportgenerate' && <ReportGenerate expenses={expenses}/>}
-                {/* {currentPage === 'report-generate' && <ReportGenerate expenses={expenses} />} */}
               </main>
             </div>
           ) : (
-            <Navigate to="/auth" /> // Redirect to /auth if not authenticated
+            <Navigate to="/auth" />
           )
         } />
         {/* Add other routes as needed */}

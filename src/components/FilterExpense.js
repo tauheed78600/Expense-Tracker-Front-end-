@@ -7,8 +7,26 @@ import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import Dropdown from 'react-bootstrap/Dropdown';
+import { getCategories } from "./categories";
+import { Filter } from "lucide-react";
+import PopupModal from "./PopupModal";
 export default function FilterExpense({ onFilterExpense, expenseData, showFilter, setShowFilter }) {
+    const masterContent = {
+        "amountError":{
+            "head": "Error",
+            "body": "Amount is not a number!"
+        },
+        "filterError": {
+            "head": "Error",
+            "body": "Choose at least one filter option!"
+        }
+
+    }
+    const [content, setContent] = useState(masterContent["filterError"]);
     const [filterState, setFilterState] = useState(false);
+    var categories = getCategories();
+    const [popupState, setPopupState] = useState(false);
     const [filterData, setFilterData] = useState({
         dateFrom: "",
         dateTo: "",
@@ -28,6 +46,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         });
     }
     const setDateLimitFrom = () => {
+        console.log(filterData.dateTo);
         if(filterData.dateTo !== "")
             document.getElementById("modify-filter-date-from").max = filterData.dateTo;
         else
@@ -39,13 +58,24 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         document.getElementById("modify-filter-date-to").max = currentDate();
     }
     
-    const closeFilterExpense = () => {
-        setFilterState(false);
-        resetFilterData();
-    }
 
     const handleFilterChange = (name, value) => {
-        setFilterState(true);
+        var flag = false;
+        if(value === "")
+        {
+            for(const val in filterData)
+            {
+                if(filterData[val] !== "")
+                {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+        if(flag || value !== "")
+            setFilterState(true);
+        else
+            setFilterState(false);
         setFilterData({...filterData, [name]: value})
     }
 
@@ -78,9 +108,17 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     const handleFilterSubmit = (e) => {
         e.preventDefault();
         var newArray = expenseData;
+        console.log(filterState);
         if(!filterState)
         {
-            alert("Choose Filter option");
+            setContent(masterContent["filterError"]);
+            setPopupState(true);
+            return;
+        }
+        if(filterData.amount !== "" && isNaN(filterData.amount))
+        {
+            setContent(masterContent["amountError"]);
+            setPopupState(true);
             return;
         }
         if(filterData.dateFrom)
@@ -113,18 +151,20 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
 
     const handleClose = () => {
         resetFilterData();
-        setShowFilter(false);}
+        setShowFilter(false);
+    }
     const handleShow = () => setShowFilter(true);
 
-    const closeModifyExpense = () => {
-        handleClose();
+    const handlePopupState = (state) => {
+        setPopupState(state);
     }
 
 
     return (
         <>
+            <PopupModal state={popupState} setState={handlePopupState} content={content}/>
             <Button variant="primary" onClick={handleShow}>
-                Filter Expense
+                <Filter/>
             </Button>
 
             <Modal show={showFilter} onHide={handleClose}>
@@ -137,40 +177,57 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                         <Form.Label column sm={2}>
                         Date From
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={4}>
                         <Form.Control id = "modify-filter-date-from" name = "dateFrom" type="date" 
                         placeholder="" value={filterData.dateFrom} onClick={setDateLimitFrom}
                         onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/>
                         </Col>
-                        <Form.Label id = "modify-expense-date-error" column sm={2}>
-                        </Form.Label>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3" controlId="formHorizontalDateTo">
+                        
                         <Form.Label column sm={2}>
                         Date To
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={4}>
                         <Form.Control id= "modify-filter-date-to" name = "dateTo" type="date" 
                         placeholder="" value={filterData.dateTo} onClick={setDateLimitTo}
                         onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/>
                         </Col>
+                        
+                    </Form.Group>
+
+                    <Form.Group as={Row} className="mb-3" controlId="formHorizontalDateTo">
+                        <Form.Label id = "modify-expense-date-error" column sm={2}>
+                        </Form.Label>
                         <Form.Label id = "modify-expense-date-error" column sm={2}>
                         </Form.Label>
                     </Form.Group>
-
-
+                    
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalCategory">
                         <Form.Label column sm={2}>
-                        Category
+                            Category
                         </Form.Label>
                         <Col sm={10}>
-                        <Form.Control name = "category" placeholder="" value={filterData.category} 
-                        onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {filterData.category !== "" ? filterData.category: "Choose Category"}
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                                    {
+                                        categories.map((cat, index) => {
+                                            return (
+                                                <Dropdown.Item name = "category" value={cat} key = {index} 
+                                                onClick={(e)=>{handleFilterChange(e.target.name, cat)}}>
+                                                    {cat}</Dropdown.Item>
+                                            )
+                                        })
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </Col>
                         <Form.Label id = "modify-expense-category-error" column sm={2}>
                         </Form.Label>
                     </Form.Group>
+
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalMerchant">
                         <Form.Label column sm={2}>
