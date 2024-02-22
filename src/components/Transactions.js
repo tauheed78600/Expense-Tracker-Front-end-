@@ -17,7 +17,7 @@ import {
     ArrowBigLeft
   } from "lucide-react";
 
-  import PopupModal from "./PopupModal.js";
+import PopupModal from "./PopupModal.js";
 
 
 export default function Transactions({ userId }) {
@@ -37,12 +37,16 @@ export default function Transactions({ userId }) {
       "ninetyError": {
         "head": "Error",
         "body": "Budget goal has been  90% reached for this month"
+      },
+      "delete": {
+        "head": "Error",
+        "body": "Successfully deleted!"
       }
 
 
   }
 
-  const [content, setContent] = useState(masterContent["error"]);
+  const [content, setContent] = useState(masterContent["budgetExceededError"]);
     const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
     
 
@@ -117,7 +121,7 @@ export default function Transactions({ userId }) {
         const fetchExpenses = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/expenses/${userId}`);
-                
+
                 // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
                 var newArray = [];
                 for(var index in response.data)
@@ -129,7 +133,6 @@ export default function Transactions({ userId }) {
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
-                
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
                 const emailId = response.data.email   
@@ -172,15 +175,15 @@ export default function Transactions({ userId }) {
         };
         
         fetchExpenses();
-    }, [userId])
+    }, [userId]);
 
     
 
     const [sendExpense, setSendExpense] = useState([]);
 
     const modifyAddExpense = (newExpense) => {
-        var newMasterExpense = [...masterExpenses, newExpense];
-        setMasterExpenses(newMasterExpense)
+        var newMasterExpense = [newExpense, ...masterExpenses];
+        setMasterExpenses(newMasterExpense);
         setExpenses(newMasterExpense);
     };
 
@@ -193,15 +196,23 @@ export default function Transactions({ userId }) {
     }
 
     const modifyDeleteExpense = (index) => {
+        axios.delete('http://localhost:3000/expenses/deleteExpense', {
+            data: {
+            expense_id: index,
+            user_id: localStorage.getItem("userId")
+        }}).
+        then((response) => {
+            console.log(response);
+            setContent(masterContent["delete"]);
+            setPopupState(true);
+        }).catch((error) => {
+            console.log(error.message);
+        });
         setExpenses(prevArray => {
             const newArray = [...prevArray];
             newArray.splice(index,   1);
             return newArray;
         });
-        var divExpense = document.getElementById("div-modify-expense");
-        if (divExpense.style.visibility === 'visible' || divExpense.style.visibility === "") {
-            divExpense.style.visibility = 'hidden';
-        }
     }
 
     const modifyFilterExpense = (filterData) => {
@@ -215,11 +226,15 @@ export default function Transactions({ userId }) {
 
 
     const handleEditExpense = (index) => {
+        
+        index = index+(pageCounter-1)*itemCount;
+        console.log(index);
         setShow(true);
         setSendExpense([index, ...expenses[index]]);
     }
 
     const handleDeleteExpense = (index) => {
+
         modifyDeleteExpense(index);
     }
 
@@ -279,7 +294,7 @@ export default function Transactions({ userId }) {
     }
      return (
         <div id = "transaction-div">
-
+            <PopupModal state={popupState} setState={handlePopupState} content={content}/>
             <div id = "expense-table">
                         <div id= "expense-table-options">
                             <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
@@ -353,7 +368,7 @@ export default function Transactions({ userId }) {
                         {expenses.length > 10 &&    <div id="page-selector">
                                             {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}
                                             <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>
-                                            <button className="expense-table-button expense-table-selector-button" style={{"backgroundColor":"white", "color":"black"}}>{pageCounter}</button>
+                                            <button className="expense-table-button expense-table-selector-button" style={{"text-decoration": "underline"}}>{pageCounter}</button>
                                             <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>
                                             {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>}
                                         </div>}  
