@@ -12,7 +12,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getCategories } from "./categories";
 import { Plus } from "lucide-react";
 import PopupModal from "./PopupModal";
-export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, show, setShow})
+export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, setLoadExpense, show, setShow})
 {
     const errorMessage = {
         date: "modify-expense-date-error",
@@ -50,16 +50,17 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             })
         }
         else if(loadExpense[0] !== modifyExpenseData.index
+         || loadExpense[1] !== modifyExpenseData.expenseId
         ||loadExpense[3] !== modifyExpenseData.date
         ||loadExpense[4] !== modifyExpenseData.category
         ||loadExpense[5] !== modifyExpenseData.merchant
         ||loadExpense[6] !== modifyExpenseData.amount
         ||loadExpense[7] !== modifyExpenseData.payment_mode)
         {
+            console.log(loadExpense);
             setModifyExpenseData({
                 "index": loadExpense[0],
-                "expenseId": loadExpense[1],
-                "userId":loadExpense[2],
+                "expenseId": loadExpense[2],
                 "date": loadExpense[3],
                 "category": loadExpense[4],
                 "merchant": loadExpense[5],
@@ -83,6 +84,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
     }
 
     const resetData = () => {
+        
         setModifyExpenseData(
             {
                 index: "",
@@ -185,11 +187,11 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 paymentMode: modifyExpenseData.payment_mode,
                 expenseId: modifyExpenseData.expenseId
             };
-            console.log(expenseData);
             axios.put(apiURL, expenseData,).then((response) => {
+                
                 setContent(masterContent["update"]);
                 setPopupState(true);
-                
+                console.log(expenseData)
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]

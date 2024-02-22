@@ -85,6 +85,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         return arr.filter((row)=>row[2] <= to);
     }
     function filterByString(s, value) {
+        console.log(value);
         return s.toLowerCase().includes(value.toLowerCase());
     }
     const filterString = (arr, index, value) => {
@@ -107,7 +108,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     const handleFilterSubmit = (e) => {
         e.preventDefault();
         var newArray = expenseData;
-        if(!filterState)
+        if(!filterState && selected_categories.length === 0)
         {
             setContent(masterContent["filterError"]);
             setPopupState(true);
@@ -127,9 +128,18 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         {
             newArray = filterDateTo(newArray, filterData.dateTo);
         }
-        if(filterData.category)
+        if(selected_categories.length > 0)
         {
-            newArray = filterString(newArray, 3, filterData.category);
+            var copyArray = newArray;
+            var temp = [];
+            var categories = getCategories();
+            for(var cat in selected_categories)
+            {
+                copyArray = filterString(newArray, 3, categories[cat]);
+            }
+            newArray = temp;
+            
+                
         }
         if(filterData.merchant)
         {
@@ -156,6 +166,22 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     const handlePopupState = (state) => {
         setPopupState(state);
     }
+
+    const [selected_categories, set_Selected_categories] =  
+        useState([]); 
+
+        const toggleCat = (option) => { 
+            if (selected_categories.includes(option)) { 
+                set_Selected_categories( 
+                    selected_categories.filter((item) =>  
+                        item !== option)); 
+            } else { 
+                set_Selected_categories( 
+                    [...selected_categories, option]); 
+            } 
+        }; 
+
+        
 
 
     return (
@@ -208,8 +234,20 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                                 <Dropdown.Toggle variant="success" id="dropdown-basic">
                                     {filterData.category !== "" ? filterData.category: "Choose Category"}
                                 </Dropdown.Toggle>
+                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}> 
+                                {categories.map((cat, index) => ( 
+                                        <Form.Check
+                                        key={index}
+                                        type="checkbox"
+                                        id={`checkbox-${index}`}
+                                        label={cat}
+                                        checked={selected_categories.includes(cat)}
+                                        onClick={()=>toggleCat(cat)}
+                                        />
+                                    ))} 
+                                </Dropdown.Menu> 
 
-                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                                {/*<Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
                                     {
                                         categories.map((cat, index) => {
                                             return (
@@ -219,7 +257,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                                             )
                                         })
                                     }
-                                </Dropdown.Menu>
+                                </Dropdown.Menu>*/}
                             </Dropdown>
                         </Col>
                         <Form.Label id = "modify-expense-category-error" column sm={2}>

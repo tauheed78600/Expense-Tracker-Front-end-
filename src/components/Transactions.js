@@ -39,7 +39,7 @@ export default function Transactions({ userId }) {
         "body": "Budget goal has been  90% reached for this month"
       },
       "delete": {
-        "head": "Error",
+        "head": "Success",
         "body": "Successfully deleted!"
       },
       "deleteError": {
@@ -241,7 +241,6 @@ export default function Transactions({ userId }) {
 
 
     const handleEditExpense = (index) => {
-        
         index = index+(pageCounter-1)*itemCount;
         setShow(true);
         setSendExpense([index, ...expenses[index]]);
@@ -312,7 +311,7 @@ export default function Transactions({ userId }) {
             <div id = "expense-table">
                         <div id= "expense-table-options">
                             <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
-                            loadExpense={sendExpense} show={show} setShow={setShow}/>
+                            loadExpense={sendExpense} setLoadExpense={setSendExpense} show={show} setShow={setShow}/>
                             <FilterExpense onFilterExpense={modifyFilterExpense} 
                             expenseData={expenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
                             <button className="expense-table-button expense-table-options-button" 
