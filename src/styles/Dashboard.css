@@ -6,7 +6,7 @@ body {
    }
    .container {
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     padding: 20px;
     background-color: #fff;
     display: grid;
