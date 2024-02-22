@@ -183,18 +183,19 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 merchant: modifyExpenseData.merchant,
                 amount: modifyExpenseData.amount,
                 paymentMode: modifyExpenseData.payment_mode,
-                expenseId: localStorage.getItem("expenseId")
+                expenseId: modifyExpenseData.expenseId
             };
+            console.log(expenseData);
             axios.put(apiURL, expenseData,).then((response) => {
                 setContent(masterContent["update"]);
                 setPopupState(true);
+                
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
                 onEditExpense(modifyExpenseData.index, updateRow);
                 closeModifyExpense();
                 resetData();
-                localStorage.removeItem('expenseId');
 
             }).catch((error) => {
                 setContent(masterContent["editError"]);

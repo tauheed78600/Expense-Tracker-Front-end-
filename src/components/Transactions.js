@@ -208,9 +208,10 @@ export default function Transactions({ userId }) {
     }
 
     const modifyDeleteExpense = (index) => {
+        index = index + (pageCounter-1)*itemCount;
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
-            expense_id: index,
+            expense_id: expenses[index][0],
             user_id: localStorage.getItem("userId")
         }}).
         then((response) => {
