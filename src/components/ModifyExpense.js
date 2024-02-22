@@ -156,8 +156,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(loadExpense.length === 0)
         {
             axios.post(apiURL,expenseData, ).then((response) => {
-                setContent(masterContent["add"]);
-                setPopupState(true);
+                alert("Expense Added Successfully!");
+                
                 updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
@@ -166,7 +166,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-                alert(error.message);
+                console.log("inside catch")
+                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
             });
         }
         else
@@ -181,19 +182,21 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 merchant: modifyExpenseData.merchant,
                 amount: modifyExpenseData.amount,
                 paymentMode: modifyExpenseData.payment_mode,
-                expenseId: 1001
+                expenseId: localStorage.getItem("expenseId")
             };
             axios.put(apiURL, expenseData,).then((response) => {
-                setContent(masterContent["update"]);
-                setPopupState(true);
+                alert("Expense Updated Successfully!");
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
                 onEditExpense(modifyExpenseData.index, updateRow);
                 closeModifyExpense();
                 resetData();
+                localStorage.removeItem('expenseId');
+
             }).catch((error) => {
-                alert(error.message);
+                console.log("inside catch", error)
+                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
             });
         }
         
