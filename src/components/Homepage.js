@@ -9,7 +9,6 @@ const Homepage = () => {
      <Helmet>
         <title>MoneyMentor - Homepage</title>
         <meta name="description" content="Track your expenses easily with MoneyMentor." />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
         <link rel="stylesheet" href="styles.css" />
         <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -18,21 +17,21 @@ const Homepage = () => {
       </Helmet>
     <div className="container-fluid">
       {/* Nav Bar */}
-      <nav className="navbar navbar-expand-lg navbar-dark">
-        <a className="navbar-brand" href="#">MoneyMentor</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav ml-auto">
-              <li className="nav-item">
-                {/* Use the Link component for navigation */}
-                <Link className="nav-link" to="/auth">Login</Link>
-              </li>
-            </ul>
-          </div>
-      </nav>
+        <nav className="navbar">
+            <a className="navbar-brand" href="">MoneyMentor</a>
+            {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" >
+            <span className="navbar-toggler-icon"><i className="fa-solid fa-bars"/></span>
+            </button> */}
+            {/* <div className="collapse navbar-collapse" id="navbarSupportedContent"> */}
+                <ul className="navbar-nav ml-auto">
+                    <li className="nav-item">
+                    {/* Use the Link component for navigation */}
+                    <Link className="nav-link" to="/auth">Login</Link>
+                    </li>
+                </ul>
+            {/* </div> */}
+        </nav>
 
       {/* Title */}
       <div className="row">
@@ -40,7 +39,7 @@ const Homepage = () => {
           <h1>Track Your Expenses Easily With <span className="nameColor">MoneyMentor</span></h1>
         </div>
         <div className="col-lg-6 col-md-12 col-sm-12">
-          <img src="icons-expense-tracker.svg" alt="iphone-mockup" className="iphone-img rotate-25" />
+          <img src="icons-expense-tracker.svg" alt="iphone-mockup" className="iphone-img" />
         </div>
       </div>
 
