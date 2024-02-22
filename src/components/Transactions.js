@@ -84,7 +84,7 @@ export default function Transactions({ userId }) {
 
     const totalPages = () => 
     {
-        return Math.ceil(expenses.length/itemCount);
+        return Math.max(Math.ceil(expenses.length/itemCount), 1);
     }
 
     const gotoFirstPage = () => {
@@ -113,6 +113,10 @@ export default function Transactions({ userId }) {
     }, []);
 
     useEffect(()=> {
+        if(pageCounter > totalPages())
+        {
+            setPageCounter(pageCounter => Math.min(totalPages(), pageCounter));
+        }
         setDummyRowLength(itemCount-expenses.length%itemCount);
     }, [expenses]);
 
@@ -121,7 +125,7 @@ export default function Transactions({ userId }) {
         const fetchExpenses = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/expenses/${userId}`);
-
+                
                 // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
                 var newArray = [];
                 for(var index in response.data)
@@ -133,6 +137,7 @@ export default function Transactions({ userId }) {
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
+                console.log(newArray);
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
                 const emailId = response.data.email   
@@ -205,14 +210,17 @@ export default function Transactions({ userId }) {
             console.log(response);
             setContent(masterContent["delete"]);
             setPopupState(true);
+            setExpenses(prevArray => {
+                const newArray = [...prevArray];
+                newArray.splice(index,   1);
+                return newArray;
+            });
+            console.log(expenses.length);
+            
         }).catch((error) => {
             console.log(error.message);
         });
-        setExpenses(prevArray => {
-            const newArray = [...prevArray];
-            newArray.splice(index,   1);
-            return newArray;
-        });
+        
     }
 
     const modifyFilterExpense = (filterData) => {
@@ -344,7 +352,7 @@ export default function Transactions({ userId }) {
                                 })
                         }
                         {
-                            pageCounter === totalPages() && getDummyRows().map((row, index) => {
+                            pageCounter === totalPages() && pageCounter !== 1 && getDummyRows().map((row, index) => {
                                 return (
                                     <tr key = {(itemCount-dummyRowLength)+index}>
                                         <td className="expense-table-index expense-table-th-td" key={0} >{""}</td>
