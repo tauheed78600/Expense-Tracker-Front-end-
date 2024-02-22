@@ -166,13 +166,14 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-                
+
                 setContent(masterContent["budgetLimitExceeded"]);
                 setPopupState(true);
             });
         }
         else
         {
+            console.log("modifyExpenseData", modifyExpenseData.expenseId)
             apiURL = "http://localhost:3000/expenses/updateExpense";
             
             const expenseData = {
@@ -183,7 +184,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 merchant: modifyExpenseData.merchant,
                 amount: modifyExpenseData.amount,
                 paymentMode: modifyExpenseData.payment_mode,
-                expenseId: localStorage.getItem("expenseId")
+                expenseId: modifyExpenseData.expenseId
             };
             axios.put(apiURL, expenseData,).then((response) => {
                 setContent(masterContent["update"]);

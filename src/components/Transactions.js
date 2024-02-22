@@ -200,9 +200,11 @@ export default function Transactions({ userId }) {
     }
 
     const modifyDeleteExpense = (index) => {
+        index = index + (pageCounter-1)*itemCount;
+        console.log("expenses[index].expenseId", expenses[index][0])
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
-            expense_id: index,
+            expense_id: expenses[index][0],
             user_id: localStorage.getItem("userId")
         }}).
         then((response) => {
@@ -235,7 +237,8 @@ export default function Transactions({ userId }) {
     const handleEditExpense = (index) => {
         
         index = index+(pageCounter-1)*itemCount;
-        console.log(index);
+        console.log("expenseId",expenses[index][0]);
+        localStorage.setItem("expenseId", expenses[index][0])
         setShow(true);
         setSendExpense([index, ...expenses[index]]);
     }
