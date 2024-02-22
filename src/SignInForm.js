@@ -94,7 +94,7 @@ const response = await axios.post('http://localhost:3000/total/forgotPassword/',
   return (
     <>
       <Components.Form onSubmit={handleSubmit}>
-        <Components.Title>Sign In</Components.Title>
+        <Components.Title1>Sign In</Components.Title1>
         <Components.Input
           type='text'
           placeholder='Username'
