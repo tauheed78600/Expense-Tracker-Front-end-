@@ -137,7 +137,6 @@ export default function Transactions({ userId }) {
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
-                console.log(newArray);
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
                 const emailId = response.data.email   
