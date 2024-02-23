@@ -24,7 +24,7 @@ function PopupModal({state, setState, content}) {
         </Modal.Header>
         <Modal.Body>{content.body}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button style={{"backgroundColor":"#e26f6f"}} variant="secondary" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>

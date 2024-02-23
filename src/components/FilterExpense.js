@@ -1,6 +1,6 @@
 import "../styles/FilterExpense.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { currentDate } from "./currentDate";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -36,6 +36,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         payment_mode_filter: ""
     })
     const resetFilterData = () => {
+        set_Selected_categories([]);
         setFilterData({
             dateFrom: "",
             dateTo: "",
@@ -56,6 +57,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
             document.getElementById("modify-filter-date-to").min = filterData.dateFrom;
         document.getElementById("modify-filter-date-to").max = currentDate();
     }
+
     
 
     const handleFilterChange = (name, value) => {
@@ -85,7 +87,6 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         return arr.filter((row)=>row[2] <= to);
     }
     function filterByString(s, value) {
-        console.log(value);
         return s.toLowerCase().includes(value.toLowerCase());
     }
     const filterString = (arr, index, value) => {
@@ -130,12 +131,12 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         }
         if(selected_categories.length > 0)
         {
-            var copyArray = newArray;
+            var copyArray = [];
             var temp = [];
-            var categories = getCategories();
-            for(var cat in selected_categories)
+            for(var i = 0; i < selected_categories.length; i++)
             {
-                copyArray = filterString(newArray, 3, categories[cat]);
+                copyArray = filterString(newArray, 3, selected_categories[i]);
+                temp = temp.concat(copyArray);
             }
             newArray = temp;
             
@@ -155,6 +156,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         }
         onFilterExpense(newArray);
         setShowFilter(false);
+        set_Selected_categories([]);
     }
 
     const handleClose = () => {
@@ -180,6 +182,14 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                     [...selected_categories, option]); 
             } 
         }; 
+    
+    useEffect(()=>{
+        if(!showFilter)
+        {
+            resetFilterData();
+            set_Selected_categories([]);
+        }
+    }, [showFilter]);
 
         
 
@@ -231,18 +241,18 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                         </Form.Label>
                         <Col sm={10}>
                             <Dropdown>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                    {filterData.category !== "" ? filterData.category: "Choose Category"}
+                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f"}} variant="success" id="dropdown-basic">
+                                    Choose Category
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}> 
                                 {categories.map((cat, index) => ( 
                                         <Form.Check
                                         key={index}
                                         type="checkbox"
-                                        id={`checkbox-${index}`}
                                         label={cat}
                                         checked={selected_categories.includes(cat)}
-                                        onClick={()=>toggleCat(cat)}
+                                        onClick={()=>toggleCat(cat)
+                                        }
                                         />
                                     ))} 
                                 </Dropdown.Menu> 
@@ -335,10 +345,10 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button style={{"backgroundColor":"#e26f6f"}} variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleFilterSubmit}>
+                <Button style={{"backgroundColor":"#e26f6f"}} variant="primary" onClick={handleFilterSubmit}>
                     Submit
                 </Button>
                 </Modal.Footer>

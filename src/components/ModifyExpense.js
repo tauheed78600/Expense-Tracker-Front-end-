@@ -50,7 +50,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             })
         }
         else if(loadExpense[0] !== modifyExpenseData.index
-         || loadExpense[1] !== modifyExpenseData.expenseId
+         || loadExpense[2] !== modifyExpenseData.expenseId
         ||loadExpense[3] !== modifyExpenseData.date
         ||loadExpense[4] !== modifyExpenseData.category
         ||loadExpense[5] !== modifyExpenseData.merchant
@@ -282,7 +282,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         </Form.Label>
                         <Col sm={10}>
                             <Dropdown>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f"}} variant="success" id="dropdown-basic">
                                     {modifyExpenseData.category !== "" ? modifyExpenseData.category : "Choose Category"}
                                 </Dropdown.Toggle>
 
@@ -379,10 +379,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button style={{"backgroundColor":"#e26f6f"}} variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleModifyExpense}>
+                <Button style={{"backgroundColor":"#e26f6f"}} variant="primary" onClick={handleModifyExpense}>
                     Submit
                 </Button>
                 </Modal.Footer>
