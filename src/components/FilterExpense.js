@@ -46,7 +46,6 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         });
     }
     const setDateLimitFrom = () => {
-        console.log(filterData.dateTo);
         if(filterData.dateTo !== "")
             document.getElementById("modify-filter-date-from").max = filterData.dateTo;
         else
@@ -108,7 +107,6 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     const handleFilterSubmit = (e) => {
         e.preventDefault();
         var newArray = expenseData;
-        console.log(filterState);
         if(!filterState)
         {
             setContent(masterContent["filterError"]);

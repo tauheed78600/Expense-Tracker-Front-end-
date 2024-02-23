@@ -16,7 +16,11 @@ function MonthlyBudgetModal() {
     const fetchUserData = async () => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await axios.get(`http://localhost:3000/total/${userId}`);
+            const response = await axios.get(`http://localhost:3000/total/${userId}`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
             if(response.data.monthly_budget !== undefined)
                 setCurrentBudget(response.data.monthly_budget);
             else
@@ -64,11 +68,18 @@ function MonthlyBudgetModal() {
   const [content, setContent] = useState(masterContent["error"]);
 
 
-
+  const accessToken = localStorage.getItem("accessToken")
   const handleSave = async () => {
         const userId = localStorage.getItem('userId');
         try {
-            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`);
+          const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`, {}, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          
+
+
             if (response.status===200)
             {
                 setContent(masterContent["updateSuccess"]);

@@ -26,7 +26,11 @@ function App() {
       // Fetch expenses for the authenticated user
       const fetchExpenses = async () => {
         try {
-          const response = await axios.get(`http://localhost:3000/expenses/${userId}`);
+          const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
           console.log("response in report", response.data)
           setExpenses(response.data);
         } catch (error) {

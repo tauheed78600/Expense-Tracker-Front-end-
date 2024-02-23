@@ -130,7 +130,6 @@ const [content, setContent] = useState(masterContent["fetchError"]);
  
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
-    console.log(`Creating pie chart for ${canvasId}`); // Add this line
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }

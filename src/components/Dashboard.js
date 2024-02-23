@@ -5,25 +5,45 @@ import 'material-icons/iconfont/material-icons.css';
 
 
 const Dashboard = ({ userId }) => {
+
+  const masterContent = {
+    "fetchError":{
+        "head": "Error",
+        "body": "Could not fetch data"
+    }
+
+}
+const [popupState, setPopupState] = useState(false);
+const handlePopupState = (state) => {
+  setPopupState(state);
+}
+
+
+
+const [content, setContent] = useState(masterContent["fetchError"]);
 const [userData, setUserData] = useState({});
 
 useEffect(() => {
+
+  const accessToken = localStorage.getItem("accessToken")
 const fetchData = async () => {
     try {
-    const response = await axios.get(`http://localhost:3000/total/getUser/${userId}`);
+      const response = await axios.get(`http://localhost:3000/total/getUser/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    console.log("response.data", response.data)
     setUserData(response.data);
     } catch (error) {
-    console.error('Error fetching user data:', error);
+    setContent(masterContent["fetchError"]);
+    setPopupState(true);
     }
 };
 
 fetchData();
 }, [userId]);
 
-const updateField = () => {
-// TODO Implement the logic to update the user data
-console.log('Update field function called');
-};
 
 const handleLogout = () => {
     localStorage.clear()
@@ -56,7 +76,7 @@ return (
     </div>
     <div className="section" id="username-section">
     <label htmlFor="user_name">Remaining Budget:</label>
-    <div id="user_name" className="info">{userData.remaining_budget || 'Loading...'}</div>
+    <div id="user_name" className="info">{userData.remaining_budget || '0'}</div>
     <span className="material-icons-outlined text-green">accessibility</span>
     </div>
     <div className="section" id="email-section">
