@@ -62,6 +62,7 @@
   margin:  0;
   // margin-left:140px;
   text-align: center; // Center the text
+  color:blue;
 `;
  
  
