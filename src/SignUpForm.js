@@ -62,7 +62,7 @@ const SignUpForm = () => {
           email,
           password,
           monthlyBudget,
-          username // Changed from name to username
+          username 
         });
 
         

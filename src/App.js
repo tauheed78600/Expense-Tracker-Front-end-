@@ -26,7 +26,11 @@ function App() {
       // Fetch expenses for the authenticated user
       const fetchExpenses = async () => {
         try {
-          const response = await axios.get(`http://localhost:3000/expenses/${userId}`);
+          const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
           console.log("response in report", response.data)
           setExpenses(response.data);
         } catch (error) {
@@ -69,7 +73,7 @@ function App() {
                 {currentPage === 'analytics' && <Analytics userId={localStorage.getItem("userId")} />}
                 {currentPage === 'reportgenerate' && <ReportGenerate expenses={expenses}/>}
               </main>
-            </div>
+            </div>  
           ) : (
             <Navigate to="/auth" />
           )

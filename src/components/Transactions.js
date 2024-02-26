@@ -127,11 +127,15 @@ export default function Transactions({ userId }) {
         }
     }, [expenses]);
 
-
+    const accessToken = localStorage.getItem("accessToken")
     useEffect(() => {
         const fetchExpenses = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/expenses/${userId}`);
+                const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  });
                 
                 // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
                 var newArray = [];
@@ -140,19 +144,24 @@ export default function Transactions({ userId }) {
                     var row = response.data[index];
                     //
                     row.date = row.date.slice(0, 10);
-                    newArray.push([row.expenseId, row.userId,
+                    newArray.push([ row.userId, row.expenseId,
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
+                console.log(newArray);
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
                 const emailId = response.data.email   
-
+                
                 if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
                     const currentMonth = new Date().getMonth();
                     const lastMonthNineReachedEmailSent = localStorage.getItem('lastMonthNineReachedEmailSent');
                     if (lastMonthNineReachedEmailSent !== currentMonth.toString()) {
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-goal-ninereached`, { email: emailId  });
+                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId }, {
+                            headers: {
+                              Authorization: `Bearer ${accessToken}`,
+                            },
+                          });
                     if (response)
                     {
                         setContent(masterContent["ninetyError"]);
@@ -162,13 +171,17 @@ export default function Transactions({ userId }) {
                     }
                   }
                 }
-            
+                    
                   // Check if the user has exceeded their monthly budget
                   if (response.data.remaining_budget <=   0) {
                     const currentMonth = new Date().getMonth();
                     const lastMonthEmailSent = localStorage.getItem('lastMonthEmailSent');
                     if (lastMonthEmailSent !== currentMonth.toString()){
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  });
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  }, {
+                        headers: {
+                          Authorization: `Bearer ${accessToken}`,
+                        },
+                      });
                     if (response)
                     {
                         setContent(masterContent["budgetExceededError"]);
@@ -208,11 +221,16 @@ export default function Transactions({ userId }) {
 
     const modifyDeleteExpense = (index) => {
         index = index + (pageCounter-1)*itemCount;
+        console.log("expenses[index].expenseId", expenses[index][0])
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
             expense_id: expenses[index][0],
             user_id: localStorage.getItem("userId")
-        }}).
+        }, 
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },).
         then((response) => {
             setContent(masterContent["delete"]);
             setPopupState(true);
@@ -241,6 +259,7 @@ export default function Transactions({ userId }) {
 
     const handleEditExpense = (index) => {
         index = index+(pageCounter-1)*itemCount;
+        localStorage.setItem("expenseId", expenses[index][0])
         setShow(true);
         setSendExpense([index, ...expenses[index]]);
     }

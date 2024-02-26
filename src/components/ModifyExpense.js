@@ -111,6 +111,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         }
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
+
+    const accessToken = localStorage.getItem("accessToken")
     const handleModifyExpense = (e) => {
         e.preventDefault();
         var flag = true;
@@ -143,6 +145,12 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             setPopupState(true);
             return;
         }
+        if(modifyExpenseData.amount !== "" && parseFloat(modifyExpenseData.amount) < 0)
+        {
+            setContent(masterContent["amountNegative"]);
+            setPopupState(true);
+            return;
+        }
         var apiURL = "http://localhost:3000/expenses/addExpense";
         const userId = localStorage.getItem('userId');
         const expenseData = {
@@ -157,7 +165,11 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         var updateRow = [];
         if(loadExpense.length === 0)
         {
-            axios.post(apiURL,expenseData, ).then((response) => {
+            axios.post(apiURL,expenseData,  {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }).then((response) => {
                 setContent(masterContent["add"]);
                 setPopupState(true);
                 updateRow = [modifyExpenseData.userId, response.data.expenseId,
@@ -168,14 +180,16 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-                
+
                 setContent(masterContent["budgetLimitExceeded"]);
                 setPopupState(true);
             });
         }
         else
         {
+            console.log("modifyExpenseData", modifyExpenseData.expenseId)
             apiURL = "http://localhost:3000/expenses/updateExpense";
+            console.log("mon")
             
             const expenseData = {
             // Assuming you want to set the expenseId to  1
@@ -187,8 +201,12 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 paymentMode: modifyExpenseData.payment_mode,
                 expenseId: modifyExpenseData.expenseId
             };
-            axios.put(apiURL, expenseData,).then((response) => {
-                
+            console.log(expenseData);
+            axios.put(apiURL, expenseData,{
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }).then((response) => {
                 setContent(masterContent["update"]);
                 setPopupState(true);
                 console.log(expenseData)
@@ -243,6 +261,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         "editError": {
             "head": "Error",
             "body": "Could not edit expense!"
+        },
+        "amountNegative": {
+            "head": "Error",
+            "body": "Amount cannot be negative"
         }
 
     }

@@ -1,26 +1,25 @@
-// Analytics.js
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'chart.js/auto';
 import axios from 'axios';
 import "../styles/Analytics.css";
 import PopupModal from './PopupModal';
-
+ 
 const Analytics = ({ userId }) => {
-
+ 
   const masterContent = {
     "fetchError":{
         "head": "Error",
         "body": "Could not fetch data"
     }
-
+ 
 }
 const [popupState, setPopupState] = useState(false);
 const handlePopupState = (state) => {
   setPopupState(state);
 }
-
-
-
+ 
+ 
+ 
 const [content, setContent] = useState(masterContent["fetchError"]);
   const [expensesData, setExpensesData] = useState({});
   const chartRefs = {
@@ -29,7 +28,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
     pieChart: null,
     pieChart1: null,
   };
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,7 +36,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         const categoriesResponse = await axios.get(`http://localhost:3000/api/data1/${userId}`);
         const merchantsResponse = await axios.get(`http://localhost:3000/api/data2/${userId}`);
         const paymentModesResponse = await axios.get(`http://localhost:3000/api/data3/${userId}`);
-
+ 
         setExpensesData({
           expenses: expensesResponse.data,
           categories: categoriesResponse.data,
@@ -49,18 +48,17 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         setPopupState(true);
       }
     };
-
+ 
     fetchData();
   }, [userId]);
-
+ 
   useEffect(() => {
     if (expensesData.expenses) {
       createLineChart('lineChart', expensesData.expenses, 'date', 'amount');
       createBarChart('barChart', expensesData.merchants, 'merchant', 'amount');
-      createPieChart('pieChart', expensesData.categories, 'category', 'totalAmount');
-      createPieChart('pieChart1', expensesData.paymentModes, 'paymentMode', 'totalAmount');
+      // createPieChart('pieChart1', expensesData.paymentModes, 'paymentMode', 'totalAmount');
     }
-
+ 
     // Cleanup function to destroy chart instances
     return () => {
       Object.values(chartRefs).forEach(chart => {
@@ -71,7 +69,41 @@ const [content, setContent] = useState(masterContent["fetchError"]);
     };
   }, [expensesData]);
 
+  function tranform_date(date) {
+    
+    if(date !== undefined)
+    {
+      return date.slice(0, 10);
+    }
+      
+    else
+      return "";
+  }
+
+  function date_sort(a, b) {
+    return new Date(a.date) - new Date(b.date);
+}
+ 
   const createLineChart = (canvasId, data, labelKey, valueKey) => {
+    for(var i = 0; i < data.length; i++)
+    {
+      data[i].date = tranform_date(data[i].date);
+
+    }
+    data = data.reduce((accumulator, current) => {
+      if (accumulator[current.date]) {
+        accumulator[current.date].amount += current.amount;
+      } else {
+        accumulator[current.date] = { date: current.date, amount: current.amount };
+      }
+      return accumulator;
+    }, {});
+    var temp = [];
+    for(const row in data)
+      temp.push(data[row]);
+    data = temp;
+    data = data.sort(date_sort);
+      
     const ctx = document.getElementById(canvasId).getContext('2d');
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
@@ -94,13 +126,42 @@ const [content, setContent] = useState(masterContent["fetchError"]);
           y: {
             beginAtZero: true
           }
+        },
+        plugins: {
+          legend: {
+            display: false 
+          },
+          title: {
+            display: true,
+            text: 'Expenses Over Time' 
+          },
         }
       }
     });
   };
 
+  
+ 
   const createBarChart = (canvasId, data, labelKey, valueKey) => {
+    const colors = ['rgba(120,  28,  129,  1)', 'rgba(107,  178,  140,  1)', 'rgba(72,  139,  194,  1)', 'rgba(217,  33,  32,  1)'];
     const ctx = document.getElementById(canvasId).getContext('2d');
+    
+    data = data.reduce((accumulator, current) => {
+      if (accumulator[current.merchant]) {
+        accumulator[current.merchant].amount += current.amount;
+      } else {
+        accumulator[current.merchant] = { merchant: current.merchant, amount: current.amount };
+      }
+      return accumulator;
+    }, {});
+    var temp = [];
+    for(const row in data)
+      temp.push(data[row]);
+    data = temp;
+    
+
+    
+
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }
@@ -109,10 +170,11 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       data: {
         labels: data.map(item => item[labelKey]),
         datasets: [{
-          label: 'Expenses by Merchant',
           data: data.map(item => item[valueKey]),
-          backgroundColor: 'rgba(255,   99,   132,   0.2)',
-          borderColor: 'rgba(255,   99,   132,   1)',
+          backgroundColor: data.map((item, index) => {
+            return colors[index % colors.length];
+          }),
+          borderColor: 'rgba(0,   0,   0,   1)',
           borderWidth:   1
         }]
       },
@@ -122,13 +184,23 @@ const [content, setContent] = useState(masterContent["fetchError"]);
           y: {
             beginAtZero: true
           }
+        },
+        
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Expenses by Merchant'
+          },
         }
       }
     });
   };
-
-
-  
+ 
+ 
+ 
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
     if (chartRefs[canvasId]) {
@@ -150,27 +222,28 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         responsive: true
       }
     });
+    console.log(`Pie chart for ${canvasId} created`);
   };
-
+ 
   return (
     <div className="analytics-container">
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="lineChart" className="chart"></canvas>
+          <canvas id="lineChart" style={{"width":  "80vw", "height":  "45vh", "position": "relative"}} className="chart" st></canvas>
         </div>
-        <div className="chart-column">
+        {/* <div className="chart-column">
           <canvas id="pieChart" className="chart"></canvas>
           <canvas id="pieChart1" className="chart"></canvas>
-        </div>
+        </div> */}
       </div>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="barChart" className="chart"></canvas>
+          <canvas id="barChart" style={{"width":  "80vw", "height":  "45vh", "position": "relative"}} className="chart"></canvas>
         </div>
       </div>
     </div>
   );
 };
-
+ 
 export default Analytics;
