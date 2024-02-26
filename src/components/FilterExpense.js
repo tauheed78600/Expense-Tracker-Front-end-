@@ -81,28 +81,28 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     }
 
     const filterDateFrom = (arr, from) => {
-        return arr.filter((row)=>row[2] >= from);
+        return arr.filter((row)=>row.date >= from);
     }
     const filterDateTo = (arr, to) => {
-        return arr.filter((row)=>row[2] <= to);
+        return arr.filter((row)=>row.date <= to);
     }
     function filterByString(s, value) {
         return s.toLowerCase().includes(value.toLowerCase());
     }
-    const filterString = (arr, index, value) => {
-        return arr.filter((row) => filterByString(row[index], value));
+    const filterString = (arr, key, value) => {
+        return arr.filter((row) => filterByString(row[key], value));
     }
     function filterByNumber(s, value) {
         s = parseFloat(s);
         value = parseFloat(value);
         return s === value;
     }
-    const filterNumber = (arr, index, value) => {
+    const filterNumber = (arr, key, value) => {
         
-        return arr.filter((row) => filterByNumber(row[index], value));
+        return arr.filter((row) => filterByNumber(row[key], value));
     }
     const filterPayment = (arr, mode) => {
-        return arr.filter((row)=>row[6] === mode)
+        return arr.filter((row)=>row.paymentMode === mode)
     }
 
 
@@ -135,7 +135,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
             var temp = [];
             for(var i = 0; i < selected_categories.length; i++)
             {
-                copyArray = filterString(newArray, 3, selected_categories[i]);
+                copyArray = filterString(newArray, "category", selected_categories[i]);
                 temp = temp.concat(copyArray);
             }
             newArray = temp;
@@ -144,11 +144,11 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         }
         if(filterData.merchant)
         {
-            newArray = filterString(newArray, 4, filterData.merchant);
+            newArray = filterString(newArray, "merchant", filterData.merchant);
         }
         if(filterData.amount)
         {
-            newArray = filterNumber(newArray, 5, filterData.amount);
+            newArray = filterNumber(newArray, "amount", filterData.amount);
         }
         if(filterData.payment_mode_filter)
         {
