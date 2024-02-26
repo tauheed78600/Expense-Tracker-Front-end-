@@ -189,6 +189,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         {
             console.log("modifyExpenseData", modifyExpenseData.expenseId)
             apiURL = "http://localhost:3000/expenses/updateExpense";
+            console.log("mon")
             
             const expenseData = {
             // Assuming you want to set the expenseId to  1

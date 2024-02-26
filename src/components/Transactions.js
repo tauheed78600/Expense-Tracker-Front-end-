@@ -144,10 +144,11 @@ export default function Transactions({ userId }) {
                     var row = response.data[index];
                     //
                     row.date = row.date.slice(0, 10);
-                    newArray.push([row.expenseId, row.userId,
+                    newArray.push([ row.userId, row.expenseId,
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
+                console.log(newArray);
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
                 const emailId = response.data.email   

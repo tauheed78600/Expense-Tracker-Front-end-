@@ -64,8 +64,8 @@ const SignInForm = ({ onLoginSuccess }) => {
         console.log('Login API response:', response.data);
         localStorage.setItem('accessToken', response.data.accessToken)
         console.log(response)
-        // Handle successful signup (e.g., redirect, show message)
-        console.log(response.data);
+        const userId = response.data.userId;
+        console.log("response.data.userId",response.data.userId);
         onLoginSuccess(response.data); 
         navigate('/dashboard');
       } catch (error) {
