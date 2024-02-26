@@ -56,7 +56,6 @@ const [content, setContent] = useState(masterContent["fetchError"]);
     if (expensesData.expenses) {
       createLineChart('lineChart', expensesData.expenses, 'date', 'amount');
       createBarChart('barChart', expensesData.merchants, 'merchant', 'amount');
-      // createPieChart('pieChart', expensesData.categories, 'category', 'totalAmount');
       // createPieChart('pieChart1', expensesData.paymentModes, 'paymentMode', 'totalAmount');
     }
  
@@ -69,8 +68,42 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       });
     };
   }, [expensesData]);
+
+  function tranform_date(date) {
+    
+    if(date !== undefined)
+    {
+      return date.slice(0, 10);
+    }
+      
+    else
+      return "";
+  }
+
+  function date_sort(a, b) {
+    return new Date(a.date) - new Date(b.date);
+}
  
   const createLineChart = (canvasId, data, labelKey, valueKey) => {
+    for(var i = 0; i < data.length; i++)
+    {
+      data[i].date = tranform_date(data[i].date);
+
+    }
+    data = data.reduce((accumulator, current) => {
+      if (accumulator[current.date]) {
+        accumulator[current.date].amount += current.amount;
+      } else {
+        accumulator[current.date] = { date: current.date, amount: current.amount };
+      }
+      return accumulator;
+    }, {});
+    var temp = [];
+    for(const row in data)
+      temp.push(data[row]);
+    data = temp;
+    data = data.sort(date_sort);
+      
     const ctx = document.getElementById(canvasId).getContext('2d');
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
@@ -93,13 +126,42 @@ const [content, setContent] = useState(masterContent["fetchError"]);
           y: {
             beginAtZero: true
           }
+        },
+        plugins: {
+          legend: {
+            display: false 
+          },
+          title: {
+            display: true,
+            text: 'Expenses Over Time' 
+          },
         }
       }
     });
   };
+
+  
  
   const createBarChart = (canvasId, data, labelKey, valueKey) => {
+    const colors = ['rgba(120,  28,  129,  1)', 'rgba(107,  178,  140,  1)', 'rgba(72,  139,  194,  1)', 'rgba(217,  33,  32,  1)'];
     const ctx = document.getElementById(canvasId).getContext('2d');
+    
+    data = data.reduce((accumulator, current) => {
+      if (accumulator[current.merchant]) {
+        accumulator[current.merchant].amount += current.amount;
+      } else {
+        accumulator[current.merchant] = { merchant: current.merchant, amount: current.amount };
+      }
+      return accumulator;
+    }, {});
+    var temp = [];
+    for(const row in data)
+      temp.push(data[row]);
+    data = temp;
+    
+
+    
+
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }
@@ -108,10 +170,11 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       data: {
         labels: data.map(item => item[labelKey]),
         datasets: [{
-          label: 'Expenses by Merchant',
           data: data.map(item => item[valueKey]),
-          backgroundColor: 'rgba(255,   99,   132,   0.2)',
-          borderColor: 'rgba(255,   99,   132,   1)',
+          backgroundColor: data.map((item, index) => {
+            return colors[index % colors.length];
+          }),
+          borderColor: 'rgba(0,   0,   0,   1)',
           borderWidth:   1
         }]
       },
@@ -121,6 +184,16 @@ const [content, setContent] = useState(masterContent["fetchError"]);
           y: {
             beginAtZero: true
           }
+        },
+        
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Expenses by Merchant'
+          },
         }
       }
     });
@@ -157,7 +230,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="lineChart"  className="chart" st></canvas>
+          <canvas id="lineChart" style={{"width":  "80vw", "height":  "45vh", "position": "relative"}} className="chart" st></canvas>
         </div>
         {/* <div className="chart-column">
           <canvas id="pieChart" className="chart"></canvas>
@@ -166,7 +239,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       </div>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="barChart" className="chart"></canvas>
+          <canvas id="barChart" style={{"width":  "80vw", "height":  "45vh", "position": "relative"}} className="chart"></canvas>
         </div>
       </div>
     </div>
