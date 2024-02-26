@@ -12,7 +12,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getCategories } from "./categories";
 import { Plus } from "lucide-react";
 import PopupModal from "./PopupModal";
-export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, show, setShow})
+export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, setLoadExpense, show, setShow})
 {
     const errorMessage = {
         date: "modify-expense-date-error",
@@ -50,16 +50,17 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             })
         }
         else if(loadExpense[0] !== modifyExpenseData.index
+         || loadExpense[2] !== modifyExpenseData.expenseId
         ||loadExpense[3] !== modifyExpenseData.date
         ||loadExpense[4] !== modifyExpenseData.category
         ||loadExpense[5] !== modifyExpenseData.merchant
         ||loadExpense[6] !== modifyExpenseData.amount
         ||loadExpense[7] !== modifyExpenseData.payment_mode)
         {
+            console.log(loadExpense);
             setModifyExpenseData({
                 "index": loadExpense[0],
-                "expenseId": loadExpense[1],
-                "userId":loadExpense[2],
+                "expenseId": loadExpense[2],
                 "date": loadExpense[3],
                 "category": loadExpense[4],
                 "merchant": loadExpense[5],
@@ -83,6 +84,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
     }
 
     const resetData = () => {
+        
         setModifyExpenseData(
             {
                 index: "",
@@ -156,9 +158,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(loadExpense.length === 0)
         {
             axios.post(apiURL,expenseData, ).then((response) => {
-                alert("Expense Added Successfully!");
-                
-                updateRow = [modifyExpenseData.userId, modifyExpenseData.expenseId,
+                setContent(masterContent["add"]);
+                setPopupState(true);
+                updateRow = [modifyExpenseData.userId, response.data.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
                 onAddExpense(updateRow);
@@ -166,14 +168,15 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-                console.log("inside catch")
-                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
+                
+                setContent(masterContent["budgetLimitExceeded"]);
+                setPopupState(true);
             });
         }
         else
         {
             apiURL = "http://localhost:3000/expenses/updateExpense";
- 
+            
             const expenseData = {
             // Assuming you want to set the expenseId to  1
                 userId:  userId, // Assuming you want to set the userId to  1
@@ -182,21 +185,23 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 merchant: modifyExpenseData.merchant,
                 amount: modifyExpenseData.amount,
                 paymentMode: modifyExpenseData.payment_mode,
-                expenseId: localStorage.getItem("expenseId")
+                expenseId: modifyExpenseData.expenseId
             };
             axios.put(apiURL, expenseData,).then((response) => {
-                alert("Expense Updated Successfully!");
+                
+                setContent(masterContent["update"]);
+                setPopupState(true);
+                console.log(expenseData)
                 updateRow = [userId, modifyExpenseData.expenseId,
                     modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
                     modifyExpenseData.amount, modifyExpenseData.payment_mode]
                 onEditExpense(modifyExpenseData.index, updateRow);
                 closeModifyExpense();
                 resetData();
-                localStorage.removeItem('expenseId');
 
             }).catch((error) => {
-                console.log("inside catch", error)
-                alert("Budget Reached. If you want to add more expense , then increase the monthly budget");
+                setContent(masterContent["editError"]);
+                setPopupState(true);
             });
         }
         
@@ -231,6 +236,14 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             "head": "Error",
             "body": "Amount is not a number!"
         },
+        "budgetLimitExceeded": {
+            "head": "Error",
+            "body": "Budget Limit Exceeded"
+        },
+        "editError": {
+            "head": "Error",
+            "body": "Could not edit expense!"
+        }
 
     }
 
@@ -269,7 +282,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         </Form.Label>
                         <Col sm={10}>
                             <Dropdown>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f"}} variant="success" id="dropdown-basic">
                                     {modifyExpenseData.category !== "" ? modifyExpenseData.category : "Choose Category"}
                                 </Dropdown.Toggle>
 
@@ -366,10 +379,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button style={{"backgroundColor":"#e26f6f"}} variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={handleModifyExpense}>
+                <Button style={{"backgroundColor":"#e26f6f"}} variant="primary" onClick={handleModifyExpense}>
                     Submit
                 </Button>
                 </Modal.Footer>

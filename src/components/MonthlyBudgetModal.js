@@ -121,10 +121,10 @@ function MonthlyBudgetModal() {
         </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button style={{"backgroundColor":"#e26f6f"}} variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleSave}>
+          <Button style={{"backgroundColor":"#e26f6f"}} variant="primary" onClick={handleSave}>
             Save Changes
           </Button>
         </Modal.Footer>

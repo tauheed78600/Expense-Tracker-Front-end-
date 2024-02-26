@@ -17,7 +17,7 @@ import {
     ArrowBigLeft
   } from "lucide-react";
 
-  import PopupModal from "./PopupModal.js";
+import PopupModal from "./PopupModal.js";
 
 
 export default function Transactions({ userId }) {
@@ -37,6 +37,18 @@ export default function Transactions({ userId }) {
       "ninetyError": {
         "head": "Error",
         "body": "Budget goal has been  90% reached for this month"
+      },
+      "delete": {
+        "head": "Success",
+        "body": "Successfully deleted!"
+      },
+      "deleteError": {
+        "head": "Error",
+        "body": "Could not delete expense!"
+      },
+      "fetchError": {
+        "head": "Error",
+        "body": "Could not fetch data!"
       }
 
 
@@ -59,9 +71,9 @@ export default function Transactions({ userId }) {
     const [masterExpenses, setMasterExpenses] = useState([
     ]);
 
-    const[dummyRowLength, setDummyRowLength] = useState(0);
 
     const getDummyRows = () => {
+        var dummyRowLength = expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
         var rows = [];
         for(var i = 0; i < dummyRowLength; i++)
         {
@@ -80,7 +92,7 @@ export default function Transactions({ userId }) {
 
     const totalPages = () => 
     {
-        return Math.ceil(expenses.length/itemCount);
+        return Math.max(Math.ceil(expenses.length/itemCount), 1);
     }
 
     const gotoFirstPage = () => {
@@ -109,7 +121,10 @@ export default function Transactions({ userId }) {
     }, []);
 
     useEffect(()=> {
-        setDummyRowLength(itemCount-expenses.length%itemCount);
+        if(pageCounter > totalPages())
+        {
+            setPageCounter(pageCounter => Math.min(totalPages(), pageCounter));
+        }
     }, [expenses]);
 
 
@@ -129,7 +144,6 @@ export default function Transactions({ userId }) {
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
-                
                 setMasterExpenses(newArray);
                 setExpenses(newArray);
                 const emailId = response.data.email   
@@ -159,7 +173,6 @@ export default function Transactions({ userId }) {
                     {
                         setContent(masterContent["budgetExceededError"]);
                         setPopupState(true);
-                        console.log("response: " , response.data)
                         localStorage.setItem('lastMonthEmailSent', currentMonth.toString());
                     }
                   }
@@ -167,12 +180,13 @@ export default function Transactions({ userId }) {
 
 
             } catch (error) {
-                console.error('Error fetching user data:', error);
+                setContent(masterContent["fetchError"]);
+                setPopupState(true);
             }
         };
         
         fetchExpenses();
-    }, [userId])
+    }, [userId]);
 
     
 
@@ -180,7 +194,7 @@ export default function Transactions({ userId }) {
 
     const modifyAddExpense = (newExpense) => {
         var newMasterExpense = [...masterExpenses, newExpense];
-        setMasterExpenses(newMasterExpense)
+        setMasterExpenses(newMasterExpense);
         setExpenses(newMasterExpense);
     };
 
@@ -193,15 +207,26 @@ export default function Transactions({ userId }) {
     }
 
     const modifyDeleteExpense = (index) => {
-        setExpenses(prevArray => {
-            const newArray = [...prevArray];
-            newArray.splice(index,   1);
-            return newArray;
+        index = index + (pageCounter-1)*itemCount;
+        axios.delete('http://localhost:3000/expenses/deleteExpense', {
+            data: {
+            expense_id: expenses[index][0],
+            user_id: localStorage.getItem("userId")
+        }}).
+        then((response) => {
+            setContent(masterContent["delete"]);
+            setPopupState(true);
+            setExpenses(prevArray => {
+                const newArray = [...prevArray];
+                newArray.splice(index,   1);
+                return newArray;
+            });
+            
+        }).catch((error) => {
+            setContent(masterContent["deleteError"]);
+            setPopupState(true);
         });
-        var divExpense = document.getElementById("div-modify-expense");
-        if (divExpense.style.visibility === 'visible' || divExpense.style.visibility === "") {
-            divExpense.style.visibility = 'hidden';
-        }
+        
     }
 
     const modifyFilterExpense = (filterData) => {
@@ -215,26 +240,15 @@ export default function Transactions({ userId }) {
 
 
     const handleEditExpense = (index) => {
-        console.log("index", index)
+        index = index+(pageCounter-1)*itemCount;
         setShow(true);
-        localStorage.setItem("expenseId", index)
         setSendExpense([index, ...expenses[index]]);
     }
 
     const handleDeleteExpense = (index) => {
-        console.log("index", index)
-        const response =  axios.delete('http://localhost:3000/expenses/deleteExpense', {
-            data: {
-            expense_id: index,
-            user_id: localStorage.getItem("userId")
-            }
-    })
 
-    if (response)
-    {
-        alert("Expense Deleted Successfully")
+        modifyDeleteExpense(index);
     }
-}
 
     function sortByColumn(arr, columnIndex) {
         return arr.sort((a, b) => {
@@ -294,83 +308,83 @@ export default function Transactions({ userId }) {
         <div id = "transaction-div">
             <PopupModal state={popupState} setState={handlePopupState} content={content}/>
             <div id = "expense-table">
-<div id= "expense-table-options">
-    <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
-    loadExpense={sendExpense} show={show} setShow={setShow}/>
-    <FilterExpense onFilterExpense={modifyFilterExpense} 
-    expenseData={expenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
-    <button className="expense-table-button expense-table-options-button" 
-    id = "reset-filter-button" onClick={resetFilter}><RotateCcw/></button>
-    <MonthlyBudgetModal/>
-</div>
-<table>
-<tbody>
-    <tr>
-        <th className="expense-table-index">#</th>
-        {
-            tableHead.map((head, index) => (
-                <>
-                    
-                    <th className = "expense-table-th expense-table-th-td" key = {index} onClick={()=>{sortTableBy(head)}}>
-                        {head}
-                    </th>
-                </>
-                
-                )
-            )
-        }
-    </tr>
-    
-    {
-        expenses.slice((pageCounter-1)*itemCount, pageCounter*itemCount).map((expense, index) => {
-            return (
-                <tr key={index} >
-                    <td className="expense-table-index expense-table-th-td">{index+1+(pageCounter-1)*itemCount}</td>
-                    {
-                        expense.slice(2).map((value, cellIndex) => {
-                            return (
-                                <td className="expense-table-th-td" key={cellIndex}>{value}</td>
-                            )
-                        })
-                    }
-                    <td className="expense-table-th-td expense-table-edit-delete">
-                        <button className="expense-table-button" onClick={() => handleEditExpense(expense[0])}><Pencil/></button>
-                        <button className="expense-table-button" onClick={() => handleDeleteExpense(expense[0])}><Delete/></button>
-                    </td>
-                </tr>
-            );
-        })
-}
-{
-    pageCounter === totalPages() && getDummyRows().map((row, index) => {
-        return (
-            <tr key = {(itemCount-dummyRowLength)+index}>
-                <td className="expense-table-index expense-table-th-td" key={0} >{""}</td>
-                {
-                    row.map((value, cellIndex) => {
-                        return (
-                            <td className="expense-table-th-td" key={cellIndex+1}>{value}</td>
-                        )
+                        <div id= "expense-table-options">
+                            <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
+                            loadExpense={sendExpense} setLoadExpense={setSendExpense} show={show} setShow={setShow}/>
+                            <FilterExpense onFilterExpense={modifyFilterExpense} 
+                            expenseData={masterExpenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
+                            <button className="expense-table-button expense-table-options-button" 
+                            id = "reset-filter-button" onClick={resetFilter}><RotateCcw/></button>
+                            <MonthlyBudgetModal/>
+                        </div>
+                        <table>
+                        <tbody>
+                            <tr>
+                                <th className="expense-table-index">#</th>
+                                {
+                                    tableHead.map((head, index) => (
+                                        <>
+                                            
+                                            <th className = "expense-table-th expense-table-th-td" key = {index} onClick={()=>{sortTableBy(head)}}>
+                                                {head}
+                                            </th>
+                                        </>
+                                        
+                                        )
+                                    )
+                                }
+                            </tr>
+                            
+                            {
+                                expenses.slice((pageCounter-1)*itemCount, pageCounter*itemCount).map((row, index) => {
+                                    row = row.slice(2);
+                                return (
+                                    <tr key={index} >
+                                        <td className="expense-table-index expense-table-th-td">{index+1+(pageCounter-1)*itemCount}</td>
+                                        {
+                                            row.map((value, cellIndex) => {
+                                            return (
+                                            <td className="expense-table-th-td" key={cellIndex}>{value}</td>
+                                        )})
+                                        }
+                                        <td className="expense-table-th-td expense-table-edit-delete">
+                                            <button className="expense-table-button" onClick={() => handleEditExpense(index)}><Pencil/></button>
+                                            <button className="expense-table-button" onClick={() => handleDeleteExpense(index)}><Delete/></button>
+                                        </td>
+                                    </tr>
+                                        );
+                                })
+                        }
+                        {
+                            pageCounter === totalPages() && getDummyRows().map((row, index) => {
+                                return (
+                                    <tr key = {(itemCount-expenses.length%itemCount)+index}>
+                                        <td className="expense-table-index expense-table-th-td" key={0} >{""}</td>
+                                        {
+                                            row.map((value, cellIndex) => {
+                                                return (
+                                                    <td className="expense-table-th-td" key={cellIndex+1}>{value}</td>
+                                                )
+                                                
+                                            })
+                                        }
+                                    </tr>
+                                )
+                            })
+                        }
                         
-                    })
-                }
-            </tr>
-        )
-    })
-}
-
-
-</tbody>
-
-</table>
-{expenses.length > 10 &&    <div id="page-selector">
-                    {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}
-                    <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>
-                    <button className="expense-table-button expense-table-selector-button" style={{"backgroundColor":"white", "color":"black"}}>{pageCounter}</button>
-                    <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>
-                    {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>}
-                </div>}  
-</div>
-</div>
-);
+                        
+                        </tbody>
+                        
+                        </table>
+                        {expenses.length > 10 &&    <div id="page-selector">
+                                            {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}
+                                            <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>
+                                            <button className="expense-table-button expense-table-selector-button" style={{"text-decoration": "underline"}}>{pageCounter}</button>
+                                            <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>
+                                            {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>}
+                                        </div>}  
+                    </div>
+    </div>
+  );
 }

@@ -2,9 +2,26 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'chart.js/auto';
 import axios from 'axios';
-import "../styles/Analytics.css"
+import "../styles/Analytics.css";
+import PopupModal from './PopupModal';
 
 const Analytics = ({ userId }) => {
+
+  const masterContent = {
+    "fetchError":{
+        "head": "Error",
+        "body": "Could not fetch data"
+    }
+
+}
+const [popupState, setPopupState] = useState(false);
+const handlePopupState = (state) => {
+  setPopupState(state);
+}
+
+
+
+const [content, setContent] = useState(masterContent["fetchError"]);
   const [expensesData, setExpensesData] = useState({});
   const chartRefs = {
     lineChart: null,
@@ -28,7 +45,8 @@ const Analytics = ({ userId }) => {
           paymentModes: paymentModesResponse.data,
         });
       } catch (error) {
-        console.error('Error fetching data:', error);
+        setContent(masterContent["fetchError"]);
+        setPopupState(true);
       }
     };
 
@@ -113,7 +131,6 @@ const Analytics = ({ userId }) => {
   
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
-    console.log(`Creating pie chart for ${canvasId}`); // Add this line
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }
@@ -133,11 +150,11 @@ const Analytics = ({ userId }) => {
         responsive: true
       }
     });
-    console.log(`Pie chart for ${canvasId} created`); 
   };
 
   return (
     <div className="analytics-container">
+      <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
           <canvas id="lineChart" className="chart"></canvas>

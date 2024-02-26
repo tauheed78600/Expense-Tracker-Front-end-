@@ -58,13 +58,23 @@
  `;
  
  export const Title = styled.h1`
-  font-weight: bold;
-  margin:  0;
-  // margin-left:140px;
+  font-weight: bold; // Set the font weight to bold
+  margin:  0; // Remove all margins
   text-align: center; // Center the text
   color:blue;
+  color: #333; // Set the text color
+  font-size:  2em; // Set the font size
+  margin-left:  140px;
 `;
- 
+
+export const Title1 = styled.h1`
+font-weight: bold; // Set the font weight to bold
+margin:  0; // Remove all margins
+text-align: center; // Center the text
+color: #333; // Set the text color
+font-size:  2em; // Set the font size
+`;
+
  
  export const Input = styled.input`
  background-color: #eee;
