@@ -36,7 +36,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         }
     )
     useEffect(() => {
-        if (loadExpense.length === 0)
+        if (Object.keys(loadExpense).length ===  0)
         {
             setModifyExpenseData({
                 index: "",
