@@ -25,7 +25,7 @@ const [userData, setUserData] = useState({});
 
 useEffect(() => {
 
-  const accessToken = localStorage.getItem("accessToken")
+const accessToken = localStorage.getItem("accessToken")
 const fetchData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/total/getUser/${userId}`, {
