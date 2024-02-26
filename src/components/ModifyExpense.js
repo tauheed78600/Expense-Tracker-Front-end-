@@ -19,7 +19,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         category: "modify-expense-category-error",
         merchant: "modify-expense-merchant-error",
         amount:  "modify-expense-amount-error",
-        payment_mode: "modify-expense-payment-error"
+        paymentMode: "modify-expense-payment-error"
     };
     var categories = getCategories();
     const [popupState, setPopupState] = useState(false);
@@ -32,7 +32,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             category: "",
             merchant: "",
             amount:  "",
-            payment_mode: ""
+            paymentMode: ""
         }
     )
     useEffect(() => {
@@ -46,26 +46,26 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 category: "",
                 merchant: "",
                 amount: "",
-                payment_mode: ""
+                paymentMode: ""
             })
         }
-        else if(loadExpense[0] !== modifyExpenseData.index
-         || loadExpense[2] !== modifyExpenseData.expenseId
-        ||loadExpense[3] !== modifyExpenseData.date
-        ||loadExpense[4] !== modifyExpenseData.category
-        ||loadExpense[5] !== modifyExpenseData.merchant
-        ||loadExpense[6] !== modifyExpenseData.amount
-        ||loadExpense[7] !== modifyExpenseData.payment_mode)
+        else if(loadExpense.index !== modifyExpenseData.index
+         || loadExpense.expenseId !== modifyExpenseData.expenseId
+        ||loadExpense.date !== modifyExpenseData.date
+        ||loadExpense.category !== modifyExpenseData.category
+        ||loadExpense.merchant !== modifyExpenseData.merchant
+        ||loadExpense.amount !== modifyExpenseData.amount
+        ||loadExpense.paymentMode !== modifyExpenseData.paymentMode)
         {
             console.log(loadExpense);
             setModifyExpenseData({
-                "index": loadExpense[0],
-                "expenseId": loadExpense[2],
-                "date": loadExpense[3],
-                "category": loadExpense[4],
-                "merchant": loadExpense[5],
-                "amount": loadExpense[6],
-                "payment_mode": loadExpense[7]
+                "index": loadExpense.index,
+                "expenseId": loadExpense.expenseId,
+                "date": loadExpense.date,
+                "category": loadExpense.category,
+                "merchant": loadExpense.merchant,
+                "amount": loadExpense.amount,
+                "paymentMode": loadExpense.paymentMode
             })
         }
         /*if(loadExpense[0].split("-")[2].length != 2 )
@@ -94,7 +94,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 category: "",
                 merchant: "",
                 amount:  "",
-                payment_mode: ""
+                paymentMode: ""
             }
         );
     }
@@ -124,7 +124,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             category: 0,
             merchant: 0,
             amount:  0,
-            payment_mode: 0
+            paymentMode: 0
         }
         for(const val in modifyExpenseData)
         {
@@ -160,10 +160,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             category: modifyExpenseData.category,
             merchant: modifyExpenseData.merchant,
             amount: modifyExpenseData.amount,
-            paymentMode: modifyExpenseData.payment_mode
+            paymentMode: modifyExpenseData.paymentMode
         };
-        var updateRow = [];
-        if(loadExpense.length === 0)
+        var updateRow ={};
+        if(Object.keys(loadExpense).length ===  0)
         {
             axios.post(apiURL,expenseData,  {
                 headers: {
@@ -172,9 +172,15 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
               }).then((response) => {
                 setContent(masterContent["add"]);
                 setPopupState(true);
-                updateRow = [modifyExpenseData.userId, response.data.expenseId,
-                    modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
-                    modifyExpenseData.amount, modifyExpenseData.payment_mode]
+                updateRow = {
+                    "userId": modifyExpenseData.userId, 
+                    "expenseId":response.data.expenseId,
+                    "date":modifyExpenseData.date, 
+                    "category":modifyExpenseData.category, 
+                    "merchant":modifyExpenseData.merchant, 
+                    "amount":modifyExpenseData.amount, 
+                    "paymentMode":modifyExpenseData.paymentMode
+                }
                 onAddExpense(updateRow);
                 resetData();
                 closeModifyExpense();
@@ -198,7 +204,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 category: modifyExpenseData.category,
                 merchant: modifyExpenseData.merchant,
                 amount: modifyExpenseData.amount,
-                paymentMode: modifyExpenseData.payment_mode,
+                paymentMode: modifyExpenseData.paymentMode,
                 expenseId: modifyExpenseData.expenseId
             };
             console.log(expenseData);
@@ -210,9 +216,15 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 setContent(masterContent["update"]);
                 setPopupState(true);
                 console.log(expenseData)
-                updateRow = [userId, modifyExpenseData.expenseId,
-                    modifyExpenseData.date, modifyExpenseData.category, modifyExpenseData.merchant,
-                    modifyExpenseData.amount, modifyExpenseData.payment_mode]
+                updateRow = {
+                    "userId": userId, 
+                    "expenseId":response.data.expenseId,
+                    "date":modifyExpenseData.date, 
+                    "category":modifyExpenseData.category, 
+                    "merchant":modifyExpenseData.merchant, 
+                    "amount":modifyExpenseData.amount, 
+                    "paymentMode":modifyExpenseData.paymentMode
+                }
                 onEditExpense(modifyExpenseData.index, updateRow);
                 closeModifyExpense();
                 resetData();
@@ -360,36 +372,36 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                             type="radio"
                             label="Credit"
                             value="Credit"
-                            checked={modifyExpenseData.payment_mode === 'Credit'} 
+                            checked={modifyExpenseData.paymentMode === 'Credit'} 
                             onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}
-                            name="payment_mode"
+                            name="paymentMode"
                             id="mode1"
                             />
                             <Form.Check
                             type="radio"
                             label="Debit"
                             value="Debit"
-                            checked={modifyExpenseData.payment_mode === 'Debit'} 
+                            checked={modifyExpenseData.paymentMode === 'Debit'} 
                             onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}
-                            name="payment_mode"
+                            name="paymentMode"
                             id="mode2"
                             />
                             <Form.Check
                             type="radio"
                             label="UPI"
                             value="UPI"
-                            checked={modifyExpenseData.payment_mode === 'UPI'} 
+                            checked={modifyExpenseData.paymentMode === 'UPI'} 
                             onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}
-                            name="payment_mode"
+                            name="paymentMode"
                             id="mode3"
                             />
                             <Form.Check
                             type="radio"
                             label="Cash"
                             value="Cash"
-                            checked={modifyExpenseData.payment_mode === 'Cash'} 
+                            checked={modifyExpenseData.paymentMode === 'Cash'} 
                             onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}
-                            name="payment_mode"
+                            name="paymentMode"
                             id="mode4"
                             />
                             <Form.Label id = "modify-expense-payment-error" column sm={12}>

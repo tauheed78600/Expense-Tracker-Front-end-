@@ -56,6 +56,14 @@ export default function Transactions({ userId }) {
 
   const [content, setContent] = useState(masterContent["budgetExceededError"]);
     const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
+    const cat = {
+        "Date":"date", 
+        "Category":"category", 
+        "Merchant":"merchant", 
+        "Amount":"amount", 
+        "Payment Mode":"paymentMode", 
+        "Modify":"modify"
+    };
     
 
     const itemCount = 10;
@@ -68,8 +76,7 @@ export default function Transactions({ userId }) {
         "Amount": false,
         "Payment Mode": false
     });
-    const [masterExpenses, setMasterExpenses] = useState([
-    ]);
+    const [masterExpenses, setMasterExpenses] = useState([]);
 
 
     const getDummyRows = () => {
@@ -144,11 +151,17 @@ export default function Transactions({ userId }) {
                     var row = response.data[index];
                     //
                     row.date = row.date.slice(0, 10);
-                    newArray.push([row.userId, row.expenseId,
-                        row.date, row.category, row.merchant, 
-                        row.amount, row.paymentMode]);
+                    newArray.push({
+                        "userId": row.userId, 
+                        "expenseId":row.expenseId,
+                        "date":row.date, 
+                        "category":row.category, 
+                        "merchant":row.merchant, 
+                        "amount":row.amount, 
+                        "paymentMode":row.paymentMode});
                 }
                 setMasterExpenses(newArray);
+                
                 const emailId = response.data.email   
                 
                 if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
@@ -218,10 +231,11 @@ export default function Transactions({ userId }) {
 
     const modifyDeleteExpense = (index) => {
         index = index + (pageCounter-1)*itemCount;
-        console.log("expenses[index].expenseId", expenses[index][0])
+        console.log("expenses[index].expenseId", expenses[index].expenseId)
+        console.log(expenses[index]);
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
-            expense_id: expenses[index][1],
+            expense_id: expenses[index].expenseId,
             user_id: localStorage.getItem("userId")
         }, 
             headers: {
@@ -256,9 +270,9 @@ export default function Transactions({ userId }) {
 
     const handleEditExpense = (index) => {
         index = index+(pageCounter-1)*itemCount;
-        localStorage.setItem("expenseId", expenses[index][0])
+        localStorage.setItem("expenseId", expenses[index].expenseId)
         setShow(true);
-        setSendExpense([index, ...expenses[index]]);
+        setSendExpense({"index":index, ...expenses[index]});
     }
 
     const handleDeleteExpense = (index) => {
@@ -266,10 +280,10 @@ export default function Transactions({ userId }) {
         modifyDeleteExpense(index);
     }
 
-    function sortByColumn(arr, columnIndex) {
+    function sortByColumn(arr, columnName) {
         return arr.sort((a, b) => {
-            const aValue = columnIndex ===   5 ? parseFloat(a[columnIndex]) : a[columnIndex];
-            const bValue = columnIndex ===   5 ? parseFloat(b[columnIndex]) : b[columnIndex];
+            const aValue = columnName ===  "amount" ? parseFloat(a[columnName]) : a[columnName];
+            const bValue = columnName ===  "amount" ? parseFloat(b[columnName]) : b[columnName];
 
             if (aValue < bValue) {
                 return -1;
@@ -281,10 +295,10 @@ export default function Transactions({ userId }) {
         });
     }
 
-    function sortByColumnReverse(arr, columnIndex) {
+    function sortByColumnReverse(arr, columnName) {
         return arr.sort((a, b) => {
-            const aValue = columnIndex ===   5 ? parseFloat(a[columnIndex]) : a[columnIndex];
-            const bValue = columnIndex ===   5 ? parseFloat(b[columnIndex]) : b[columnIndex];
+            const aValue = columnName ===   "amount" ? parseFloat(a[columnName]) : a[columnName];
+            const bValue = columnName ===   "amount" ? parseFloat(b[columnName]) : b[columnName];
 
             if (aValue > bValue) {
                 return -1;
@@ -298,21 +312,21 @@ export default function Transactions({ userId }) {
 
     const sortTableBy = (value) => {
         const indexValueMap = {
-            "Date":   2,
-            "Category":   3,
-            "Merchant":   4,
-            "Amount":   5,
-            "Payment Mode":   6
+            "date":   2,
+            "category":   3,
+            "merchant":   4,
+            "amount":   5,
+            "paymentMode":   6
         };
         if (!indexValueMap[value]) {
             return;
         }
         var newArray = expenses;
         if (!sortButtonState[value]) {
-            newArray = sortByColumn(newArray, indexValueMap[value]);
+            newArray = sortByColumn(newArray, value);
             setSortButtonState({ ...sortButtonState, [value]: true });
         } else {
-            newArray = sortByColumnReverse(newArray, indexValueMap[value]);
+            newArray = sortByColumnReverse(newArray, value);
             setSortButtonState({ ...sortButtonState, [value]: false });
         }
 
@@ -341,7 +355,7 @@ export default function Transactions({ userId }) {
                                     tableHead.map((head, index) => (
                                         <>
                                             
-                                            <th className = "expense-table-th expense-table-th-td" key = {index} onClick={()=>{sortTableBy(head)}}>
+                                            <th className = "expense-table-th expense-table-th-td" key = {index} onClick={()=>{sortTableBy(cat[head])}}>
                                                 {head}
                                             </th>
                                         </>
@@ -350,19 +364,15 @@ export default function Transactions({ userId }) {
                                     )
                                 }
                             </tr>
-                            
                             {
                                 expenses.slice((pageCounter-1)*itemCount, pageCounter*itemCount).map((row, index) => {
-                                    row = row.slice(2);
                                 return (
                                     <tr key={index} >
                                         <td className="expense-table-index expense-table-th-td">{index+1+(pageCounter-1)*itemCount}</td>
-                                        {
-                                            row.map((value, cellIndex) => {
-                                            return (
-                                            <td className="expense-table-th-td" key={cellIndex}>{value}</td>
-                                        )})
-                                        }
+                                        {Object.values(row).map((value, cellIndex) => {
+                                            if(cellIndex > 1)
+                                                return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
+                                        })}
                                         <td className="expense-table-th-td expense-table-edit-delete">
                                             <button className="expense-table-button" onClick={() => handleEditExpense(index)}><Pencil/></button>
                                             <button className="expense-table-button" onClick={() => handleDeleteExpense(index)}><Delete/></button>
