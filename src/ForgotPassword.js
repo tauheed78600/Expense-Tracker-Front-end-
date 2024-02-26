@@ -41,7 +41,7 @@ const ForgotPassword = () => {
 
         }
     } catch (error) {
-      setContent(masterContent["success"])
+      setContent(masterContent["error"])
       setPopupState(true);
     }
 };
