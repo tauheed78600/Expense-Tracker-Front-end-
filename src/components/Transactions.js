@@ -118,7 +118,7 @@ export default function Transactions({ userId }) {
     useEffect(() => {
         
         setExpenses(masterExpenses);
-    }, []);
+    }, [masterExpenses]);
 
     useEffect(()=> {
         if(pageCounter > totalPages())
@@ -144,13 +144,11 @@ export default function Transactions({ userId }) {
                     var row = response.data[index];
                     //
                     row.date = row.date.slice(0, 10);
-                    newArray.push([ row.userId, row.expenseId,
+                    newArray.push([row.userId, row.expenseId,
                         row.date, row.category, row.merchant, 
                         row.amount, row.paymentMode]);
                 }
-                console.log(newArray);
                 setMasterExpenses(newArray);
-                setExpenses(newArray);
                 const emailId = response.data.email   
                 
                 if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
@@ -208,11 +206,10 @@ export default function Transactions({ userId }) {
     const modifyAddExpense = (newExpense) => {
         var newMasterExpense = [...masterExpenses, newExpense];
         setMasterExpenses(newMasterExpense);
-        setExpenses(newMasterExpense);
     };
 
     const modifyEditExpense = (index, newExpense) => {
-        setExpenses(prevArray => {
+        setMasterExpenses(prevArray => {
             const newArray = [...prevArray];
             newArray[index] = newExpense;
             return newArray;
@@ -224,7 +221,7 @@ export default function Transactions({ userId }) {
         console.log("expenses[index].expenseId", expenses[index][0])
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
-            expense_id: expenses[index][0],
+            expense_id: expenses[index][1],
             user_id: localStorage.getItem("userId")
         }, 
             headers: {
@@ -234,7 +231,7 @@ export default function Transactions({ userId }) {
         then((response) => {
             setContent(masterContent["delete"]);
             setPopupState(true);
-            setExpenses(prevArray => {
+            setMasterExpenses(prevArray => {
                 const newArray = [...prevArray];
                 newArray.splice(index,   1);
                 return newArray;
