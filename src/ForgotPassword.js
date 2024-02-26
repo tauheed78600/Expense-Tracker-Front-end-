@@ -21,7 +21,7 @@ const ForgotPassword = () => {
       "body": "Could not send email"
     }}
 
-  const [content,setContent] = useState(masterContent["resetError"]);
+  const [content,setContent] = useState(masterContent["error"]);
 
 
   // Function to handle the form submission
