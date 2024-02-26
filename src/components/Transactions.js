@@ -218,6 +218,7 @@ export default function Transactions({ userId }) {
 
     const modifyAddExpense = (newExpense) => {
         var newMasterExpense = [...masterExpenses, newExpense];
+        setSendExpense([]);
         setMasterExpenses(newMasterExpense);
     };
 
