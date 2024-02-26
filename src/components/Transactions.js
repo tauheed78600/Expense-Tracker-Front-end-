@@ -39,7 +39,7 @@ export default function Transactions({ userId }) {
         "body": "Budget goal has been  90% reached for this month"
       },
       "delete": {
-        "head": "Error",
+        "head": "Success",
         "body": "Successfully deleted!"
       },
       "deleteError": {
@@ -71,9 +71,9 @@ export default function Transactions({ userId }) {
     const [masterExpenses, setMasterExpenses] = useState([
     ]);
 
-    const[dummyRowLength, setDummyRowLength] = useState(0);
 
     const getDummyRows = () => {
+        var dummyRowLength = expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
         var rows = [];
         for(var i = 0; i < dummyRowLength; i++)
         {
@@ -125,7 +125,6 @@ export default function Transactions({ userId }) {
         {
             setPageCounter(pageCounter => Math.min(totalPages(), pageCounter));
         }
-        setDummyRowLength(itemCount-expenses.length%itemCount);
     }, [expenses]);
 
     const accessToken = localStorage.getItem("accessToken")
@@ -206,7 +205,7 @@ export default function Transactions({ userId }) {
     const [sendExpense, setSendExpense] = useState([]);
 
     const modifyAddExpense = (newExpense) => {
-        var newMasterExpense = [newExpense, ...masterExpenses];
+        var newMasterExpense = [...masterExpenses, newExpense];
         setMasterExpenses(newMasterExpense);
         setExpenses(newMasterExpense);
     };
@@ -226,11 +225,11 @@ export default function Transactions({ userId }) {
             data: {
             expense_id: expenses[index][0],
             user_id: localStorage.getItem("userId")
-        }}, {
+        }, 
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }).
+          },).
         then((response) => {
             setContent(masterContent["delete"]);
             setPopupState(true);
@@ -258,7 +257,6 @@ export default function Transactions({ userId }) {
 
 
     const handleEditExpense = (index) => {
-        
         index = index+(pageCounter-1)*itemCount;
         localStorage.setItem("expenseId", expenses[index][0])
         setShow(true);
@@ -330,9 +328,9 @@ export default function Transactions({ userId }) {
             <div id = "expense-table">
                         <div id= "expense-table-options">
                             <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
-                            loadExpense={sendExpense} show={show} setShow={setShow}/>
+                            loadExpense={sendExpense} setLoadExpense={setSendExpense} show={show} setShow={setShow}/>
                             <FilterExpense onFilterExpense={modifyFilterExpense} 
-                            expenseData={expenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
+                            expenseData={masterExpenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
                             <button className="expense-table-button expense-table-options-button" 
                             id = "reset-filter-button" onClick={resetFilter}><RotateCcw/></button>
                             <MonthlyBudgetModal/>
@@ -376,9 +374,9 @@ export default function Transactions({ userId }) {
                                 })
                         }
                         {
-                            pageCounter === totalPages() && pageCounter !== 1 && getDummyRows().map((row, index) => {
+                            pageCounter === totalPages() && getDummyRows().map((row, index) => {
                                 return (
-                                    <tr key = {(itemCount-dummyRowLength)+index}>
+                                    <tr key = {(itemCount-expenses.length%itemCount)+index}>
                                         <td className="expense-table-index expense-table-th-td" key={0} >{""}</td>
                                         {
                                             row.map((value, cellIndex) => {
