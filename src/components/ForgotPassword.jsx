@@ -11,7 +11,7 @@ const ForgotPassword = () => {
     }
 
     const content = {
-        "head": "Error",
+        "head": "",
         "body": "Check your Email for verification Link"
     };
 
@@ -38,6 +38,7 @@ const ForgotPassword = () => {
 
     return (
         <>
+        Hello World
         <PopupModal state={popupState} setState={handlePopupState} content={content}/>
         <div className="forgot-password-container">
             <h2>Forgot Password</h2>

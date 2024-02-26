@@ -2,31 +2,54 @@
 import React, { useState } from 'react';
 import * as Components from './Components';
 import axios from 'axios'; // Import Axios
+import PopupModal from './components/PopupModal';
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState(''); // State to hold the email
+  const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
+    const [popupState, setPopupState] = useState(false);
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+    const masterContent = {
+      "success":  {
+          "head": "Success",
+          "body": "Check your Email for verification Link"
+      },
+    "error": {
+      "head": "Error",
+      "body": "Could not send email"
+    }}
+
+  const [content,setContent] = useState(masterContent["resetError"]);
+
 
   // Function to handle the form submission
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the default form submission
-
-    // Perform the POST request with Axios
+    event.preventDefault();
     try {
-      const response = await axios.post('http://your-backend-url/forgot-password', {
-        email,
-      });
+        // const response = await axios.post(`http://localhost:3000/total/forgotPassword/?email=${encodeURIComponent(email)}`);
+        const response = await axios.post(
+            'http://localhost:3000/total/forgotPassword',
+            { email },
+            { headers: { 'Content-Type': 'application/json' } }
+        );
+        if (response)
+        {
+            setContent(masterContent["success"])
+            setPopupState(true);
 
-      // Handle successful password reset request (e.g., show success message)
-      console.log(response.data);
-      setEmail(''); // Clear the email input field
+        }
     } catch (error) {
-      // Handle errors (e.g., show error message)
-      console.error(error);
+      setContent(masterContent["success"])
+      setPopupState(true);
     }
-  };
+};
 
   return (
-    <Components.Form onSubmit={handleSubmit}>
+    <>
+    <PopupModal state={popupState} setState={handlePopupState} content={content}/>
+    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}>
       <Components.Title>Forgot Password</Components.Title>
       <Components.Input
         type='email'
@@ -36,6 +59,8 @@ const ForgotPassword = () => {
       />
       <Components.Button type='submit'>Send Link</Components.Button>
     </Components.Form>
+    </>
+    
   );
 };
 

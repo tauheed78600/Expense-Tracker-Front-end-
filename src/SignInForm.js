@@ -113,9 +113,9 @@ const response = await axios.post('http://localhost:3000/total/forgotPassword/',
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
         <Components.Button type='submit'>Sign In</Components.Button>
-        {/* <Components.Button type='button' onClick={toggleForgotPasswordModal}>
+        <Components.Button type='button' onClick={toggleForgotPasswordModal}>
           Forgot your password?
-        </Components.Button> */}
+        </Components.Button>
       </Components.Form>
       {/* Render the Forgot Password modal */}
       <ForgotPasswordModal
