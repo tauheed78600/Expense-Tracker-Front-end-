@@ -87,7 +87,7 @@ const SignUpForm = () => {
     <>
     <SpinnerComponent state={loading} setState={setLoading}/>
     <Components.Form onSubmit={handleSubmit}>
-      <Components.Title>Create Account</Components.Title>
+      <Components.Title style={{"marginLeft":"0px"}}>Create Account</Components.Title>
       <Components.Input
         type='text'
         placeholder='Username'
@@ -116,7 +116,7 @@ const SignUpForm = () => {
         onChange={(e) => setMonthlyBudget(e.target.value)}
       />
       {monthlyBudgetError && <p style={{ color: 'red' }}>{monthlyBudgetError}</p>}
-      <Components.Button type='submit'>Sign Up</Components.Button>
+      <Components.Button type='submit' style={{"width":"240px"}}>Sign Up</Components.Button>
     </Components.Form>
     </>
     
