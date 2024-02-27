@@ -6,23 +6,32 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import PopupModal from './PopupModal';
+import SpinnerComponent from "./SpinnerComponent";
 
 function MonthlyBudgetModal() {
   const [show, setShow] = useState(false);
   const [currentBudget, setCurrentBudget] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
         const userId = localStorage.getItem('userId');
+        const accessToken = localStorage.getItem("accessToken")
         try {
+          setLoading(true);
             const response = await axios.get(`http://localhost:3000/total/${userId}`, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
             });
+            setLoading(false);
             if(response.data.monthly_budget !== undefined)
-                setCurrentBudget(response.data.monthly_budget);
+            {
+              setCurrentBudget(response.data.monthly_budget);
+              setNewBudget(response.data.monthly_budget);
+            }
+                
             else
                 setCurrentBudget(0);
             if(response.data.remaining_budget !== undefined)
@@ -72,12 +81,13 @@ function MonthlyBudgetModal() {
   const handleSave = async () => {
         const userId = localStorage.getItem('userId');
         try {
+          setLoading(true);
           const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`, {}, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           });
-          
+          setLoading(false);
 
 
             if (response.status===200)
@@ -100,6 +110,7 @@ function MonthlyBudgetModal() {
 
   return (
     <>
+    <SpinnerComponent state={loading} setState={setLoading}/>
       <Button variant="primary" onClick={handleShow}>
         Set Budget
       </Button>
