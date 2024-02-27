@@ -6,13 +6,13 @@ import Transactions from './components/Transactions';
 import Analytics from './components/Analytics';
 import ReportGenerate from './components/ReportGenerate';
 import Navbar from './components/Navbar';
-import ForgotPasswordModal from './modals/forgotPasswordModal';
 import ResetPassword from './components/ResetPassword';
 import ForgotPassword from './ForgotPassword';
 import axios from 'axios'; // Import axios for making API calls
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './index.css';
 import Homepage from './components/Homepage';
+import { NotFound } from './components/NotFound';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -64,6 +64,7 @@ function App() {
   return (
     <Router>
       <Routes>
+      <Route path="*" element={<NotFound />}/>
         <Route path="/" element={<Homepage />} /> {/* Add this line for the homepage route */}
         <Route path="/auth" element={<Auth onLoginSuccess={handleLoginSuccess} setUserId={setUserId} />} />
         <Route path="/forgotPassword" element={<ForgotPassword/>} />

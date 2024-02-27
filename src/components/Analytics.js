@@ -3,6 +3,7 @@ import { Chart } from 'chart.js/auto';
 import axios from 'axios';
 import "../styles/Analytics.css";
 import PopupModal from './PopupModal';
+import SpinnerComponent from './SpinnerComponent';
  
 const Analytics = ({ userId }) => {
  
@@ -28,15 +29,18 @@ const [content, setContent] = useState(masterContent["fetchError"]);
     pieChart: null,
     pieChart1: null,
   };
+
+  const [loading, setLoading] = useState(false);
  
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const expensesResponse = await axios.get(`http://localhost:3000/api/data/${userId}`);
         const categoriesResponse = await axios.get(`http://localhost:3000/api/data1/${userId}`);
         const merchantsResponse = await axios.get(`http://localhost:3000/api/data2/${userId}`);
         const paymentModesResponse = await axios.get(`http://localhost:3000/api/data3/${userId}`);
- 
+        setLoading(false);
         setExpensesData({
           expenses: expensesResponse.data,
           categories: categoriesResponse.data,
@@ -227,6 +231,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
  
   return (
     <div className="analytics-container">
+      <SpinnerComponent state={loading} setState={setLoading}/>
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
