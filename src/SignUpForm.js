@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as Components from './Components';
 import axios from 'axios';
+import SpinnerComponent from './components/SpinnerComponent';
 
 const SignUpForm = () => {
   const [username, setUsername] = useState(''); // Changed from name to username
@@ -11,6 +12,7 @@ const SignUpForm = () => {
   const [passwordError, setPasswordError] = useState('');
   const [monthlyBudget, setMonthlyBudget] = useState('');
   const [monthlyBudgetError, setMonthlyBudgetError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Regular expression for email validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -56,6 +58,7 @@ const SignUpForm = () => {
 
     if (validateForm()) {
       try {
+        setLoading(true);
         // var monthlyBudget = 0
         const response = await axios.post('http://localhost:3000/total/register/', {
           email,
@@ -63,6 +66,7 @@ const SignUpForm = () => {
           monthlyBudget,
           username 
         });
+        setLoading(false);
 
         
         // Handle successful signup (e.g., clear form, show success message)
@@ -72,6 +76,7 @@ const SignUpForm = () => {
         setPassword('');
         setMonthlyBudget(''); // Clear monthly budget as well
       } catch (error) {
+        setLoading(false);
         // Handle errors (e.g., show error message)
         console.error(error);
       }
@@ -79,6 +84,8 @@ const SignUpForm = () => {
   };
 
   return (
+    <>
+    <SpinnerComponent state={loading} setState={setLoading}/>
     <Components.Form onSubmit={handleSubmit}>
       <Components.Title>Create Account</Components.Title>
       <Components.Input
@@ -111,6 +118,8 @@ const SignUpForm = () => {
       {monthlyBudgetError && <p style={{ color: 'red' }}>{monthlyBudgetError}</p>}
       <Components.Button type='submit'>Sign Up</Components.Button>
     </Components.Form>
+    </>
+    
   );
 };
 

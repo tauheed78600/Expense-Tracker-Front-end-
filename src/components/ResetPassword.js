@@ -4,6 +4,7 @@ import * as Components from '../Components';
 import axios from 'axios'; // Import Axios
 import {  useLocation, useNavigate } from 'react-router-dom';
 import PopupModal from './PopupModal';
+import SpinnerComponent from './SpinnerComponent';
 
 const ResetPassword = () => {
     const location = useLocation();
@@ -13,6 +14,7 @@ const ResetPassword = () => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [popupState, setPopupState] = useState(false);
     const timerId = useRef(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handlePopupState = (state) => {
@@ -124,6 +126,7 @@ const ResetPassword = () => {
     else
     {
       try {
+        setLoading(true);
           // const response = await axios.post(`http://localhost:3000/total/forgotPassword/?email=${encodeURIComponent(email)}`);
           const response = await axios.post(
               'http://localhost:3000/total/resetPassword',
@@ -134,12 +137,14 @@ const ResetPassword = () => {
               { headers: { 'Content-Type': 'application/json'
           } }
           );
+          setLoading(false);
           if (response)
           {
               setContent(masterContent["resetSuccess"])
               setPopupState(true);
           }
       } catch (error) {
+          setLoading(false);
           setContent(masterContent["resetError"])
           setPopupState(true);
       }
