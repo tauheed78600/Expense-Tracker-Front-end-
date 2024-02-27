@@ -4,6 +4,7 @@ import * as Components from '../Components';
 import axios from 'axios'; // Import Axios
 import {  useLocation, useNavigate } from 'react-router-dom';
 import PopupModal from './PopupModal';
+import SpinnerComponent from './SpinnerComponent';
 
 const ResetPassword = () => {
     const location = useLocation();
@@ -13,6 +14,7 @@ const ResetPassword = () => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [popupState, setPopupState] = useState(false);
     const timerId = useRef(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handlePopupState = (state) => {
@@ -124,6 +126,7 @@ const ResetPassword = () => {
     else
     {
       try {
+        setLoading(true);
           // const response = await axios.post(`http://localhost:3000/total/forgotPassword/?email=${encodeURIComponent(email)}`);
           const response = await axios.post(
               'http://localhost:3000/total/resetPassword',
@@ -134,12 +137,14 @@ const ResetPassword = () => {
               { headers: { 'Content-Type': 'application/json'
           } }
           );
+          setLoading(false);
           if (response)
           {
               setContent(masterContent["resetSuccess"])
               setPopupState(true);
           }
       } catch (error) {
+          setLoading(false);
           setContent(masterContent["resetError"])
           setPopupState(true);
       }
@@ -149,13 +154,16 @@ const ResetPassword = () => {
   return (
     <>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
-    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}>
-      <Components.Title>Reset Password</Components.Title>
+    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}
+    style = {{"display":"flex", "position":"absolute" ,"alignItems":"center", "justifyContent":"center",
+    "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
+      <Components.Title style={{"marginLeft":"0px", "marginBottom":"20px"}}>Reset Password</Components.Title>
       <Components.Input
         type='password'
         placeholder='Enter new password'
         value={newPassword}
         onChange={(e) => checkPassword(e.target.value)}
+        style = {{"width":"50%"}}
       />
       <label id="reset-password-error"></label>
       <Components.Input
@@ -163,6 +171,7 @@ const ResetPassword = () => {
         placeholder='Confirm new password'
         value={confirmNewPassword}
         onChange={(e) => checkConfirmPassword(e.target.value)}
+        style = {{"width":"50%"}}
       />
       <label id="confirm-reset-password-error"></label>
       <Components.Button type='submit'>Change Password</Components.Button>

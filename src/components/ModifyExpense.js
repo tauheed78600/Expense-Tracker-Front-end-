@@ -12,8 +12,10 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import { getCategories } from "./categories";
 import { Plus } from "lucide-react";
 import PopupModal from "./PopupModal";
+import SpinnerComponent from "./SpinnerComponent";
 export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, setLoadExpense, show, setShow})
 {
+    const [loading, setLoading] = useState(false);
     const errorMessage = {
         date: "modify-expense-date-error",
         category: "modify-expense-category-error",
@@ -163,6 +165,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             paymentMode: modifyExpenseData.paymentMode
         };
         var updateRow ={};
+        setLoading(true);
         if(Object.keys(loadExpense).length ===  0)
         {
             axios.post(apiURL,expenseData,  {
@@ -234,6 +237,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 setPopupState(true);
             });
         }
+        setLoading(false);
         
     }
     const handleClose = () => {
@@ -286,6 +290,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
 
     return (
         <>
+            <SpinnerComponent state={loading} setState={setLoading}/>
             <Button variant="primary" onClick={handleShow}>
                 <Plus/>
             </Button>

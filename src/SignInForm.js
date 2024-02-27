@@ -2,9 +2,10 @@
 import React, { useContext, useState } from 'react';
 import * as Components from './Components';
 import axios from 'axios';
-import ForgotPasswordModal from './modals/forgotPasswordModal';
 import { useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthContext';
+import SpinnerComponent from './components/SpinnerComponent';
+import PopupModal from './components/PopupModal';
  
 const SignInForm = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
@@ -13,7 +14,18 @@ const SignInForm = ({ onLoginSuccess }) => {
   const [passwordError, setPasswordError] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const masterContent = {
+    "loginError": {
+      "head":"Error",
+      "body":"Invalid login credentials"
+    }
+  }
+  const [popupState, setPopupState] = useState(false);
+  const [content, setContent] = useState(masterContent["loginError"]);
+  const handlePopupState = (state) => {
+    setPopupState(state);
+}
 
   
  
@@ -58,44 +70,43 @@ const SignInForm = ({ onLoginSuccess }) => {
  
     if (validateForm()) {
       try {
+        setLoading(true);
         // Append email and password as query parameters to the URL
-        const response = await axios.post(`http://localhost:3000/total/login/?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
-        login();
-        console.log('Login API response:', response.data);
-        localStorage.setItem('accessToken', response.data.accessToken)
-        console.log(response)
-        const userId = response.data.userId;
-        console.log("response.data.userId",response.data.userId);
-        onLoginSuccess(response.data); 
-        navigate('/dashboard');
+        await axios.post(`http://localhost:3000/total/login/?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`).
+        then((response)=>{
+          login();
+          console.log('Login API response:', response.data);
+          localStorage.setItem('accessToken', response.data.accessToken)
+          console.log(response)
+          const userId = response.data.userId;
+          console.log("response.data.userId",response.data.userId);
+          setLoading(false);
+          onLoginSuccess(response.data); 
+          navigate('/dashboard');
+        }).
+        catch((error)=>{
+          console.log(error);
+          setContent(masterContent["loginError"]);
+          setPopupState(true);
+          setLoading(false);
+        });
+        
       } catch (error) {
         // Handle errors (e.g., show error message)
-        console.error(error);
+        console.log(error);
       }
     }
   };
  
-  const handleForgotPasswordSubmit = async () => {
-    if (validateEmail()) {
-      try {
-const response = await axios.post('http://localhost:3000/total/forgotPassword/', {
-          email,
-        });
-        console.log(response.data);
-        setShowForgotPasswordModal(false);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
  
   const toggleForgotPasswordModal = () => {
     navigate("/forgotPassword")
-    setShowForgotPasswordModal(!showForgotPasswordModal);
   };
  
   return (
     <>
+    <SpinnerComponent state={loading} setState={setLoading}/>
+    <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <Components.Form onSubmit={handleSubmit}>
         <Components.Title1>Sign In</Components.Title1>
         <Components.Input
@@ -117,21 +128,6 @@ const response = await axios.post('http://localhost:3000/total/forgotPassword/',
           Forgot your password?
         </Components.Button>
       </Components.Form>
-      {/* Render the Forgot Password modal */}
-      <ForgotPasswordModal
-        isOpen={showForgotPasswordModal}
-        onClose={toggleForgotPasswordModal}
-        onSubmit={handleForgotPasswordSubmit}
-      >
-        <Components.Input
-          type='email'
-          placeholder='Email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        {emailError && <p style={{ color: 'red' }}>{emailError}</p>}
-        <Components.Button onClick={handleForgotPasswordSubmit}>Send Reset Link</Components.Button>
-      </ForgotPasswordModal>
     </>
   );
 };

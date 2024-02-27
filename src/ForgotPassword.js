@@ -3,10 +3,13 @@ import React, { useState } from 'react';
 import * as Components from './Components';
 import axios from 'axios'; // Import Axios
 import PopupModal from './components/PopupModal';
+import SpinnerComponent from './components/SpinnerComponent';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
     const [popupState, setPopupState] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const handlePopupState = (state) => {
         setPopupState(state);
     }
@@ -65,6 +68,7 @@ const ForgotPassword = () => {
     else
     {
       try {
+        setLoading(true);
           // const response = await axios.post(`http://localhost:3000/total/forgotPassword/?email=${encodeURIComponent(email)}`);
           const response = await axios.post(
               'http://localhost:3000/total/forgotPassword',
@@ -75,24 +79,29 @@ const ForgotPassword = () => {
           {
               setContent(masterContent["success"])
               setPopupState(true);
-
+              setLoading(false);
           }
       } catch (error) {
         setContent(masterContent["error"])
         setPopupState(true);
+        setLoading(false);
       }
     }
 };
 
   return (
     <>
+    <SpinnerComponent state={loading} setState={setLoading}/>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
-    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}>
-      <Components.Title>Forgot Password</Components.Title>
+    <Components.Form onSubmit={(e)=>{handleSubmit(e)}} 
+    style = {{"display":"flex", "position":"absolute" ,"alignItems":"center", "justifyContent":"center",
+    "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
+      <Components.Title style={{"marginLeft":"0px", "marginBottom":"20px"}}>Forgot Password?</Components.Title>
       <Components.Input
         placeholder='Enter your E-mail address'
         value={email}
         onChange={(e) => checkEmail(e.target.value)}
+        style = {{"width":"50%"}}
       />
       <label id="forgot-password-email"></label>
       <Components.Button type='submit'>Send Link</Components.Button>
