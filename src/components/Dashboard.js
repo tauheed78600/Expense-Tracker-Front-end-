@@ -34,6 +34,7 @@ const fetchData = async () => {
         },
       });
     console.log("response.data", response.data)
+    console.log("userId in dashboard", userId)
     setUserData(response.data);
     } catch (error) {
     setContent(masterContent["fetchError"]);

@@ -63,6 +63,7 @@ const SignInForm = ({ onLoginSuccess }) => {
         login();
         console.log('Login API response:', response.data);
         localStorage.setItem('accessToken', response.data.accessToken)
+        localStorage.setItem("userId", response.data.userId)
         console.log(response)
         const userId = response.data.userId;
         console.log("response.data.userId",response.data.userId);

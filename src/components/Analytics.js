@@ -230,7 +230,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="lineChart" style={{"width":  "80vw", "height":  "45vh", "position": "relative"}} className="chart" st></canvas>
+          <canvas id="lineChart" style={{"width":  "80vw", "height":  "40vh", "position": "relative"}} className="chart" st></canvas>
         </div>
         {/* <div className="chart-column">
           <canvas id="pieChart" className="chart"></canvas>
@@ -239,7 +239,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       </div>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="barChart" style={{"width":  "80vw", "height":  "45vh", "position": "relative"}} className="chart"></canvas>
+          <canvas id="barChart" style={{"width":  "80vw", "height":  "40vh", "position": "relative"}} className="chart"></canvas>
         </div>
       </div>
     </div>

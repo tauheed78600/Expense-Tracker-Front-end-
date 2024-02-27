@@ -256,7 +256,7 @@ export default function Transactions({ userId }) {
 
     const handleEditExpense = (index) => {
         index = index+(pageCounter-1)*itemCount;
-        localStorage.setItem("expenseId", expenses[index][0])
+        localStorage.setItem("expenseId", expenses[index][1])
         setShow(true);
         setSendExpense([index, ...expenses[index]]);
     }
