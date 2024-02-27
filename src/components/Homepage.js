@@ -17,7 +17,7 @@ const Homepage = () => {
       </Helmet>
     <div className="container-fluid">
       {/* Nav Bar */}
-        <nav className="navbar">
+        <nav className="navbar border shadow p-3  bg-white rounded">
             <a className="navbar-brand" href="">MoneyMentor</a>
             {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" >
@@ -27,20 +27,24 @@ const Homepage = () => {
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item">
                     {/* Use the Link component for navigation */}
-                    <Link className="nav-link" to="/auth">Login</Link>
+                    <Link className="nav-link" to="/auth">Login/Register</Link>
                     </li>
                 </ul>
             {/* </div> */}
         </nav>
 
       {/* Title */}
-      <div className="row">
-        <div className="col-lg-6 col-md-12 col-sm-12">
-          <h1>Track Your Expenses Easily With <span className="nameColor">MoneyMentor</span></h1>
+      <div className="row1">
+            <div className='col'>
+            <div className="col-lg-6 col-md-12 col-sm-12">
+          <h1><pre>Track</pre>
+          <pre>Your Expenses</pre>  
+          <pre>Easily With</pre> <span className="nameColor">MoneyMentor</span></h1>
         </div>
-        <div className="col-lg-6 col-md-12 col-sm-12">
+        { <div className="col-lg-6 col-md-12 col-sm-12">
           <img src="icons-expense-tracker.svg" alt="iphone-mockup" className="iphone-img" />
-        </div>
+        </div> }
+            </div>
       </div>
 
       {/* Features */}
@@ -65,21 +69,25 @@ const Homepage = () => {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials">
+       <section id="testimonials">
+        
         <div id="carouselExampleControls" className="carousel slide" data-ride="false">
           <div className="carousel-inner">
             <div className="carousel-item active">
               <h2>
                 Love the app! It's so user-friendly and has really helped me manage my finances better. Thanks!
               </h2>
-              <img className="testimonial-img" src="feedback1.jpg" alt="man-profile" />
+              <br/>
+              <img className="testimonial-img" src="feedback1.jpg" alt="man-profile" /> <br/>
               <em>Pebbles, New York</em>
             </div>
             <div className="carousel-item">
               <h2 className="testimonial-text">
                 Great app! Really helped me stay on top of my expenses. Thank you!
               </h2>
+              <br/>
               <img className="testimonial-img" src="lady-img.jpg" alt="lady-profile" />
+              <br/>
               <em>Beverly, Illinois</em>
             </div>
           </div>
@@ -92,14 +100,21 @@ const Homepage = () => {
             <span className="sr-only">Next</span>
           </a>
         </div>
-      </section>
+      </section> 
+
+
+  {/* Hello world */}
+  
+      
 
       {/* Press */}
       <section id="press">
-        <img className="press-img" src="techcrunch.png" alt="tc-logo" />
+            <div className='press1'>
+            <img className="press-img" src="techcrunch.png" alt="tc-logo" />
         <img className="press-img" src="tnw.png" alt="tnw-logo" />
         <img className="press-img" src="bizinsider.png" alt="biz-insider-logo" />
         <img className="press-img" src="mashable.png" alt="mashable-logo" />
+            </div>
       </section>
 
       {/* Pricing */}

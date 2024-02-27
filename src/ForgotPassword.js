@@ -93,12 +93,15 @@ const ForgotPassword = () => {
     <>
     <SpinnerComponent state={loading} setState={setLoading}/>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
-    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}>
-      <Components.Title>Forgot Password</Components.Title>
+    <Components.Form onSubmit={(e)=>{handleSubmit(e)}} 
+    style = {{"display":"flex", "position":"absolute" ,"alignItems":"center", "justifyContent":"center",
+    "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
+      <Components.Title style={{"marginLeft":"0px", "marginBottom":"20px"}}>Forgot Password?</Components.Title>
       <Components.Input
         placeholder='Enter your E-mail address'
         value={email}
         onChange={(e) => checkEmail(e.target.value)}
+        style = {{"width":"50%"}}
       />
       <label id="forgot-password-email"></label>
       <Components.Button type='submit'>Send Link</Components.Button>
