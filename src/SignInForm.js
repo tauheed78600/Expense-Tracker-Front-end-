@@ -98,18 +98,6 @@ const SignInForm = ({ onLoginSuccess }) => {
     }
   };
  
-  const handleForgotPasswordSubmit = async () => {
-    if (validateEmail()) {
-      try {
-const response = await axios.post('http://localhost:3000/total/forgotPassword/', {
-          email,
-        });
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
  
   const toggleForgotPasswordModal = () => {
     navigate("/forgotPassword")
@@ -135,20 +123,12 @@ const response = await axios.post('http://localhost:3000/total/forgotPassword/',
           onChange={(e) => setPassword(e.target.value)}
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-        <Components.Button type='submit'>Sign In</Components.Button>
-        <Components.Button type='button' onClick={toggleForgotPasswordModal}>
+        <Components.Button type='submit' style={{"width":"240px"}}>Sign In</Components.Button>
+        <Components.Button type='button' onClick={toggleForgotPasswordModal}
+        style={{"width":"240px","paddingLeft":"0px", "paddingRight":"0px"}}>
           Forgot your password?
         </Components.Button>
       </Components.Form>
-      {/* Render the Forgot Password modal */}
-        <Components.Input
-          type='email'
-          placeholder='Email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        {emailError && <p style={{ color: 'red' }}>{emailError}</p>}
-        <Components.Button onClick={handleForgotPasswordSubmit}>Send Reset Link</Components.Button>
     </>
   );
 };

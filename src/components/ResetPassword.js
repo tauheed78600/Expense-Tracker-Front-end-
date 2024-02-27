@@ -154,13 +154,16 @@ const ResetPassword = () => {
   return (
     <>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
-    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}>
-      <Components.Title>Reset Password</Components.Title>
+    <Components.Form onSubmit={(e)=>{handleSubmit(e)}}
+    style = {{"display":"flex", "position":"absolute" ,"alignItems":"center", "justifyContent":"center",
+    "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
+      <Components.Title style={{"marginLeft":"0px", "marginBottom":"20px"}}>Reset Password</Components.Title>
       <Components.Input
         type='password'
         placeholder='Enter new password'
         value={newPassword}
         onChange={(e) => checkPassword(e.target.value)}
+        style = {{"width":"50%"}}
       />
       <label id="reset-password-error"></label>
       <Components.Input
@@ -168,6 +171,7 @@ const ResetPassword = () => {
         placeholder='Confirm new password'
         value={confirmNewPassword}
         onChange={(e) => checkConfirmPassword(e.target.value)}
+        style = {{"width":"50%"}}
       />
       <label id="confirm-reset-password-error"></label>
       <Components.Button type='submit'>Change Password</Components.Button>
