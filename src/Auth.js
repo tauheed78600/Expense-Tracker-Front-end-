@@ -24,7 +24,7 @@ const Auth = ({ setCurrentPage, setUserId }) => {
   };
 
   return (
-    <Components.Container>
+    <Components.Container style={{"marginTop":"0"}}>
       {isSignUp ? (
         <>
           <Components.SignUpContainer>
@@ -34,7 +34,7 @@ const Auth = ({ setCurrentPage, setUserId }) => {
             <Components.Overlay />
             <Components.OverlayPanel>
               <Components.Title>Already have an account?</Components.Title>
-              <Components.Button onClick={toggleForm} style={{"width":"150px"}}>Sign In</Components.Button>
+              <Components.Button onClick={toggleForm} style={{"width":"150px", "marginLeft":"150px"}}>Sign In</Components.Button>
             </Components.OverlayPanel>
           </Components.OverlayContainer>
         </>
@@ -47,7 +47,7 @@ const Auth = ({ setCurrentPage, setUserId }) => {
             <Components.Overlay />
             <Components.OverlayPanel>
               <Components.Title>Don't have an account?</Components.Title>
-              <Components.Button onClick={toggleForm} style={{"width":"150px"}}>Sign Up</Components.Button>
+              <Components.Button onClick={toggleForm} style={{"width":"150px", "marginLeft":"150px"}}>Sign Up</Components.Button>
             </Components.OverlayPanel>
           </Components.OverlayContainer>
         </>
