@@ -1,113 +1,118 @@
 // ForgotPassword.js
-import React, { useState } from 'react';
-import * as Components from './Components';
-import axios from 'axios'; // Import Axios
-import PopupModal from './components/PopupModal';
-import SpinnerComponent from './components/SpinnerComponent';
+import React, { useState } from "react";
+import * as Components from "./Components";
+import axios from "axios"; // Import Axios
+import PopupModal from "./components/PopupModal";
+import SpinnerComponent from "./components/SpinnerComponent";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
-    const [popupState, setPopupState] = useState(false);
-    const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [popupState, setPopupState] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const handlePopupState = (state) => {
-        setPopupState(state);
-    }
-    const masterContent = {
-      "success":  {
-          "head": "Success",
-          "body": "Check your E-mail for verification Link"
-      },
-    "error": {
-      "head": "Error",
-      "body": "Could not send E-mail"
+  const handlePopupState = (state) => {
+    setPopupState(state);
+  };
+  const masterContent = {
+    success: {
+      head: "Success",
+      body: "Check your E-mail for verification Link",
     },
-    "notValidEmail": {
-      "head": "Error",
-      "body": "Not a valid E-mail"
-    }
-  }
+    error: {
+      head: "Error",
+      body: "Could not send E-mail",
+    },
+    notValidEmail: {
+      head: "Error",
+      body: "Not a valid E-mail",
+    },
+  };
 
-  const [content,setContent] = useState(masterContent["error"]);
+  const [content, setContent] = useState(masterContent["error"]);
 
   function validEmail(value) {
     var re = /\S+@\S+\.\S+/;
-    if(re.test(value))
-    {
-      return true;  
-    }
-    else
-    {
-      return false
+    if (re.test(value)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
   const checkEmail = (value) => {
     var element = document.getElementById("forgot-password-email");
     setEmail(value);
-    if(validEmail(value))
-    {
-      element.innerHTML = ""; 
-    }
-    else
-    {
+    if (validEmail(value)) {
+      element.innerHTML = "";
+    } else {
       element.innerHTML = "Not a valid E-Mail!";
     }
-  }
-
+  };
 
   // Function to handle the form submission
   const handleSubmit = async (event) => {
-
     event.preventDefault();
-    if(!validEmail(email))
-    {
+    if (!validEmail(email)) {
       setContent(masterContent["notValidEmail"]);
       setPopupState(true);
-    }
-    else
-    {
+    } else {
       try {
         setLoading(true);
-          // const response = await axios.post(`http://localhost:3000/total/forgotPassword/?email=${encodeURIComponent(email)}`);
-          const response = await axios.post(
-              'http://localhost:3000/total/forgotPassword',
-              { email },
-              { headers: { 'Content-Type': 'application/json' } }
-          );
-          if (response)
-          {
-              setContent(masterContent["success"])
-              setPopupState(true);
-              setLoading(false);
-          }
+        // const response = await axios.post(`http://localhost:3000/total/forgotPassword/?email=${encodeURIComponent(email)}`);
+        const response = await axios.post(
+          "http://localhost:3000/total/forgotPassword",
+          { email },
+          { headers: { "Content-Type": "application/json" } }
+        );
+        if (response) {
+          setContent(masterContent["success"]);
+          setPopupState(true);
+          setLoading(false);
+        }
       } catch (error) {
-        setContent(masterContent["error"])
+        setContent(masterContent["error"]);
         setPopupState(true);
         setLoading(false);
       }
     }
-};
+  };
 
   return (
     <>
-    <SpinnerComponent state={loading} setState={setLoading}/>
-    <PopupModal state={popupState} setState={handlePopupState} content={content}/>
-    <Components.Form onSubmit={(e)=>{handleSubmit(e)}} 
-    style = {{"display":"flex", "position":"absolute" ,"alignItems":"center", "justifyContent":"center",
-    "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
-      <Components.Title style={{"marginLeft":"0px", "marginBottom":"20px"}}>Forgot Password?</Components.Title>
-      <Components.Input
-        placeholder='Enter your E-mail address'
-        value={email}
-        onChange={(e) => checkEmail(e.target.value)}
-        style = {{"width":"50%"}}
+      <SpinnerComponent state={loading} setState={setLoading} />
+      <PopupModal
+        state={popupState}
+        setState={handlePopupState}
+        content={content}
       />
-      <label id="forgot-password-email"></label>
-      <Components.Button type='submit'>Send Link</Components.Button>
-    </Components.Form>
+      <Components.Form
+        onSubmit={(e) => {
+          handleSubmit(e);
+        }}
+        style={{
+          display: "flex",
+          position: "absolute",
+          alignItems: "center",
+          justifyContent: "center",
+          top: "0",
+          bottom: "0",
+          left: "0",
+          right: "0",
+        }}
+      >
+        <Components.Title style={{ marginLeft: "0px", marginBottom: "20px" }}>
+          Forgot Password?
+        </Components.Title>
+        <Components.Input
+          placeholder="Enter your E-mail address"
+          value={email}
+          onChange={(e) => checkEmail(e.target.value)}
+          style={{ width: "50%" }}
+        />
+        <label id="forgot-password-email"></label>
+        <Components.Button type="submit">Send Link</Components.Button>
+      </Components.Form>
     </>
-    
   );
 };
 

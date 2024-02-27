@@ -2,6 +2,7 @@ import React from 'react';
 import '../styles/Homepage.css'
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom'; 
+import "../styles.css";
 
 const Homepage = () => {
   return (
@@ -9,7 +10,6 @@ const Homepage = () => {
      <Helmet>
         <title>MoneyMentor - Homepage</title>
         <meta name="description" content="Track your expenses easily with MoneyMentor." />
-        <link rel="stylesheet" href="styles.css" />
         <script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -18,7 +18,7 @@ const Homepage = () => {
     <div className="container-fluid">
       {/* Nav Bar */}
         <nav className="navbar border shadow p-3  bg-white rounded">
-            <a className="navbar-brand" href="">MoneyMentor</a>
+            <Link to = "/" className="navbar-brand">MoneyMentor</Link>
             {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" >
             <span className="navbar-toggler-icon"><i className="fa-solid fa-bars"/></span>

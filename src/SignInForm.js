@@ -123,8 +123,9 @@ const SignInForm = ({ onLoginSuccess }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-        <Components.Button type='submit'>Sign In</Components.Button>
-        <Components.Button type='button' onClick={toggleForgotPasswordModal}>
+        <Components.Button type='submit' style={{"width":"240px"}}>Sign In</Components.Button>
+        <Components.Button type='button' onClick={toggleForgotPasswordModal}
+        style={{"width":"240px","paddingLeft":"0px", "paddingRight":"0px"}}>
           Forgot your password?
         </Components.Button>
       </Components.Form>
