@@ -19,7 +19,7 @@ const Auth = ({ setCurrentPage, setUserId }) => {
     console.log('Login successful, responseData:', responseData);
     const userId = responseData.userId;
     console.log('Login successful, userId:', userId);
-    // localStorage.setItem('userId', userId);
+    localStorage.setItem('userId', userId);
     setUserId(userId); // Set userId in the state
   };
 

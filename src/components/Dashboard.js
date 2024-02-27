@@ -64,7 +64,7 @@ return (
     <div className="section" id="name-section">
     <label htmlFor="name">UserName:</label>
     <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
-    <span className="material-icons-outlined text-green">insert_emoticon</span>
+    <span className="material-icons-outlined text-green">accessibility</span>
     </div>
     {/* <button className="logout-btn" onClick={handleLogout}>
         <span className="material-icons">logout</span>
@@ -78,7 +78,7 @@ return (
     <div className="section" id="username-section">
     <label htmlFor="user_name">Remaining Budget:</label>
     <div id="user_name" className="info">{userData.remaining_budget || '0'}</div>
-    <span className="material-icons-outlined text-green">accessibility</span>
+    <span className="material-icons-outlined text-green">add_shopping_cart</span>
     </div>
     <div className="section" id="email-section">
     <label htmlFor="email">Email:</label>

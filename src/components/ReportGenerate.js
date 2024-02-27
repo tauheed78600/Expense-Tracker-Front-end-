@@ -3,6 +3,7 @@ import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
 import PopupModal from './PopupModal';
+import SpinnerComponent from './SpinnerComponent';
 
 const ReportGenerate = ({ expenses }) => {
 
@@ -10,6 +11,7 @@ const ReportGenerate = ({ expenses }) => {
     const handlePopupState = (state) => {
         setPopupState(state);
     }
+    const [loading, setLoading] = useState(false);
 
     
 
@@ -92,6 +94,7 @@ const filterDailyExpenses = (date) => {
   
   const saveExcel = async (expenses) => {
     try {
+      setLoading(true);
       const workbook = new Excel.Workbook();
       const worksheet = workbook.addWorksheet('Expenses');
   
@@ -124,7 +127,9 @@ const filterDailyExpenses = (date) => {
   
       const buf = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buf]), 'Expenses_Report.xlsx');
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error generating Excel report:', error);
     }
   };
@@ -147,6 +152,7 @@ const filterDailyExpenses = (date) => {
 
   return (
     <div>
+      <SpinnerComponent state={loading} setState={setLoading}/>
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="report-container">
         <div className="report-input">
