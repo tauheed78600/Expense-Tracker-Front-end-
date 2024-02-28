@@ -101,7 +101,7 @@ const ResetPassword = () => {
           timerId.current = setTimeout(() => {
               setPopupState(false);
               gotoAuth();
-          }, 5000);
+          }, 3000);
       }
 
       return () => {

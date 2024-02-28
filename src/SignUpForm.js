@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as Components from './Components';
 import axios from 'axios';
 import SpinnerComponent from './components/SpinnerComponent';
+import ReCAPTCHA from "react-google-recaptcha";
+import PopupModal from './components/PopupModal';
 
 const SignUpForm = () => {
   const [username, setUsername] = useState(''); // Changed from name to username
@@ -13,6 +15,33 @@ const SignUpForm = () => {
   const [monthlyBudget, setMonthlyBudget] = useState('');
   const [monthlyBudgetError, setMonthlyBudgetError] = useState('');
   const [loading, setLoading] = useState(false);
+  const captchaRef = useRef(null);
+  const timerId = useRef(null);
+
+  const masterContent = {
+    "signupError": {
+      "head":"Error",
+      "body":"Could not sign up!"
+    },
+    "signupSuccess": {
+      "head":"Success",
+      "body":"New account created!"
+    },
+    "captchaError": {
+      "head":"Error",
+      "body":"Please verify CAPTCHA!"
+    },
+    "detailError": {
+      "head":"Error",
+      "body":"Please fill the required fields correctly!"
+    }
+  }
+
+  const [popupState, setPopupState] = useState(false);
+  const [content, setContent] = useState(masterContent["signupError"]);
+  const handlePopupState = (state) => {
+    setPopupState(state);
+}
 
   // Regular expression for email validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -53,10 +82,32 @@ const SignUpForm = () => {
     return isValid;
   };
 
+  useEffect(() => {
+    if (content.head === "Success") {
+        timerId.current = setTimeout(() => {
+            setPopupState(false);
+            window.location.reload();
+        }, 3000);
+    }
+
+    return () => {
+        //Clearing a timeout
+        clearTimeout(timerId.current);
+    };
+}, [content]);
+
   const handleSubmit = async (event) => {
+    const token = captchaRef.current.getValue();
     event.preventDefault();
 
     if (validateForm()) {
+      if(!token)
+      {
+          setContent(masterContent["captchaError"]);
+          setPopupState(true);
+      }
+      else
+      {
       try {
         setLoading(true);
         // var monthlyBudget = 0
@@ -68,7 +119,8 @@ const SignUpForm = () => {
           username 
         });
         setLoading(false);
-
+        setContent(masterContent["signupSuccess"]);
+        setPopupState(true);
         
         // Handle successful signup (e.g., clear form, show success message)
         console.log(response.data);
@@ -79,14 +131,23 @@ const SignUpForm = () => {
       } catch (error) {
         setLoading(false);
         // Handle errors (e.g., show error message)
-        console.error(error);
+        setContent(masterContent["signupError"]);
+        setPopupState(true);
+        setLoading(false);
       }
+    }}
+    else
+    {
+      setContent(masterContent["detailError"]);
+      setPopupState(true);
     }
+    captchaRef.current.reset();
   };
 
   return (
     <>
     <SpinnerComponent state={loading} setState={setLoading}/>
+    <PopupModal state={popupState} setState={handlePopupState} content={content}/>
     <Components.Form onSubmit={handleSubmit}>
       <Components.Title style={{"marginLeft":"0px"}}>Create Account</Components.Title>
       <Components.Input
@@ -117,6 +178,7 @@ const SignUpForm = () => {
         onChange={(e) => setMonthlyBudget(e.target.value)}
       />
       {monthlyBudgetError && <p style={{ color: 'red' }}>{monthlyBudgetError}</p>}
+      <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>
       <Components.Button type='submit' style={{"width":"240px"}}>Sign Up</Components.Button>
     </Components.Form>
     </>
