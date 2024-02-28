@@ -5,6 +5,8 @@ import axios from 'axios'; // Import Axios
 import {  useLocation, useNavigate } from 'react-router-dom';
 import PopupModal from './PopupModal';
 import SpinnerComponent from './SpinnerComponent';
+import "../styles/ResetPassword.css";
+
 
 const ResetPassword = () => {
     const location = useLocation();
@@ -41,6 +43,7 @@ const ResetPassword = () => {
 
     const [content,setContent] = useState(masterContent["resetError"]);
 
+    //to check if password is valid
     function validPassword(value) {
       if(value.length === 0)
         return false;
@@ -50,6 +53,7 @@ const ResetPassword = () => {
         return true;
     }
 
+    //show password validation errors
     function checkPassword(value) {
       var element = document.getElementById("reset-password-error");
       setNewPassword(value);
@@ -71,6 +75,8 @@ const ResetPassword = () => {
         document.getElementById("confirm-reset-password-error").innerHTML = "";
       }
     }
+
+    //show confirm password validation errors
     function checkConfirmPassword(value) {
       var element = document.getElementById("confirm-reset-password-error");
       setConfirmNewPassword(value);
@@ -92,10 +98,14 @@ const ResetPassword = () => {
         document.getElementById("reset-password-error").innerHTML = "";
       }
     }
+
+    //to navigate to /auth
     const gotoAuth = useCallback(() => {
       navigate("/auth");
     }, [navigate]);
 
+
+    //set timer for 3 seconds on successful password reset and goto auth page
     useEffect(() => {
       if (content.head === "Success") {
           timerId.current = setTimeout(() => {
@@ -154,10 +164,11 @@ const ResetPassword = () => {
   return (
     <>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
+    <SpinnerComponent state={loading} setState={setLoading}/>
     <Components.Form onSubmit={(e)=>{handleSubmit(e)}}
     style = {{"display":"flex", "position":"absolute" ,"alignItems":"center", "justifyContent":"center",
     "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
-      <Components.Title style={{"marginLeft":"0px", "marginBottom":"20px"}}>Reset Password</Components.Title>
+      <Components.Title id = "reset-title">Reset Password</Components.Title>
       <Components.Input
         type='password'
         placeholder='Enter new password'

@@ -31,11 +31,11 @@ export default function Transactions({ userId }) {
 
     const masterContent = {
         "budgetExceededError": {
-          "head": "Error",
+          "head": "Warning",
           "body": "Budget goal has been reached for this month"
       },
       "ninetyError": {
-        "head": "Error",
+        "head": "Warning",
         "body": "Budget goal has been  90% reached for this month"
       },
       "delete": {
@@ -78,7 +78,7 @@ export default function Transactions({ userId }) {
     });
     const [masterExpenses, setMasterExpenses] = useState([]);
 
-
+    //to generate dummy rows based on length of expenses array
     const getDummyRows = () => {
         var dummyRowLength = expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
         var rows = [];
@@ -96,23 +96,29 @@ export default function Transactions({ userId }) {
 
     const [expenses, setExpenses] = useState([]);
     
-
+    //returns total pages
     const totalPages = () => 
     {
         return Math.max(Math.ceil(expenses.length/itemCount), 1);
     }
 
+    //to go to first page on transactions
     const gotoFirstPage = () => {
         setPageCounter(prevState=> 1);
     }
+
+    //to go to last page on transactions
     const gotoLastPage= () => {
         setPageCounter(prevState => totalPages());
     }
     
+    //increase page count
     const increasePageCounter = () => {
         var total = totalPages();
         setPageCounter(prevState => Math.min(total, prevState+1) );
     }
+
+    //decrease page count
     const decreasePageCounter = () => {
         setPageCounter(prevState => Math.max(1, prevState-1) );
     }
@@ -121,12 +127,13 @@ export default function Transactions({ userId }) {
     const [showFilter, setShowFilter] = useState(false);
 
 
-
+    //set expenses when master expeneses changes
     useEffect(() => {
         
         setExpenses(masterExpenses);
     }, [masterExpenses]);
 
+    //rectify page count when expenses data changes
     useEffect(()=> {
         if(pageCounter > totalPages())
         {
@@ -134,7 +141,9 @@ export default function Transactions({ userId }) {
         }
     }, [expenses]);
 
-    const accessToken = localStorage.getItem("accessToken")
+    const accessToken = localStorage.getItem("accessToken");
+
+    //load expenses data for user
     useEffect(() => {
         const fetchExpenses = async () => {
             try {
@@ -216,12 +225,14 @@ export default function Transactions({ userId }) {
 
     const [sendExpense, setSendExpense] = useState([]);
 
+    //change expenses when expense form returns new expense
     const modifyAddExpense = (newExpense) => {
         var newMasterExpense = [...masterExpenses, newExpense];
         setSendExpense([]);
         setMasterExpenses(newMasterExpense);
     };
 
+    //change expenses when expense form returns modified expense
     const modifyEditExpense = (index, newExpense) => {
         setMasterExpenses(prevArray => {
             const newArray = [...prevArray];
@@ -230,6 +241,7 @@ export default function Transactions({ userId }) {
         });
     }
 
+    //change expenses when expense is deleted and submit delete request to server
     const modifyDeleteExpense = (index) => {
         index = index + (pageCounter-1)*itemCount;
         console.log("expenses[index].expenseId", expenses[index].expenseId)
@@ -271,7 +283,7 @@ export default function Transactions({ userId }) {
 
     const handleEditExpense = (index) => {
         index = index+(pageCounter-1)*itemCount;
-        localStorage.setItem("expenseId", expenses[index].expenseId)
+        localStorage.setItem("expenseId", expenses[index][0])
         setShow(true);
         setSendExpense({"index":index, ...expenses[index]});
     }
@@ -406,9 +418,9 @@ export default function Transactions({ userId }) {
                         </table>
                         {expenses.length > 10 &&    <div id="page-selector">
                                             {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}
-                                            <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>
+                                            {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>}
                                             <button className="expense-table-button expense-table-selector-button" style={{"text-decoration": "underline"}}>{pageCounter}</button>
-                                            <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>
+                                            {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>}
                                             {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>}
                                         </div>}  
                     </div>

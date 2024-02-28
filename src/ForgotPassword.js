@@ -4,6 +4,7 @@ import * as Components from "./Components";
 import axios from "axios"; // Import Axios
 import PopupModal from "./components/PopupModal";
 import SpinnerComponent from "./components/SpinnerComponent";
+import "./styles/ForgotPassword.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -100,7 +101,7 @@ const ForgotPassword = () => {
           right: "0",
         }}
       >
-        <Components.Title style={{ marginLeft: "0px", marginBottom: "20px" }}>
+        <Components.Title id="forgot-title">
           Forgot Password?
         </Components.Title>
         <Components.Input

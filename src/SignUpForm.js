@@ -4,6 +4,7 @@ import axios from 'axios';
 import SpinnerComponent from './components/SpinnerComponent';
 import ReCAPTCHA from "react-google-recaptcha";
 import PopupModal from './components/PopupModal';
+import "./styles/SignUpForm.css";
 
 const SignUpForm = () => {
   const [username, setUsername] = useState(''); // Changed from name to username
@@ -149,8 +150,9 @@ const SignUpForm = () => {
     <SpinnerComponent state={loading} setState={setLoading}/>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
     <Components.Form onSubmit={handleSubmit}>
-      <Components.Title style={{"marginLeft":"0px"}}>Create Account</Components.Title>
+      <Components.Title id = "signup-title" style={{"marginLeft":"0px"}}>Create Account</Components.Title>
       <Components.Input
+      id='signup-input'
         type='text'
         placeholder='Username'
         value={username} // Changed from name to username
@@ -158,6 +160,7 @@ const SignUpForm = () => {
       />
       {usernameError && <p style={{ color: 'red' }}>{usernameError}</p>}
       <Components.Input
+      id='signup-input'
         type='email'
         placeholder='Email'
         value={email}
@@ -165,6 +168,7 @@ const SignUpForm = () => {
       />
       {emailError && <p style={{ color: 'red' }}>{emailError}</p>}
       <Components.Input
+      id='signup-input'
         type='password'
         placeholder='Password'
         value={password}
@@ -172,14 +176,16 @@ const SignUpForm = () => {
       />
       {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
       <Components.Input
+      id='signup-input'
         type='number'
         placeholder='Monthly Budget'
         value={monthlyBudget}
         onChange={(e) => setMonthlyBudget(e.target.value)}
+        style={{"marginBottom":"20px"}}
       />
       {monthlyBudgetError && <p style={{ color: 'red' }}>{monthlyBudgetError}</p>}
       <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>
-      <Components.Button type='submit' style={{"width":"240px"}}>Sign Up</Components.Button>
+      <Components.Button id="button-signup"type='submit'>Sign Up</Components.Button>
     </Components.Form>
     </>
     

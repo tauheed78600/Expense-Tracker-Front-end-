@@ -37,6 +37,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             paymentMode: ""
         }
     )
+    //set data when loadExpense changes
     useEffect(() => {
         if (Object.keys(loadExpense).length ===  0)
         {
@@ -73,6 +74,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         /*if(loadExpense[0].split("-")[2].length != 2 )
             loadExpense[0] = swapDate(loadExpense[0]);*/
     }, [loadExpense]);
+
+
     const swapDate = (date) => {
         date = date.split("-");
         var temp = date[0];
@@ -81,10 +84,13 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         date = date.join("-");
         return date
     }
+
+    //set date limit
     const setDateLimit = () => {
         document.getElementById("modify-expense-date").max = currentDate();
     }
 
+    //reset form data
     const resetData = () => {
         
         setModifyExpenseData(
@@ -101,7 +107,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         );
     }
 
-    
+    //set data on input value change
     const handleModifyExpenseChange = (name, value) => {
         if(value === "")
         {
@@ -114,7 +120,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
 
-    const accessToken = localStorage.getItem("accessToken")
+    const accessToken = localStorage.getItem("accessToken");
+
+    //validate expense form and submit changes to server
     const handleModifyExpense = (e) => {
         e.preventDefault();
         var flag = true;
@@ -240,6 +248,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setLoading(false);
         
     }
+
+    //on closing expense form
     const handleClose = () => {
         resetData();
         setShow(false);}
@@ -253,6 +263,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setPopupState(state);
     }
 
+    //json to store popup dialogue content
     const masterContent = {
         "add": {
             "head": "Success",
@@ -301,12 +312,12 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 <Modal.Title>Expense Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Form>
+                <Form id="modify-form">
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalDate">
-                        <Form.Label column sm={2}>
+                        <Form.Label className="modify-label" column sm={2}>
                         Date
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={8}>
                         <Form.Control id ="modify-expense-date" onClick={setDateLimit} name = "date" type="date" placeholder="" value={modifyExpenseData.date} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
                         <Form.Label id = "modify-expense-date-error" column sm={12}>
@@ -316,12 +327,12 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalCategory">
-                        <Form.Label column sm={2}>
+                        <Form.Label className="modify-label" column sm={2}>
                             Category
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={8}>
                             <Dropdown>
-                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f"}} variant="success" id="dropdown-basic">
+                                <Dropdown.Toggle id = "modify-category" variant="success">
                                     {modifyExpenseData.category !== "" ? modifyExpenseData.category : "Choose Category"}
                                 </Dropdown.Toggle>
 
@@ -344,10 +355,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalMerchant">
-                        <Form.Label column sm={2}>
+                        <Form.Label className="modify-label" column sm={2}>
                         Merchant
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={8}>
                         <Form.Control name = "merchant" placeholder="" value={modifyExpenseData.merchant} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
                         <Form.Label id = "modify-expense-merchant-error" column sm={12}>
@@ -356,10 +367,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalAmount">
-                        <Form.Label column sm={2}>
+                        <Form.Label className="modify-label" column sm={2}>
                         Amount
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={8}>
                         <Form.Control name = "amount" placeholder="" value={modifyExpenseData.amount} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
                         <Form.Label id = "modify-expense-amount-error" column sm={12}>
@@ -369,10 +380,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                     </Form.Group>
                     <fieldset>
                         <Form.Group as={Row} className="mb-3">
-                        <Form.Label as="legend" column sm={2}>
+                        <Form.Label className="modify-label" as="legend" column sm={2}>
                             Payment Mode
                         </Form.Label>
-                        <Col sm={10}>
+                        <Col sm={8}>
                             <Form.Check
                             type="radio"
                             label="Credit"
