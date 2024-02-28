@@ -4,7 +4,8 @@ import axios from 'axios';
 import "../styles/Analytics.css";
 import PopupModal from './PopupModal';
 import SpinnerComponent from './SpinnerComponent';
- 
+
+
 const Analytics = ({ userId }) => {
  
   const masterContent = {
@@ -15,6 +16,7 @@ const Analytics = ({ userId }) => {
  
 }
 const [popupState, setPopupState] = useState(false);
+
 const handlePopupState = (state) => {
   setPopupState(state);
 }
@@ -31,7 +33,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
   };
 
   const [loading, setLoading] = useState(false);
- 
+ //load data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,7 +57,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
  
     fetchData();
   }, [userId]);
- 
+  //create charts
   useEffect(() => {
     if (expensesData.expenses) {
       createLineChart('lineChart', expensesData.expenses, 'date', 'amount');
@@ -72,7 +74,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       });
     };
   }, [expensesData]);
-
+  //Date transformation
   function tranform_date(date) {
     
     if(date !== undefined)
@@ -87,7 +89,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
   function date_sort(a, b) {
     return new Date(a.date) - new Date(b.date);
 }
- 
+ //Creates line chart on canvas by passing expense data, label and value.
   const createLineChart = (canvasId, data, labelKey, valueKey) => {
     for(var i = 0; i < data.length; i++)
     {
@@ -145,7 +147,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
   };
 
   
- 
+ //Creates bar chart on canvas by passing expense data, label and value.
   const createBarChart = (canvasId, data, labelKey, valueKey) => {
     const colors = ['rgba(120,  28,  129,  1)', 'rgba(107,  178,  140,  1)', 'rgba(72,  139,  194,  1)', 'rgba(217,  33,  32,  1)'];
     const ctx = document.getElementById(canvasId).getContext('2d');

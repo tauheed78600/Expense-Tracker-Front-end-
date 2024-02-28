@@ -14,15 +14,10 @@ const Dashboard = ({ userId }) => {
 
 }
 const [popupState, setPopupState] = useState(false);
-const handlePopupState = (state) => {
-  setPopupState(state);
-}
-
-
 
 const [content, setContent] = useState(masterContent["fetchError"]);
 const [userData, setUserData] = useState({});
-
+//load user data
 useEffect(() => {
 
 const accessToken = localStorage.getItem("accessToken")
@@ -46,30 +41,15 @@ fetchData();
 }, [userId]);
 
 
-const handleLogout = () => {
-    localStorage.clear()
-    window.location.href = "/auth"
-  };
-
 return (
   
 <div className="container">
-{/* <div className="logout-container">
-        <button className="logout-btn" onClick={handleLogout}>
-          <span className="material-icons">logout</span>
-          Logout
-        </button>
-        </div> */}
     <div className='h1'><h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1></div>
     <div className="section" id="name-section">
     <label htmlFor="name">UserName:</label>
     <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">accessibility</span>
     </div>
-    {/* <button className="logout-btn" onClick={handleLogout}>
-        <span className="material-icons">logout</span>
-        Logout
-      </button> */}
     <div className="section" id="budget-section">
     <label htmlFor="monthly_budget">Monthly Budget:</label>
     <div id="monthly_budget" className="info">{userData.monthly_budget || 'Loading...'}</div>
