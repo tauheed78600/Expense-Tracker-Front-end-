@@ -24,7 +24,8 @@ const Auth = ({ setCurrentPage, setUserId }) => {
   };
 
   return (
-    <Components.Container style={{"marginTop":"0"}}>
+    <Components.Container style={{"display":"flex","alignItems":"center", "justifyContent":"center",
+    "top":"0", "bottom":"0", "left":"0", "right":"0"}}>
       {isSignUp ? (
         <>
           <Components.SignUpContainer>
