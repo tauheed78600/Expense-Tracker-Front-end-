@@ -274,6 +274,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                                         checked={selected_categories.includes(cat)}
                                         onClick={()=>toggleCat(cat)
                                         }
+                                        style={{ "margin":"10px"}}
                                         />
                                     ))} 
                                 </Dropdown.Menu> 
