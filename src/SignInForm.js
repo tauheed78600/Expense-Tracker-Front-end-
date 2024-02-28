@@ -1,11 +1,12 @@
 // SignInForm.js
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import * as Components from './Components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
 import { AuthContext } from './AuthContext';
 import SpinnerComponent from './components/SpinnerComponent';
 import PopupModal from './components/PopupModal';
+import ReCAPTCHA from "react-google-recaptcha";
  
 const SignInForm = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
@@ -15,10 +16,20 @@ const SignInForm = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [loading, setLoading] = useState(false);
+  const captchaRef = useRef(null);
+
   const masterContent = {
     "loginError": {
       "head":"Error",
-      "body":"Invalid login credentials"
+      "body":"Invalid login credentials!"
+    },
+    "captchaError": {
+      "head":"Error",
+      "body":"Please verify CAPTCHA!"
+    },
+    "detailError": {
+      "head":"Error",
+      "body":"Please fill the required fields correctly!"
     }
   }
   const [popupState, setPopupState] = useState(false);
@@ -67,9 +78,16 @@ const SignInForm = ({ onLoginSuccess }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
- 
+    const token = captchaRef.current.getValue();
+    
     if (validateForm()) {
-      try {
+      if(!token)
+      {
+          setContent(masterContent["captchaError"]);
+          setPopupState(true);
+      }
+      else
+      {try {
         setLoading(true);
         // Append email and password as query parameters to the URL
         await axios.post(`http://localhost:3000/total/login/?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`).
@@ -94,8 +112,13 @@ const SignInForm = ({ onLoginSuccess }) => {
       } catch (error) {
         // Handle errors (e.g., show error message)
         console.log(error);
-      }
+      }}
     }
+    else{
+      setContent(masterContent["detailError"]);
+      setPopupState(true);
+    }
+    captchaRef.current.reset();
   };
  
  
@@ -123,8 +146,10 @@ const SignInForm = ({ onLoginSuccess }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-        <Components.Button type='submit'>Sign In</Components.Button>
-        <Components.Button type='button' onClick={toggleForgotPasswordModal}>
+        <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>
+        <Components.Button type='submit' style={{"width":"240px"}}>Sign In</Components.Button>
+        <Components.Button type='button' onClick={toggleForgotPasswordModal}
+        style={{"width":"240px","paddingLeft":"0px", "paddingRight":"0px"}}>
           Forgot your password?
         </Components.Button>
       </Components.Form>
