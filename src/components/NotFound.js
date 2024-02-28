@@ -29,8 +29,10 @@ export const NotFound = () => {
         <div id="div-404">
             <div id="image-div">
                 <FluidExample/>
+                <a href="https://www.freepik.com/" style={{"fontSize":"8px", "position":"absolute", "marginLeft":"12%", "marginTop":"-30px"}}>Designed by stories / Freepik</a>
             </div>
             <span id="error-body">The page you were looking for was not found...</span>
+            
             <Components.Button onClick={handleReturn}>Return Back</Components.Button>
         </div>
         

@@ -35,6 +35,8 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         amount: "",
         payment_mode_filter: ""
     })
+
+    //reset the filter
     const resetFilterData = () => {
         set_Selected_categories([]);
         setFilterData({
@@ -46,12 +48,16 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
             payment_mode_filter: ""
         });
     }
+
+    //set date limit from on filter
     const setDateLimitFrom = () => {
         if(filterData.dateTo !== "")
             document.getElementById("modify-filter-date-from").max = filterData.dateTo;
         else
             document.getElementById("modify-filter-date-from").max = currentDate();
     }
+
+    //set date limit to on filter
     const setDateLimitTo = () => {
         if(filterData.dateFrom !== "")
             document.getElementById("modify-filter-date-to").min = filterData.dateFrom;
@@ -59,7 +65,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
     }
 
     
-
+    //store filter data on input change
     const handleFilterChange = (name, value) => {
         var flag = false;
         if(value === "")
@@ -80,32 +86,45 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         setFilterData({...filterData, [name]: value})
     }
 
+    //filter date from. Takes array and date from as parameter.
     const filterDateFrom = (arr, from) => {
         return arr.filter((row)=>row.date >= from);
     }
+
+    //filter date to. Takes array and date to as parameter.
     const filterDateTo = (arr, to) => {
         return arr.filter((row)=>row.date <= to);
     }
-    function filterByString(s, value) {
-        return s.toLowerCase().includes(value.toLowerCase());
+
+    //checks if string2 is presen in string1
+    function filterByString(string1, string2) {
+        return string1.toLowerCase().includes(string2.toLowerCase());
     }
+
+    //filters array on basis of key and checks it against value
     const filterString = (arr, key, value) => {
         return arr.filter((row) => filterByString(row[key], value));
     }
-    function filterByNumber(s, value) {
-        s = parseFloat(s);
+
+    //checks if n and value are numerically equal
+    function filterByNumber(n, value) {
+        n = parseFloat(n);
         value = parseFloat(value);
-        return s === value;
+        return n === value;
     }
+
+    //filters array on basis of value of key being equal to value
     const filterNumber = (arr, key, value) => {
         
         return arr.filter((row) => filterByNumber(row[key], value));
     }
+
+    //filters array on basis of payment mode
     const filterPayment = (arr, mode) => {
         return arr.filter((row)=>row.paymentMode === mode)
     }
 
-
+    //handles submit request, validates filter inputs and sets expense data to filtered data
     const handleFilterSubmit = (e) => {
         e.preventDefault();
         var newArray = expenseData;
@@ -159,6 +178,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         set_Selected_categories([]);
     }
 
+    //on closing filter form
     const handleClose = () => {
         resetFilterData();
         setShowFilter(false);
@@ -169,6 +189,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         setPopupState(state);
     }
 
+    //stores multiple selected categories from dropdown category button
     const [selected_categories, set_Selected_categories] =  
         useState([]); 
 

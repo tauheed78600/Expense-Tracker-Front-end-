@@ -4,6 +4,7 @@ import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
 import PopupModal from './PopupModal';
 import SpinnerComponent from './SpinnerComponent';
+import "../styles/ReportGenerate.css";
 
 const ReportGenerate = ({ expenses }) => {
 
@@ -33,18 +34,22 @@ const ReportGenerate = ({ expenses }) => {
   const [periodStartDate, setPeriodStartDate] = useState('');
   const [periodEndDate, setPeriodEndDate] = useState('');
 
+  //filter expenses by category
   const filterExpensesByCategory = (category) => {
     return expenses.filter(expense => expense.category === category);
   };
 
+  //filter expenses by payment mode
   const filterExpensesByPaymentMode = (paymentMode) => {
     return expenses.filter(expense => expense.paymentMode === paymentMode);
   };
 
+  //filter expenses by merchant
   const filterExpensesByMerchant = (merchant) => {
     return expenses.filter(expense => expense.merchant === merchant);
   };
 
+  //generate daily report
   const handleDailyReport = () => {
     const inputDate = new Date(dailyReportDate);
     if (!isNaN(inputDate.getDate())) {
@@ -56,6 +61,7 @@ const ReportGenerate = ({ expenses }) => {
     }
 };
 
+//filter expenses by date
 const filterDailyExpenses = (date) => {
   return expenses.filter(expense => {
       const expenseDate = new Date(expense.date);
@@ -65,6 +71,7 @@ const filterDailyExpenses = (date) => {
   });
 };
 
+//generate monthly report
   const handleMonthlyReport = () => {
     const filteredExpenses = expenses.filter(expense => {
       const expenseDate = new Date(expense.date);
@@ -73,6 +80,7 @@ const filterDailyExpenses = (date) => {
     saveExcel(filteredExpenses);
   };
 
+  //generate period report using period start and end date.
   const handlePeriodReport = () => {
     const startDate = new Date(Date.parse(periodStartDate));
     startDate.setHours(0,   0,   0,   0); // Set the time to the start of the day
@@ -91,7 +99,7 @@ const filterDailyExpenses = (date) => {
     saveExcel(filteredExpenses);
   };
   
-  
+  //save report data in excel file
   const saveExcel = async (expenses) => {
     try {
       setLoading(true);
@@ -134,17 +142,19 @@ const filterDailyExpenses = (date) => {
     }
   };
   
-  
+  //generate category report
   const handleCategoryReport = () => {
     const filteredExpenses = filterExpensesByCategory(categoryFilter);
     saveExcel(filteredExpenses);
   };
 
+  //generate payment mode report
   const handlePaymentModeReport = () => {
     const filteredExpenses = filterExpensesByPaymentMode(paymentModeFilter);
     saveExcel(filteredExpenses);
   };
 
+  //generate merchant report
   const handleMerchantReport = () => {
     const filteredExpenses = filterExpensesByMerchant(merchantFilter);
     saveExcel(filteredExpenses);

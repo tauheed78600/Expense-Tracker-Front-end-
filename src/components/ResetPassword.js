@@ -41,6 +41,7 @@ const ResetPassword = () => {
 
     const [content,setContent] = useState(masterContent["resetError"]);
 
+    //to check if password is valid
     function validPassword(value) {
       if(value.length === 0)
         return false;
@@ -50,6 +51,7 @@ const ResetPassword = () => {
         return true;
     }
 
+    //show password validation errors
     function checkPassword(value) {
       var element = document.getElementById("reset-password-error");
       setNewPassword(value);
@@ -71,6 +73,8 @@ const ResetPassword = () => {
         document.getElementById("confirm-reset-password-error").innerHTML = "";
       }
     }
+
+    //show confirm password validation errors
     function checkConfirmPassword(value) {
       var element = document.getElementById("confirm-reset-password-error");
       setConfirmNewPassword(value);
@@ -92,10 +96,14 @@ const ResetPassword = () => {
         document.getElementById("reset-password-error").innerHTML = "";
       }
     }
+
+    //to navigate to /auth
     const gotoAuth = useCallback(() => {
       navigate("/auth");
     }, [navigate]);
 
+
+    //set timer for 3 seconds on successful password reset and goto auth page
     useEffect(() => {
       if (content.head === "Success") {
           timerId.current = setTimeout(() => {

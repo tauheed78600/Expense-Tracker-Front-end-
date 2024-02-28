@@ -14,6 +14,7 @@ function MonthlyBudgetModal() {
   const [remainingBudget, setRemainingBudget] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  //set current, remaining budget on loading
   useEffect(() => {
     const fetchUserData = async () => {
         const userId = localStorage.getItem('userId');
@@ -51,6 +52,7 @@ function MonthlyBudgetModal() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  //store new budget on input change
   const handleBudgetChange = (e) => {
     setNewBudget(e.target.value);
   }
@@ -78,6 +80,8 @@ function MonthlyBudgetModal() {
 
 
   const accessToken = localStorage.getItem("accessToken")
+
+  //submit budget change request to server
   const handleSave = async () => {
         const userId = localStorage.getItem('userId');
         try {

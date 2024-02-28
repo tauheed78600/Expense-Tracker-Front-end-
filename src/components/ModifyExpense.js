@@ -37,6 +37,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             paymentMode: ""
         }
     )
+    //set data when loadExpense changes
     useEffect(() => {
         if (Object.keys(loadExpense).length ===  0)
         {
@@ -73,6 +74,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         /*if(loadExpense[0].split("-")[2].length != 2 )
             loadExpense[0] = swapDate(loadExpense[0]);*/
     }, [loadExpense]);
+
+
     const swapDate = (date) => {
         date = date.split("-");
         var temp = date[0];
@@ -81,10 +84,13 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         date = date.join("-");
         return date
     }
+
+    //set date limit
     const setDateLimit = () => {
         document.getElementById("modify-expense-date").max = currentDate();
     }
 
+    //reset form data
     const resetData = () => {
         
         setModifyExpenseData(
@@ -101,7 +107,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         );
     }
 
-    
+    //set data on input value change
     const handleModifyExpenseChange = (name, value) => {
         if(value === "")
         {
@@ -114,7 +120,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
 
-    const accessToken = localStorage.getItem("accessToken")
+    const accessToken = localStorage.getItem("accessToken");
+
+    //validate expense form and submit changes to server
     const handleModifyExpense = (e) => {
         e.preventDefault();
         var flag = true;
@@ -240,6 +248,8 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setLoading(false);
         
     }
+
+    //on closing expense form
     const handleClose = () => {
         resetData();
         setShow(false);}
@@ -253,6 +263,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setPopupState(state);
     }
 
+    //json to store popup dialogue content
     const masterContent = {
         "add": {
             "head": "Success",
