@@ -5,6 +5,12 @@ import { saveAs } from 'file-saver';
 import PopupModal from './PopupModal';
 import SpinnerComponent from './SpinnerComponent';
 import { currentDate } from './currentDate';
+import { getCategories } from './categories';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import "../styles/ReportGenerate.css";
 
 const ReportGenerate = ({ expenses }) => {
  const [popupState, setPopupState] = useState(false);
@@ -33,7 +39,6 @@ const ReportGenerate = ({ expenses }) => {
  }
 
  const [content, setContent] = useState(masterContent["error"]);
- const [categoryFilter, setCategoryFilter] = useState('');
  const [paymentModeFilter, setPaymentModeFilter] = useState('');
  const [merchantFilter, setMerchantFilter] = useState('');
  const [dailyReportDate, setDailyReportDate] = useState('');
@@ -42,6 +47,9 @@ const ReportGenerate = ({ expenses }) => {
  const [periodStartDate, setPeriodStartDate] = useState('');
  const [periodEndDate, setPeriodEndDate] = useState('');
  const [reportType, setReportType] = useState('');
+ const categories = getCategories();
+ 
+
 
 
  const handleDailyReport = () => {
@@ -147,11 +155,17 @@ const ReportGenerate = ({ expenses }) => {
       return expense["date"] <= endDate;
     });
   }
-  if(categoryFilter !== "")
+  if(selected_categories.length !== 0)
   {
-    filteredExpenses = filteredExpenses.filter((expense)=>{
-      return expense["category"] === categoryFilter;
-    });
+    var temp = [];
+    for(var i = 0; i < selected_categories.length; i++)
+    {
+      temp = temp.concat(filteredExpenses.filter((expense)=>{
+        return expense["category"] === selected_categories[i];
+      }));
+    }
+    filteredExpenses = temp;
+    console.log(filteredExpenses)
   }
   
   if(merchantFilter !== "")
@@ -168,6 +182,21 @@ const ReportGenerate = ({ expenses }) => {
   }
   saveExcel(filteredExpenses);
  };
+
+ const [selected_categories, set_Selected_categories] =  
+        useState([]); 
+
+        const toggleCat = (option) => { 
+          console.log(option)
+            if (selected_categories.includes(option)) { 
+                set_Selected_categories( 
+                    selected_categories.filter((item) =>  
+                        item !== option)); 
+            } else { 
+                set_Selected_categories( 
+                    [...selected_categories, option]); 
+            } 
+        }; 
  
  
  
@@ -177,58 +206,96 @@ const ReportGenerate = ({ expenses }) => {
     <SpinnerComponent state={loading} setState={setLoading} />
     <PopupModal state={popupState} setState={handlePopupState} content={content} />
     <div className="report-container">
-      <div className="report-input">
-        {reportType === '' && (
+    <div className='report-input'>
+        {
           <>
-            <label htmlFor="categoryFilter">Category:</label>
-            <input
-              type="text"
-              id="categoryFilter"
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="report-input"
-            />
-            <label htmlFor="paymentModeFilter">Payment Mode:</label>
-            <select
-              id="paymentModeFilter"
-              value={paymentModeFilter}
-              onChange={(e) => setPaymentModeFilter(e.target.value)}
-              className="report-input"
-            >
-              <option value="">Select a payment mode</option>
-              <option value="Credit">Credit</option>
-              <option value="Debit">Debit</option>
-              <option value="UPI">UPI</option>
-              <option value="Cash">Cash</option>
-            </select>
-            <label htmlFor="merchantFilter">Merchant:</label>
-            <input
-              type="text"
-              id="merchantFilter"
-              value={merchantFilter}
-              onChange={(e) => setMerchantFilter(e.target.value)}
-              className="report-input"
-            />
-            <label htmlFor="periodStartDate">Start Date:</label>
-            <input
-              type="date"
-              id="periodStartDate"
-              value={periodStartDate}
-              onChange={(e) => setPeriodStartDate(e.target.value)}
-              className="report-input"
-            />
-            <label htmlFor="periodEndDate">End Date:</label>
-            <input
-              type="date"
-              id="periodEndDate"
-              value={periodEndDate}
-              onChange={(e) => setPeriodEndDate(e.target.value)}
-              className="report-input"
-            />
-            <button className="report-button" onClick={handleAllFieldsReport}>Generate Report Based on All Fields</button>
+            <Form id= "report-form">
+            <Form.Group as={Row} className="mb-3" controlId="formHorizontal">
+                <Form.Label column sm={2} style={{"marginTop":"40px"}}>
+                    Category
+                </Form.Label>
+                <Col sm={10}>
+                <Dropdown>
+                <Dropdown.Toggle style={{"width":"200px","backgroundColor":"#e26f6f", "marginLeft":"50px", "marginTop":"40px"}} variant="success" id="dropdown-basic">
+                    Choose Category
+                </Dropdown.Toggle>
+                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"250px" }}> 
+                    {categories.map((cat, index) => ( 
+                            <Form.Check
+                            key={index}
+                            type="checkbox"
+                            label={<span style={{"margin-left":"10px"}}>{cat}</span>}
+                            checked={selected_categories.includes(cat)}
+                            onClick={()=>toggleCat(cat)}
+                            style={{"width":'20px', "margin":"10px","textWrap":"nowrap"}}
+                            />
+                        ))} 
+                    </Dropdown.Menu> 
+                </Dropdown>
+                </Col>
+                <Form.Label id = "modify-expense-category-error" column sm={2}>
+                </Form.Label>
+                    </Form.Group>
+            </Form>
+            
+            
+            
+            
           </>
-        )}
+        }
+        </div>
+        <div className='report-input'>
+        <label htmlFor="paymentModeFilter">Payment Mode:</label>
+        <select
+          id="paymentModeFilter"
+          value={paymentModeFilter}
+          onChange={(e) => setPaymentModeFilter(e.target.value)}
+          className="report-input"
+        >
+          <option value="">Select a payment mode</option>
+          <option value="Credit">Credit</option>
+          <option value="Debit">Debit</option>
+          <option value="UPI">UPI</option>
+          <option value="Cash">Cash</option>
+        </select>
+        </div>
+        <div className='report-input'>
+        <label htmlFor="merchantFilter">Merchant:</label>
+        <input
+          type="text"
+          id="merchantFilter"
+          value={merchantFilter}
+          onChange={(e) => setMerchantFilter(e.target.value)}
+          className="report-input"
+        />
+        </div>
+    </div>
+
+    <div className="report-container" style={{"height":"140px"}}>
+      <div className='report-input'>
+        <label htmlFor="periodStartDate" style={{"marginRight":"20px"}}>Start Date:</label>
+        <input
+          type="date"
+          id="periodStartDate"
+          value={periodStartDate}
+          onChange={(e) => setPeriodStartDate(e.target.value)}
+          className="report-input"
+        />
+        </div>
+        <div className='report-input'>
+        <label htmlFor="periodEndDate" style={{"marginRight":"20px"}}>End Date:</label>
+        <input
+          type="date"
+          id="periodEndDate"
+          value={periodEndDate}
+          onChange={(e) => setPeriodEndDate(e.target.value)}
+          className="report-input"
+        />
+        </div>
+       
       </div>
+    <div className='report-container' style={{"display":"flex", "justifyContent":"center", "backgroundColor":"white", "boxShadow":"none"}}>
+    <button className="report-button" onClick={handleAllFieldsReport}>Generate Report Based on All Fields</button>
     </div>
     <div className='report-container'>
           <div className='report-input'>

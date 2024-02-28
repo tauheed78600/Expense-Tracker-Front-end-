@@ -31,11 +31,11 @@ export default function Transactions({ userId }) {
 
     const masterContent = {
         "budgetExceededError": {
-          "head": "Error",
+          "head": "Warning",
           "body": "Budget goal has been reached for this month"
       },
       "ninetyError": {
-        "head": "Error",
+        "head": "Warning",
         "body": "Budget goal has been  90% reached for this month"
       },
       "delete": {
