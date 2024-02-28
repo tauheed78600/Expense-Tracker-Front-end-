@@ -4,6 +4,7 @@ import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
 import PopupModal from './PopupModal';
 import SpinnerComponent from './SpinnerComponent';
+import { currentDate } from './currentDate';
 
 const ReportGenerate = ({ expenses }) => {
  const [popupState, setPopupState] = useState(false);
@@ -160,22 +161,40 @@ const ReportGenerate = ({ expenses }) => {
 
  const handleAllFieldsReport = () => {
   // If only the start date is provided, set the end date to the current date
-  let endDate = periodEndDate ? new Date(periodEndDate) : new Date();
- 
-  // Adjust the endDate to include the entire day of the end date
-  endDate.setHours(23, 59, 59, 999); // Set the time to the end of the day
- 
-  const filteredExpenses = expenses.filter(expense => {
-     const expenseDate = new Date(expense.date);
-     const matchesCategory = !categoryFilter || expense.category === categoryFilter;
-     const matchesPaymentMode = !paymentModeFilter || expense.paymentMode === paymentModeFilter;
-     const matchesMerchant = !merchantFilter || expense.merchant.includes(merchantFilter);
-     const matchesDateRange = !periodStartDate || !periodEndDate || (
-       expenseDate >= new Date(periodStartDate) &&
-       expenseDate <= endDate // Use <= to include the end date
-     );
-     return matchesCategory && matchesPaymentMode && matchesMerchant && matchesDateRange;
-  });
+  let endDate = periodEndDate ? new Date(periodEndDate) : currentDate();
+  
+  var filteredExpenses = expenses;
+  if(periodStartDate !== "")
+  {
+    filteredExpenses = filteredExpenses.filter((expense)=>{
+      return expense["date"] >= periodStartDate;
+    });
+  }
+  if(endDate !== "")
+  {
+    filteredExpenses = filteredExpenses.filter((expense)=>{
+      return expense["date"] <= endDate;
+    });
+  }
+  if(categoryFilter !== "")
+  {
+    filteredExpenses = filteredExpenses.filter((expense)=>{
+      return expense["category"] === categoryFilter;
+    });
+  }
+  
+  if(merchantFilter !== "")
+  {
+    filteredExpenses = filteredExpenses.filter((expense)=>{
+      return expense["merchant"] === merchantFilter;
+    });
+  }
+  if(paymentModeFilter !== "")
+  {
+    filteredExpenses = filteredExpenses.filter((expense)=>{
+      return expense["paymentMode"] === paymentModeFilter;
+    });
+  }
   saveExcel(filteredExpenses);
  };
  
