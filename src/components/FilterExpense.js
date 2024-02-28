@@ -227,7 +227,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                 <Modal.Title>Filter Expenses</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                <Form>
+                <Form id="filter-form">
                     <Form.Group as={Row} className="mb-3" controlId="formHorizontalDateFrom">
                         <Form.Label column sm={2}>
                         Date From
