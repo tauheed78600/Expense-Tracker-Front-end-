@@ -182,7 +182,7 @@ const Homepage = () => {
               <label htmlFor="formGroupExampleInput2">Feedback</label>
               <input type="text" className="form-control" id="formGroupExampleInput2" placeholder="Feedback Message" />
             </div>
-            <button type="submit" className="submitMail btn-primary mb-2">Submit</button>
+            <button type="" className="submitMail btn-primary mb-2">Submit</button>
           </form>
           <p className="copyright">© Copyright   2024 Parkar Digital</p>
           <p>Made with ❤</p>

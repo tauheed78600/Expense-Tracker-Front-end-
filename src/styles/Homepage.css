@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800;700&display=swap');
+
+
 body {
     font-family: "Poppins", sans-serif;
     color: #1f1f1f;
@@ -8,10 +11,10 @@ body {
   }
   h1 {
     font-family: "Poppins", sans-serif;
+    font-weight: bolder !important;
     line-height: 1.5;
     font-size: 4rem;
-    font-weight: bolder;
-    color: #fff;
+    color: #fff !important;
   }
   pre{
     color: white ;
@@ -21,9 +24,10 @@ body {
   h2 {
     font-family: "Poppins", sans-serif;
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: bold !important;
     line-height: 1.5;
-    color: #1f1f1f;
+    color: #1f1f1f !important;
+
   }
   h3 {
     font-family: "Poppins", sans-serif;
@@ -132,6 +136,7 @@ body {
     text-align: center;
     background-color: #ef8172;
     color: #fff;
+    font-family: "Poppins", sans-serif;
   }
   .carousel-item {
     padding: 7% 15%;
@@ -202,6 +207,8 @@ body {
     text-align: center;
     height: 40vh;
     padding: 100px 15% 40px;
+    font-weight: bolder !important;
+    font-family: "Poppins", sans-serif !important;
   }
 
 .feed-head{
