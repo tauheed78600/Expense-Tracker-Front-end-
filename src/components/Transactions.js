@@ -152,7 +152,7 @@ export default function Transactions({ userId }) {
                       Authorization: `Bearer ${accessToken}`,
                     },
                   });
-                
+                  console.log("response of http://localhost:3000/expenses/${userId}", response)
                 // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
                 var newArray = [];
                 for(var index in response.data)
@@ -170,48 +170,57 @@ export default function Transactions({ userId }) {
                         "paymentMode":row.paymentMode});
                 }
                 setMasterExpenses(newArray);
+
+                const response1 = await axios.get(`http://localhost:3000/total/getUser/${userId}`, {
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  });
                 
                 const emailId = response.data.email   
-                
-                if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
+                console.log("response.data.remaining_budget", response1.remaining_budget)
+                console.log("response.data.monthly_budget *   0.1", response1.data.monthly_budget *   0.1)
+                if (response1.data.remaining_budget <= response1.data.monthly_budget *   0.1) {
                     const currentMonth = new Date().getMonth();
                     const lastMonthNineReachedEmailSent = localStorage.getItem('lastMonthNineReachedEmailSent');
                     if (lastMonthNineReachedEmailSent !== currentMonth.toString()) {
-                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId }, {
+                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email }, {
                             headers: {
                               Authorization: `Bearer ${accessToken}`,
                             },
                           });
+                        console.log("response in email", response)
                     if (response)
                     {
                         setContent(masterContent["ninetyError"]);
                         setPopupState(true);
+                        alert("email budget exceeded")
                         // Store the current month in local storage to prevent sending the email again
                         localStorage.setItem('lastMonthNineReachedEmailSent', currentMonth.toString());
                     }
-                  }
+                  
                 }
+            }
                     
                   // Check if the user has exceeded their monthly budget
-                  if (response.data.remaining_budget <=   0) {
-                    const currentMonth = new Date().getMonth();
-                    const lastMonthEmailSent = localStorage.getItem('lastMonthEmailSent');
-                    if (lastMonthEmailSent !== currentMonth.toString()){
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  }, {
+                   // Check if the user has exceeded 90% of their monthly budget
+                const currentMonth = new Date().getMonth();
+                const lastMonthNineReachedEmailSent = localStorage.getItem('lastMonthNineReachedEmailSent');
+                if (response1.data.remaining_budget <= response1.data.monthly_budget * 0.1 && lastMonthNineReachedEmailSent !== currentMonth.toString()) {
+                    const emailId = response.data.email;
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email }, {
                         headers: {
                           Authorization: `Bearer ${accessToken}`,
                         },
                       });
-                    if (response)
-                    {
-                        setContent(masterContent["budgetExceededError"]);
+                    if (response) {
+                        setContent(masterContent["ninetyError"]);
                         setPopupState(true);
-                        localStorage.setItem('lastMonthEmailSent', currentMonth.toString());
+                        alert("Budget exceeded")
+                        // Store the current month in local storage to prevent sending the email again
+                        localStorage.setItem('lastMonthNineReachedEmailSent', currentMonth.toString());
                     }
-                  }
                 }
-
-
             } catch (error) {
                 setContent(masterContent["fetchError"]);
                 setPopupState(true);
