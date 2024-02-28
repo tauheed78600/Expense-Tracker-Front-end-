@@ -277,18 +277,6 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                                         />
                                     ))} 
                                 </Dropdown.Menu> 
-
-                                {/*<Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
-                                    {
-                                        categories.map((cat, index) => {
-                                            return (
-                                                <Dropdown.Item name = "category" value={cat} key = {index} 
-                                                onClick={(e)=>{handleFilterChange(e.target.name, cat)}}>
-                                                    {cat}</Dropdown.Item>
-                                            )
-                                        })
-                                    }
-                                </Dropdown.Menu>*/}
                             </Dropdown>
                         </Col>
                         <Form.Label id = "modify-expense-category-error" column sm={2}>
@@ -374,62 +362,6 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                 </Button>
                 </Modal.Footer>
             </Modal>
-            {/*<button id = "close-button-filter" onClick={closeFilterExpense}>Close</button>
-                <form>
-                    <label>Filter Options</label><br/>
-                    <label>From</label>
-                    <input name = "dateFrom" id = "modify-filter-date-from" type ="date" 
-                    value={filterData.dateFrom} onClick = {setDateLimitFrom} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/><br/>
-                    <label id = "modify-filter-date-from-error"></label><br/>
-
-                    <label>To</label>
-                    <input name = "dateTo" id = "modify-filter-date-to" type ="date" 
-                    value={filterData.dateTo} onClick = {setDateLimitTo} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/><br/>
-                    <label id = "modify-filter-date-from-error"></label><br/>
-
-                    <label>Category</label>
-                    <input name = "category" value={filterData.category} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/><br/>
-                    <label id = "modify-expense-category-error"></label><br/>
-
-                    <label>Merchant</label>
-                    <input name = "merchant" value={filterData.merchant} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/><br/>
-                    <label id = "modify-expense-merchant-error"></label><br/>
-
-                    <label>Amount</label>
-                    <input name = "amount" value={filterData.amount} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}/><br/>
-                    <label id = "modify-expense-amount-error"></label><br/>
-
-                    <label>Payment Mode</label>
-                    <input type="radio" className="filter-mode" name="payment_mode_filter" value="Credit" 
-                    checked={filterData.payment_mode_filter === 'Credit'} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}} />
-                    <label id="filter-mode1">Credit</label>
-
-                    <input type="radio" className="filter-mode" name="payment_mode_filter" value="Debit" 
-                    checked={filterData.payment_mode_filter === 'Debit'} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}} />
-                    <label id="filter-mode2">Debit</label>
-
-                    <input type="radio" className="filter-mode" name="payment_mode_filter" value="UPI" 
-                    checked={filterData.payment_mode_filter === 'UPI'} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}} />
-                    <label id="filter-mode3">UPI</label>
-
-                    <input type="radio" className="filter-mode" name="payment_mode_filter" value="Cash" 
-                    checked={filterData.payment_mode_filter === 'Cash'} 
-                    onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}} />
-                    <label id="filter-mode4">Cash</label><br/>
-
-                    <label id = "modify-filter-payment-error"></label>
-
-                    <input type = "submit" onClick = {handleFilterSubmit}/>
-
-    </form>*/}
         </>
         
     )

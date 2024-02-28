@@ -38,7 +38,7 @@ const Homepage = () => {
             <div className='col'>
             <div className="col-lg-6 col-md-12 col-sm-12">
           <h1><pre>Track</pre>
-          <pre>Your Expenses</pre>  
+          <pre id="your-expenses">Your Expenses</pre>  
           <pre>Easily With</pre> <span className="nameColor">MoneyMentor</span></h1>
         </div>
         { <div className="col-lg-6 col-md-12 col-sm-12">

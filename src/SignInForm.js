@@ -7,6 +7,7 @@ import { AuthContext } from './AuthContext';
 import SpinnerComponent from './components/SpinnerComponent';
 import PopupModal from './components/PopupModal';
 import ReCAPTCHA from "react-google-recaptcha";
+import "./styles/SignInForm.css";
  
 const SignInForm = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
@@ -131,12 +132,13 @@ const SignInForm = ({ onLoginSuccess }) => {
     <SpinnerComponent state={loading} setState={setLoading}/>
     <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <Components.Form onSubmit={handleSubmit}>
-        <Components.Title1>Sign In</Components.Title1>
+        <Components.Title1 id ="signin-title">Sign In</Components.Title1>
         <Components.Input
           type='text'
           placeholder='Username'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          id="signin-input"
         />
         {usernameError && <p style={{ color: 'red' }}>{usernameError}</p>}
         <Components.Input
@@ -144,14 +146,21 @@ const SignInForm = ({ onLoginSuccess }) => {
           placeholder='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          id="signin-input"
+          style={{"marginBottom":"20px"}}
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
         <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>
-        <Components.Button type='submit' style={{"width":"240px"}}>Sign In</Components.Button>
-        <Components.Button type='button' onClick={toggleForgotPasswordModal}
-        style={{"width":"240px","paddingLeft":"0px", "paddingRight":"0px"}}>
-          Forgot your password?
-        </Components.Button>
+        <div style={{"display":"flex", "gap":"5px"}}>
+              <Components.Button type='submit' id="button-signin">
+                Sign In</Components.Button>
+              <Components.Button type='button' id="button-forgot" onClick={toggleForgotPasswordModal}
+              >
+                Forgot your password?
+              </Components.Button>
+        </div>
+        
+          
       </Components.Form>
     </>
   );
