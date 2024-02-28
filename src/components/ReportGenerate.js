@@ -6,98 +6,106 @@ import PopupModal from './PopupModal';
 import SpinnerComponent from './SpinnerComponent';
 
 const ReportGenerate = ({ expenses }) => {
+ const [popupState, setPopupState] = useState(false);
+ const handlePopupState = (state) => {
+    setPopupState(state);
+ }
+ const [loading, setLoading] = useState(false);
 
-  const [popupState, setPopupState] = useState(false);
-    const handlePopupState = (state) => {
-        setPopupState(state);
-    }
-    const [loading, setLoading] = useState(false);
+ const masterContent = {
+    "error": {
+      "head": "Error",
+      "body": "Please enter a valid date!"
+    },
+ }
 
-    
+ const [content, setContent] = useState(masterContent["error"]);
+ const [categoryFilter, setCategoryFilter] = useState('');
+ const [paymentModeFilter, setPaymentModeFilter] = useState('');
+ const [merchantFilter, setMerchantFilter] = useState('');
+ const [dailyReportDate, setDailyReportDate] = useState('');
+ const [monthlyReportMonth, setMonthlyReportMonth] = useState('');
+ const [monthlyReportYear, setMonthlyReportYear] = useState('');
+ const [periodStartDate, setPeriodStartDate] = useState('');
+ const [periodEndDate, setPeriodEndDate] = useState('');
+ const [reportType, setReportType] = useState('');
+ const [date, setDate] = useState('');
 
-    const masterContent = {
-        "error": {
-          "head": "Error",
-          "body": "Please enter a valid date!"
-      },
-
-  }
-
-  const [content, setContent] = useState(masterContent["error"]);
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [paymentModeFilter, setPaymentModeFilter] = useState('');
-  const [merchantFilter, setMerchantFilter] = useState('');
-  const [dailyReportDate, setDailyReportDate] = useState('');
-  const [monthlyReportMonth, setMonthlyReportMonth] = useState('');
-  const [monthlyReportYear, setMonthlyReportYear] = useState('');
-  const [periodStartDate, setPeriodStartDate] = useState('');
-  const [periodEndDate, setPeriodEndDate] = useState('');
-
-  const filterExpensesByCategory = (category) => {
+ const filterExpensesByCategory = (category) => {
     return expenses.filter(expense => expense.category === category);
-  };
+ };
 
-  const filterExpensesByPaymentMode = (paymentMode) => {
+ const filterExpensesByPaymentMode = (paymentMode) => {
     return expenses.filter(expense => expense.paymentMode === paymentMode);
-  };
+ };
 
-  const filterExpensesByMerchant = (merchant) => {
+ const filterExpensesByMerchant = (merchant) => {
     return expenses.filter(expense => expense.merchant === merchant);
-  };
+ };
 
-  const handleDailyReport = () => {
+ const handleDailyReport = () => {
     const inputDate = new Date(dailyReportDate);
     if (!isNaN(inputDate.getDate())) {
-        const dailyExpenses = filterDailyExpenses(inputDate);
-        saveExcel(dailyExpenses);
+      const dailyExpenses = filterDailyExpenses(inputDate);
+      saveExcel(dailyExpenses);
     } else {
-        setContent(masterContent["error"]);
-        setPopupState(true);
+      setContent(masterContent["error"]);
+      setPopupState(true);
     }
-};
+ };
 
-const filterDailyExpenses = (date) => {
+ const filterDailyExpenses = (date) => {
+  console.log("Filtering expenses for date:", date);
   return expenses.filter(expense => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate.getDate() === date.getDate() &&
-             expenseDate.getMonth() === date.getMonth() &&
-             expenseDate.getFullYear() === date.getFullYear();
+     const expenseDate = new Date(expense.date);
+     console.log("Expense date:", expenseDate);
+     return expenseDate.getDate() === date.getDate() &&
+       expenseDate.getMonth() === date.getMonth() &&
+       expenseDate.getFullYear() === date.getFullYear();
+  });
+ };
+
+ const filterMonthlyExpenses = (date) => {
+  return expenses.filter(expense => {
+    const expenseDate = new Date(expense.date);
+    return expenseDate.getMonth() === date.getMonth() &&
+      expenseDate.getFullYear() === date.getFullYear();
   });
 };
 
-  const handleMonthlyReport = () => {
+ const handleMonthlyReport = () => {
     const filteredExpenses = expenses.filter(expense => {
       const expenseDate = new Date(expense.date);
-      return expenseDate.getMonth() +  1 === parseInt(monthlyReportMonth) && expenseDate.getFullYear() === parseInt(monthlyReportYear);
+      return expenseDate.getMonth() + 1 === parseInt(monthlyReportMonth) && expenseDate.getFullYear() === parseInt(monthlyReportYear);
     });
     saveExcel(filteredExpenses);
-  };
+ };
 
-  const handlePeriodReport = () => {
+ const handlePeriodReport = () => {
     const startDate = new Date(Date.parse(periodStartDate));
-    startDate.setHours(0,   0,   0,   0); // Set the time to the start of the day
-  
+    startDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
+
     const endDate = new Date(Date.parse(periodEndDate));
-    endDate.setHours(23,   59,   59,   999); // Set the time to the end of the day
-  
+    endDate.setHours(23, 59, 59, 999); // Set the time to the end of the day
+
     // Adjust the endDate to include the entire day of the end date
-    endDate.setDate(endDate.getDate() +   1);
-    endDate.setMilliseconds(endDate.getMilliseconds() -   1);
-  
+    endDate.setDate(endDate.getDate() + 1);
+    endDate.setMilliseconds(endDate.getMilliseconds() - 1);
+
     const filteredExpenses = expenses.filter(expense => {
       const expenseDate = new Date(expense.date);
       return expenseDate >= startDate && expenseDate < endDate; // Use < instead of <= to exclude the end date
     });
     saveExcel(filteredExpenses);
-  };
-  
-  
-  const saveExcel = async (expenses) => {
+ };
+
+ const saveExcel = async (expenses) => {
+  console.log("Expenses to be saved:", expenses);
     try {
       setLoading(true);
       const workbook = new Excel.Workbook();
       const worksheet = workbook.addWorksheet('Expenses');
-  
+
       worksheet.columns = [
         { header: 'Date', key: 'date' },
         { header: 'Category', key: 'category' },
@@ -105,26 +113,22 @@ const filterDailyExpenses = (date) => {
         { header: 'Amount', key: 'amount' },
         { header: 'Payment Mode', key: 'paymentMode' }
       ];
-  
+
       expenses.forEach(expense => {
-        // Check if expense.date is a Date object
+        console.log("Adding expense to Excel:", expense);
         let formattedDate;
         if (expense.date instanceof Date) {
-          // If it's a Date object, format it as a string in the format YYYY-MM-DD
           formattedDate = expense.date.toISOString().split('T')[0];
         } else {
-          // If it's not a Date object, assume it's a string and format it directly
           formattedDate = expense.date;
         }
-        // Create a new object with the formatted date
         const formattedExpense = {
           ...expense,
           date: formattedDate
         };
-        // Add the formatted expense to the worksheet
         worksheet.addRow(formattedExpense);
       });
-  
+
       const buf = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buf]), 'Expenses_Report.xlsx');
       setLoading(false);
@@ -132,147 +136,114 @@ const filterDailyExpenses = (date) => {
       setLoading(false);
       console.error('Error generating Excel report:', error);
     }
-  };
-  
-  
-  const handleCategoryReport = () => {
+ };
+
+ const handleCategoryReport = () => {
     const filteredExpenses = filterExpensesByCategory(categoryFilter);
     saveExcel(filteredExpenses);
-  };
+ };
 
-  const handlePaymentModeReport = () => {
+ const handlePaymentModeReport = () => {
     const filteredExpenses = filterExpensesByPaymentMode(paymentModeFilter);
     saveExcel(filteredExpenses);
-  };
+ };
 
-  const handleMerchantReport = () => {
+ const handleMerchantReport = () => {
     const filteredExpenses = filterExpensesByMerchant(merchantFilter);
     saveExcel(filteredExpenses);
-  };
+ };
 
-  return (
-    <div>
-      <SpinnerComponent state={loading} setState={setLoading}/>
-      <PopupModal state={popupState} setState={handlePopupState} content={content}/>
-      <div className="report-container">
-        <div className="report-input">
-          <label htmlFor="categoryFilter">Category:</label>
-<select
-      id="categoryFilter"
-      value={categoryFilter}
-      onChange={(e) => setCategoryFilter(e.target.value)}
-      className="report-input"
-    >
-      <option value="">Select a category</option>
-      <option value="Supermarket">Supermarket</option>
-      <option value="Gas Station">Gas Station</option>
-      <option value="Restaurant">Restaurant</option>
-      <option value="Online Retailer">Online Retailer</option>
-      <option value="Airline">Airline</option>
-      <option value="Healthcare Provider">Healthcare Provider</option>
-      <option value="Salons and Spa">Salons and Spa</option>
-      <option value="Home Improvement">Home Improvement</option>
-      <option value="Store">Store</option>
-      <option value="Subscription Service">Subscription Service</option>
-      <option value="Miscellaneous">Miscellaneous</option>
-      <option value="Other">Other</option>
-    </select>
+ 
 
-          <button className="report-button" onClick={handleCategoryReport}>Generate Category Report</button>
-        </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
-          <label htmlFor="paymentModeFilter">Payment Mode:</label>
-              <select
-      id="paymentModeFilter"
-      value={paymentModeFilter}
-      onChange={(e) => setPaymentModeFilter(e.target.value)}
-      className="report-input"
-    >
-      <option value="">Select a payment mode</option>
-      <option value="Credit">Credit</option>
-      <option value="Debit">Debit</option>
-      <option value="UPI">UPI</option>
-      <option value="Cash">Cash</option>
-    </select>
-          <button className="report-button" onClick={handlePaymentModeReport}>Generate Payment Mode Report</button>
-        </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
-          <label htmlFor="merchantFilter">Merchant:</label>
-          <input
-            type="text"
-            id="merchantFilter"
-            value={merchantFilter}
-            onChange={(e) => setMerchantFilter(e.target.value)}
-            className="report-input"
-          />
-          <button className="report-button" onClick={handleMerchantReport}>Generate Merchant Report</button>
-        </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
-          <label htmlFor="dailyReportDate">Daily Report Date:</label>
-          <input
-            type="date"
-            id="dailyReportDate"
-            value={dailyReportDate}
-            onChange={(e) => setDailyReportDate(e.target.value)}
-            className="report-input"
-          />
-          <button className="report-button" onClick={handleDailyReport}>Generate Daily Report</button>
-        </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
-          <label htmlFor="monthlyReportMonth">Monthly Report Month:</label>
-          <input
-            type="number"
-            id="monthlyReportMonth"
-            value={monthlyReportMonth}
-            onChange={(e) => setMonthlyReportMonth(e.target.value)}
-            min="1"
-            max="12"
-            className="report-input"
-          />
-          <label htmlFor="monthlyReportYear">Monthly Report Year:</label>
-          <input
-            type="number"
-            id="monthlyReportYear"
-            value={monthlyReportYear}
-            onChange={(e) => setMonthlyReportYear(e.target.value)}
-            min="1900"
-            max="2099"
-            className="report-input"
-          />
-          <button className="report-button" onClick={handleMonthlyReport}>Generate Monthly Report</button>
-        </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
-          <label htmlFor="periodStartDate">Period Report Start Date:</label>
-          <input
-            type="date"
-            id="periodStartDate"
-            value={periodStartDate}
-            onChange={(e) => setPeriodStartDate(e.target.value)}
-            className="report-input"
-          />
-          <label htmlFor="periodEndDate">Period Report End Date:</label>
-          <input
-            type="date"
-            id="periodEndDate"
-            value={periodEndDate}
-            onChange={(e) => setPeriodEndDate(e.target.value)}
-            className="report-input"
-          />
-          <button className="report-button" onClick={handlePeriodReport}>Generate Period Report</button>
-        </div>
+
+
+
+ const handleAllFieldsReport = () => {
+  // If only the start date is provided, set the end date to the current date
+  let endDate = periodEndDate ? new Date(periodEndDate) : new Date();
+ 
+  // Adjust the endDate to include the entire day of the end date
+  endDate.setHours(23, 59, 59, 999); // Set the time to the end of the day
+ 
+  const filteredExpenses = expenses.filter(expense => {
+     const expenseDate = new Date(expense.date);
+     const matchesCategory = !categoryFilter || expense.category === categoryFilter;
+     const matchesPaymentMode = !paymentModeFilter || expense.paymentMode === paymentModeFilter;
+     const matchesMerchant = !merchantFilter || expense.merchant.includes(merchantFilter);
+     const matchesDateRange = !periodStartDate || !periodEndDate || (
+       expenseDate >= new Date(periodStartDate) &&
+       expenseDate <= endDate // Use <= to include the end date
+     );
+     return matchesCategory && matchesPaymentMode && matchesMerchant && matchesDateRange;
+  });
+  saveExcel(filteredExpenses);
+ };
+ 
+ 
+ 
+ 
+ return (
+  <div>
+    <SpinnerComponent state={loading} setState={setLoading} />
+    <PopupModal state={popupState} setState={handlePopupState} content={content} />
+    <div className="report-container">
+      <div className="report-input">
+       
+        {/* Conditionally render other filters based on report type */}
+        {reportType === '' && (
+          <>
+            <label htmlFor="categoryFilter">Category:</label>
+            <input
+              type="text"
+              id="categoryFilter"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="report-input"
+            />
+            <label htmlFor="paymentModeFilter">Payment Mode:</label>
+            <select
+              id="paymentModeFilter"
+              value={paymentModeFilter}
+              onChange={(e) => setPaymentModeFilter(e.target.value)}
+              className="report-input"
+            >
+              <option value="">Select a payment mode</option>
+              <option value="Credit">Credit</option>
+              <option value="Debit">Debit</option>
+              <option value="UPI">UPI</option>
+              <option value="Cash">Cash</option>
+            </select>
+            <label htmlFor="merchantFilter">Merchant:</label>
+            <input
+              type="text"
+              id="merchantFilter"
+              value={merchantFilter}
+              onChange={(e) => setMerchantFilter(e.target.value)}
+              className="report-input"
+            />
+            <label htmlFor="periodStartDate">Start Date:</label>
+            <input
+              type="date"
+              id="periodStartDate"
+              value={periodStartDate}
+              onChange={(e) => setPeriodStartDate(e.target.value)}
+              className="report-input"
+            />
+            <label htmlFor="periodEndDate">End Date:</label>
+            <input
+              type="date"
+              id="periodEndDate"
+              value={periodEndDate}
+              onChange={(e) => setPeriodEndDate(e.target.value)}
+              className="report-input"
+            />
+            <button className="report-button" onClick={handleAllFieldsReport}>Generate Report Based on All Fields</button>
+          </>
+        )}
       </div>
     </div>
-  );
-  }  
-
+    {/* Existing UI elements for daily, monthly, and period reports */}
+  </div>
+);
+};
 export default ReportGenerate;
