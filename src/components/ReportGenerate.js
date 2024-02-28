@@ -165,7 +165,7 @@ const filterDailyExpenses = (date) => {
       <SpinnerComponent state={loading} setState={setLoading}/>
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="report-container">
-        <div className="report-input">
+        <div>
           <label htmlFor="categoryFilter">Category:</label>
 <select
       id="categoryFilter"
@@ -190,27 +190,25 @@ const filterDailyExpenses = (date) => {
 
           <button className="report-button" onClick={handleCategoryReport}>Generate Category Report</button>
         </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
+        <div>
           <label htmlFor="paymentModeFilter">Payment Mode:</label>
               <select
-      id="paymentModeFilter"
-      value={paymentModeFilter}
-      onChange={(e) => setPaymentModeFilter(e.target.value)}
-      className="report-input"
-    >
-      <option value="">Select a payment mode</option>
-      <option value="Credit">Credit</option>
-      <option value="Debit">Debit</option>
-      <option value="UPI">UPI</option>
-      <option value="Cash">Cash</option>
-    </select>
+                id="paymentModeFilter"
+                value={paymentModeFilter}
+                onChange={(e) => setPaymentModeFilter(e.target.value)}
+                className="report-input"
+              >
+                <option value="">Select a payment mode</option>
+                <option value="Credit">Credit</option>
+                <option value="Debit">Debit</option>
+                <option value="UPI">UPI</option>
+                <option value="Cash">Cash</option>
+              </select>
           <button className="report-button" onClick={handlePaymentModeReport}>Generate Payment Mode Report</button>
         </div>
       </div>
       <div className="report-container">
-        <div className="report-input">
+        <div>
           <label htmlFor="merchantFilter">Merchant:</label>
           <input
             type="text"
@@ -221,9 +219,7 @@ const filterDailyExpenses = (date) => {
           />
           <button className="report-button" onClick={handleMerchantReport}>Generate Merchant Report</button>
         </div>
-      </div>
-      <div className="report-container">
-        <div className="report-input">
+        <div>
           <label htmlFor="dailyReportDate">Daily Report Date:</label>
           <input
             type="date"
@@ -236,7 +232,7 @@ const filterDailyExpenses = (date) => {
         </div>
       </div>
       <div className="report-container">
-        <div className="report-input">
+        <div>
           <label htmlFor="monthlyReportMonth">Monthly Report Month:</label>
           <input
             type="number"
@@ -261,7 +257,7 @@ const filterDailyExpenses = (date) => {
         </div>
       </div>
       <div className="report-container">
-        <div className="report-input">
+        <div>
           <label htmlFor="periodStartDate">Period Report Start Date:</label>
           <input
             type="date"
