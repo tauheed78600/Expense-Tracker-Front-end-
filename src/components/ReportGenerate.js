@@ -18,6 +18,18 @@ const ReportGenerate = ({ expenses }) => {
       "head": "Error",
       "body": "Please enter a valid date!"
     },
+    "dailyReportError": {
+      "head": "Error",
+      "body": "Please select a valid date!"
+    },
+    "monthlyReportError": {
+      "head": "Error",
+      "body": "Please select a valid month!"
+    },
+    "yearlyReportError": {
+      "head": "Error",
+      "body": "Please enter a valid year!"
+    },
  }
 
  const [content, setContent] = useState(masterContent["error"]);
@@ -26,79 +38,54 @@ const ReportGenerate = ({ expenses }) => {
  const [merchantFilter, setMerchantFilter] = useState('');
  const [dailyReportDate, setDailyReportDate] = useState('');
  const [monthlyReportMonth, setMonthlyReportMonth] = useState('');
- const [monthlyReportYear, setMonthlyReportYear] = useState('');
+ const [yearlyReportYear, setYearlyReportYear] = useState('');
  const [periodStartDate, setPeriodStartDate] = useState('');
  const [periodEndDate, setPeriodEndDate] = useState('');
  const [reportType, setReportType] = useState('');
- const [date, setDate] = useState('');
 
- const filterExpensesByCategory = (category) => {
-    return expenses.filter(expense => expense.category === category);
- };
-
- const filterExpensesByPaymentMode = (paymentMode) => {
-    return expenses.filter(expense => expense.paymentMode === paymentMode);
- };
-
- const filterExpensesByMerchant = (merchant) => {
-    return expenses.filter(expense => expense.merchant === merchant);
- };
 
  const handleDailyReport = () => {
-    const inputDate = new Date(dailyReportDate);
-    if (!isNaN(inputDate.getDate())) {
-      const dailyExpenses = filterDailyExpenses(inputDate);
-      saveExcel(dailyExpenses);
-    } else {
-      setContent(masterContent["error"]);
-      setPopupState(true);
-    }
+  if(dailyReportDate === "")
+  {
+    setContent(masterContent["dailyReportError"]);
+    setPopupState(true);
+  }
+  else
+  {  var filteredExpenses = expenses.filter((expense)=> {
+      return expense["date"].slice(0,10) === dailyReportDate;
+    });
+    saveExcel(filteredExpenses);}
  };
-
- const filterDailyExpenses = (date) => {
-  console.log("Filtering expenses for date:", date);
-  return expenses.filter(expense => {
-     const expenseDate = new Date(expense.date);
-     console.log("Expense date:", expenseDate);
-     return expenseDate.getDate() === date.getDate() &&
-       expenseDate.getMonth() === date.getMonth() &&
-       expenseDate.getFullYear() === date.getFullYear();
-  });
- };
-
- const filterMonthlyExpenses = (date) => {
-  return expenses.filter(expense => {
-    const expenseDate = new Date(expense.date);
-    return expenseDate.getMonth() === date.getMonth() &&
-      expenseDate.getFullYear() === date.getFullYear();
-  });
-};
-
  const handleMonthlyReport = () => {
-    const filteredExpenses = expenses.filter(expense => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate.getMonth() + 1 === parseInt(monthlyReportMonth) && expenseDate.getFullYear() === parseInt(monthlyReportYear);
+  if(monthlyReportMonth === "")
+  {
+    setContent(masterContent["monthlyReportError"]);
+    setPopupState(true);
+  }
+  else
+  {  var filteredExpenses = expenses.filter((expense)=> {
+      return expense["date"].slice(0,7) === monthlyReportMonth;
     });
     saveExcel(filteredExpenses);
+  }
  };
 
- const handlePeriodReport = () => {
-    const startDate = new Date(Date.parse(periodStartDate));
-    startDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
-
-    const endDate = new Date(Date.parse(periodEndDate));
-    endDate.setHours(23, 59, 59, 999); // Set the time to the end of the day
-
-    // Adjust the endDate to include the entire day of the end date
-    endDate.setDate(endDate.getDate() + 1);
-    endDate.setMilliseconds(endDate.getMilliseconds() - 1);
-
-    const filteredExpenses = expenses.filter(expense => {
-      const expenseDate = new Date(expense.date);
-      return expenseDate >= startDate && expenseDate < endDate; // Use < instead of <= to exclude the end date
+ const handleYearlyReport = () => {
+  if(yearlyReportYear === "")
+  {
+    setContent(masterContent["yearlyReportError"]);
+    setPopupState(true);
+  }
+  else
+  {
+      var filteredExpenses = expenses.filter((expense)=> {
+      return expense["date"].slice(0,4) === yearlyReportYear;
     });
     saveExcel(filteredExpenses);
+  }
  };
+
+
 
  const saveExcel = async (expenses) => {
   console.log("Expenses to be saved:", expenses);
@@ -139,25 +126,9 @@ const ReportGenerate = ({ expenses }) => {
     }
  };
 
- const handleCategoryReport = () => {
-    const filteredExpenses = filterExpensesByCategory(categoryFilter);
-    saveExcel(filteredExpenses);
- };
 
- const handlePaymentModeReport = () => {
-    const filteredExpenses = filterExpensesByPaymentMode(paymentModeFilter);
-    saveExcel(filteredExpenses);
- };
-
- const handleMerchantReport = () => {
-    const filteredExpenses = filterExpensesByMerchant(merchantFilter);
-    saveExcel(filteredExpenses);
- };
 
  
-
-
-
 
  const handleAllFieldsReport = () => {
   // If only the start date is provided, set the end date to the current date
@@ -207,8 +178,6 @@ const ReportGenerate = ({ expenses }) => {
     <PopupModal state={popupState} setState={handlePopupState} content={content} />
     <div className="report-container">
       <div className="report-input">
-       
-        {/* Conditionally render other filters based on report type */}
         {reportType === '' && (
           <>
             <label htmlFor="categoryFilter">Category:</label>
@@ -261,7 +230,40 @@ const ReportGenerate = ({ expenses }) => {
         )}
       </div>
     </div>
-    {/* Existing UI elements for daily, monthly, and period reports */}
+    <div className='report-container'>
+          <div className='report-input'>
+            <label htmlFor="dailyReportDate">Daily Report</label>
+              <input
+                type="date"
+                id="dailyReportDate"
+                value={dailyReportDate}
+                onChange={(e) => setDailyReportDate(e.target.value)}
+                className="report-input"
+              />
+              <button className="report-button" onClick={handleDailyReport}>Daily Report</button>
+          </div>
+          <div className='report-input'>
+            <label htmlFor="monthlyReportMonth">Monthly Report</label>
+                <input
+                  type="month"
+                  id="monthlyReportMonth"
+                  value={monthlyReportMonth}
+                  onChange={(e) => setMonthlyReportMonth(e.target.value)}
+                  className="report-input"
+                />
+                <button className="report-button" onClick={handleMonthlyReport}>Monthly Report</button>
+          </div>
+          <div className='report-input'>
+            <label htmlFor="yearlyReportYear">Year Report</label>
+                <input
+                  id="yearlyReportYear"
+                  value={yearlyReportYear}
+                  onChange={(e) => setYearlyReportYear(e.target.value)}
+                  className="report-input"
+                />
+                <button className="report-button" onClick={handleYearlyReport}>Yearly Report</button>
+          </div>
+    </div>
   </div>
 );
 };

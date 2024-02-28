@@ -124,7 +124,7 @@ function MonthlyBudgetModal() {
           <Modal.Title>Set Budget</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form>
+        <Form style={{"marginRight":"-150px"}}>
             <Form.Group as={Row} className="mb-3" controlId="formBudget">
                 <Form.Label column sm={4}>
                     Current Budget: {currentBudget}
