@@ -49,6 +49,14 @@ const ResetPassword = () => {
         return false;
       else if(value.length < 8)
         return false;
+        else if (!/[A-Z]/.test(value)) {
+          return false;
+      } else if (!/[!@#\$%\^&\*_]/.test(value)) {
+        return false;
+      }
+      else if (!/\d/.test(value)) {
+        return false;
+    }
       else
         return true;
     }
