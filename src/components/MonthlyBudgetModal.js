@@ -72,10 +72,27 @@ function MonthlyBudgetModal() {
           "head": "Success",
           "body": "Budget updated successfully!",
         },
+
         "error": {
           "head": "Error",
           "body": "Could not update budget!"
       },
+      "numberError": {
+        "head":"Error",
+        "body":"New Budget is not a number!"
+      },
+      "negativeError": {
+        "head":"Error",
+        "body":"New Budget cannot be negative!"
+      },
+      "lessThanExpense": {
+        "head":"Error",
+        "body":"New Budget cannot be less than total expense!"
+      },
+      "emptyError": {
+        "head":"Error",
+        "body":"Please enter a New Budget!"
+      }
 
   }
 
@@ -86,31 +103,54 @@ function MonthlyBudgetModal() {
 
   //submit budget change request to server
   const handleSave = async () => {
-        const userId = cookies.get('userId');
-        try {
-          setLoading(true);
-          const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`, {}, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          setLoading(false);
-
-
-            if (response.status===200)
-            {
-                setContent(masterContent["updateSuccess"]);
-                setPopupState(true);
-                console.log("Budget goal set successfully:", response.data);
-            }
-            // Update the displayed budget goal state
-            setCurrentBudget(newBudget);
-            setRemainingBudget(newBudget-currentBudget+remainingBudget);
-        } catch (error) {
-          setContent(masterContent["updateSuccess"]);
+        if(newBudget === "")
+        {
+          setContent(masterContent["emptyError"]);
           setPopupState(true);
-          console.error('Error setting budget goal:', error);
         }
+        else if(isNaN(newBudget))
+        {
+          setContent(masterContent["numberError"]);
+          setPopupState(true);
+        }
+        else if(newBudget < 0)
+        {
+          setContent(masterContent["negativeError"]);
+          setPopupState(true);
+        }
+        else if(newBudget < (currentBudget-remainingBudget))
+        {
+          setContent(masterContent["lessThanExpense"]);
+          setPopupState(true);
+        }
+        else {
+          const userId = cookies.get('userId');
+          try {
+            setLoading(true); 
+            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`, {}, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+            setLoading(false);
+
+
+              if (response.status===200)
+              {
+                  setContent(masterContent["updateSuccess"]);
+                  setPopupState(true);
+                  console.log("Budget goal set successfully:", response.data);
+              }
+              // Update the displayed budget goal state
+              setCurrentBudget(newBudget);
+              setRemainingBudget(newBudget-currentBudget+remainingBudget);
+          } catch (error) {
+            setContent(masterContent["error"]);
+            setPopupState(true);
+            console.error('Error setting budget goal:', error);
+          }
+        }
+        
       };
 
   

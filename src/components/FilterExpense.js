@@ -283,7 +283,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                         </Form.Label>
                         <Col sm={10}>
                             <Dropdown>
-                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f", "width": "300px"}} variant="success" id="dropdown-basic">
+                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f", "width": "350px"}} variant="success" id="dropdown-basic">
                                     <span>
                                     {selected_categories.length === 0? 
                                     <>Choose Category
