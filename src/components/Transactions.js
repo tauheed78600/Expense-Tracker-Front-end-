@@ -18,10 +18,11 @@ import {
   } from "lucide-react";
 
 import PopupModal from "./PopupModal.js";
+import Cookies from "universal-cookie";
 
 
 export default function Transactions({ userId }) {
-
+    const cookies = new Cookies();
     const [popupState, setPopupState] = useState(false);
     const handlePopupState = (state) => {
         setPopupState(state);
@@ -141,7 +142,7 @@ export default function Transactions({ userId }) {
         }
     }, [expenses]);
 
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = cookies.get('access_token');
 
     //load expenses data for user
     useEffect(() => {
@@ -175,7 +176,7 @@ export default function Transactions({ userId }) {
                 
                 if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
                     const currentMonth = new Date().getMonth();
-                    const lastMonthNineReachedEmailSent = localStorage.getItem('lastMonthNineReachedEmailSent');
+                    const lastMonthNineReachedEmailSent = cookies.get('lastMonthNineReachedEmailSent');
                     if (lastMonthNineReachedEmailSent !== currentMonth.toString()) {
                         const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId }, {
                             headers: {
@@ -187,7 +188,7 @@ export default function Transactions({ userId }) {
                         setContent(masterContent["ninetyError"]);
                         setPopupState(true);
                         // Store the current month in local storage to prevent sending the email again
-                        localStorage.setItem('lastMonthNineReachedEmailSent', currentMonth.toString());
+                        cookies.set('lastMonthNineReachedEmailSent', currentMonth.toString(), { path: '/' });
                     }
                   }
                 }
@@ -195,7 +196,7 @@ export default function Transactions({ userId }) {
                   // Check if the user has exceeded their monthly budget
                   if (response.data.remaining_budget <=   0) {
                     const currentMonth = new Date().getMonth();
-                    const lastMonthEmailSent = localStorage.getItem('lastMonthEmailSent');
+                    const lastMonthEmailSent = cookies.get('lastMonthEmailSent');
                     if (lastMonthEmailSent !== currentMonth.toString()){
                     const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  }, {
                         headers: {
@@ -206,7 +207,7 @@ export default function Transactions({ userId }) {
                     {
                         setContent(masterContent["budgetExceededError"]);
                         setPopupState(true);
-                        localStorage.setItem('lastMonthEmailSent', currentMonth.toString());
+                        cookies.set('lastMonthEmailSent', currentMonth.toString(), { path: '/' });
                     }
                   }
                 }
@@ -249,7 +250,7 @@ export default function Transactions({ userId }) {
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
             expense_id: expenses[index].expenseId,
-            user_id: localStorage.getItem("userId")
+            user_id: cookies.get("userId")
         }, 
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -283,7 +284,6 @@ export default function Transactions({ userId }) {
 
     const handleEditExpense = (index) => {
         index = index+(pageCounter-1)*itemCount;
-        localStorage.setItem("expenseId", expenses[index][0])
         setShow(true);
         setSendExpense({"index":index, ...expenses[index]});
     }

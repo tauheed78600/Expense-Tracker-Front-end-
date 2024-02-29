@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Dashboard.css'; 
 import 'material-icons/iconfont/material-icons.css';
+import Cookies from 'universal-cookie';
 
 
 const Dashboard = ({ userId }) => {
+  const cookies = new Cookies();
 
   const masterContent = {
     "fetchError":{
@@ -19,8 +21,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
 const [userData, setUserData] = useState({});
 //load user data
 useEffect(() => {
-
-const accessToken = localStorage.getItem("accessToken")
+const accessToken = cookies.get('access_token');
 const fetchData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/total/getUser/${userId}`, {

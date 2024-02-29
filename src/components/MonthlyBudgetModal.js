@@ -7,18 +7,21 @@ import Row from 'react-bootstrap/Row';
 import axios from 'axios';
 import PopupModal from './PopupModal';
 import SpinnerComponent from "./SpinnerComponent";
+import Cookies from 'universal-cookie';
 
 function MonthlyBudgetModal() {
   const [show, setShow] = useState(false);
   const [currentBudget, setCurrentBudget] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
   const [loading, setLoading] = useState(false);
+  const cookies = new Cookies();
 
   //set current, remaining budget on loading
   useEffect(() => {
     const fetchUserData = async () => {
-        const userId = localStorage.getItem('userId');
-        const accessToken = localStorage.getItem("accessToken")
+      
+        const userId = cookies.get('userId');
+        const accessToken = cookies.get('access_token');
         try {
           setLoading(true);
             const response = await axios.get(`http://localhost:3000/total/${userId}`, {
@@ -79,11 +82,11 @@ function MonthlyBudgetModal() {
   const [content, setContent] = useState(masterContent["error"]);
 
 
-  const accessToken = localStorage.getItem("accessToken")
+  const accessToken = cookies.get('access_token');
 
   //submit budget change request to server
   const handleSave = async () => {
-        const userId = localStorage.getItem('userId');
+        const userId = cookies.get('userId');
         try {
           setLoading(true);
           const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`, {}, {

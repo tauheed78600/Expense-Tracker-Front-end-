@@ -10,6 +10,7 @@ import {
 import { motion } from "framer-motion";
 import RightArrowIcon from "./../assets/icons/rightArrow.svg";
 import Logo from "../assets/Logo.png";
+import Cookies from "universal-cookie";
 
 const variants = {
   expanded: { width: "20%" },
@@ -17,6 +18,7 @@ const variants = {
 };
 
 function Navbar({ setCurrentPage }) {
+  const cookies = new Cookies();
   const [isExpanded, setIsExpanded] = React.useState(true);
   const [currentPage, setCurrentPageState] = React.useState('dashboard'); // State to track the current page
 
@@ -28,7 +30,7 @@ function Navbar({ setCurrentPage }) {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    cookies.remove('access_token');
     window.location.href = "/auth";
   };
   
