@@ -1,10 +1,48 @@
-import React from 'react';
+import React, {useState } from 'react';
 import '../styles/Homepage.css'
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom'; 
 import "../styles.css";
+import axios from 'axios';
 
 const Homepage = () => {
+
+  const [fullName, setFullName] = useState('');
+  const [feedback, setFeedback] = useState('');
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+  
+    if (name === 'fullName') {
+      setFullName(value);
+    } else if (name === 'feedback') {
+      setFeedback(value);
+    }
+  };
+  
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+  
+    // Here you can handle the submission logic, e.g., send the data to a server
+    console.log('Full Name:', fullName);
+    console.log('Feedback:', feedback);
+
+    try {
+      const response = await axios.post(`http://localhost:3000/total/feedback/?fullName=${encodeURIComponent(fullName)}&message=${encodeURIComponent(feedback)}`)
+
+      console.log(response.data);
+      alert('Feedback sent successfully!');
+    } catch (error) {
+      console.error('Error sending feedback:', error);
+      alert('Failed to send feedback. Please try again.');
+    }
+  
+    // Reset the form fields
+    setFullName('');
+    setFeedback('');
+  };
+  
+
   return (
     <>
      <Helmet>
@@ -171,23 +209,39 @@ const Homepage = () => {
 
       {/* Footer */}
       <footer id="footer">
-        <div className="social">
-          <h1 className="feed-head">Feedback Form</h1>
-          <form id="feedbackForm">
-            <div className="form-group">
-              <label htmlFor="formGroupExampleInput">Full Name</label>
-              <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Full Name" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="formGroupExampleInput2">Feedback</label>
-              <input type="text" className="form-control" id="formGroupExampleInput2" placeholder="Feedback Message" />
-            </div>
-            <button type="" className="submitMail btn-primary mb-2">Submit</button>
-          </form>
-          <p className="copyright">© Copyright   2024 Parkar Digital</p>
-          <p>Made with ❤</p>
-        </div>
-      </footer>
+      <div className="social">
+        <h1 className="feed-head">Feedback Form</h1>
+        <form id="feedbackForm" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="formGroupExampleInput">Full Name</label>
+            <input
+              type="text"
+              className="form-control"
+              id="formGroupExampleInput"
+              placeholder="Full Name"
+              name="fullName"
+              value={fullName}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="formGroupExampleInput2">Feedback</label>
+            <input
+              type="text"
+              className="form-control"
+              id="formGroupExampleInput2"
+              placeholder="Feedback Message"
+              name="feedback"
+              value={feedback}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button type="submit" className="submitMail btn-primary mb-2" onClick={handleSubmit}>Submit</button>
+        </form>
+        <p className="copyright">© Copyright 2024 Parkar Digital</p>
+        <p>Made with ❤</p>
+      </div>
+    </footer>
     </div>
     </>
   );

@@ -98,6 +98,8 @@ const SignInForm = ({ onLoginSuccess }) => {
           login();
           console.log('Login API response:', response.data);
           cookies.set('access_token', response.data.accessToken, { path: '/' });
+          localStorage.setItem("lastMonthNineReachedEmailSent", 0)
+          localStorage.setItem("remaininingBudgetZero", 0)
           console.log(response)
           const userId = response.data.userId;
           console.log("response.data.userId",response.data.userId);

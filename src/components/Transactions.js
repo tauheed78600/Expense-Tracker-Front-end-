@@ -173,12 +173,23 @@ export default function Transactions({ userId }) {
                 setMasterExpenses(newArray);
                
                 const emailId = response.data.email  
-               
-                if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
+                
+                const response1 = await axios.get(`http://localhost:3000/total/${userId}`, {
+                            headers: {
+                              Authorization: `Bearer ${accessToken}`,
+                            },
+                          });
+                console.log("response1234", response1)
+                
+                if (localStorage.getItem("lastMonthNineReachedEmailSent") == 0)
+                {
+                    if (response1.data.remaining_budget <= response1.data.monthly_budget * 0.1) {
                     const currentMonth = new Date().getMonth();
+                    localStorage.setItem("lastMonthNineReachedEmailSent", 1)
                     const lastMonthNineReachedEmailSent = cookies.get('lastMonthNineReachedEmailSent');
+                    
                     if (lastMonthNineReachedEmailSent !== currentMonth.toString()) {
-                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId }, {
+                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email }, {
                             headers: {
                               Authorization: `Bearer ${accessToken}`,
                             },
@@ -191,14 +202,18 @@ export default function Transactions({ userId }) {
                         cookies.set('lastMonthNineReachedEmailSent', currentMonth.toString(), { path: '/' });
                     }
                   }
-                }
+                }}
                    
                   // Check if the user has exceeded their monthly budget
-                  if (response.data.remaining_budget <=   0) {
+                  
+                  if (localStorage.getItem("remaininingBudgetZero") == 0)
+                  {
+                    localStorage.setItem("remaininingBudgetZero", 1)
+                    if (response1.data.remaining_budget <=   0) {
                     const currentMonth = new Date().getMonth();
                     const lastMonthEmailSent = cookies.get('lastMonthEmailSent');
                     if (lastMonthEmailSent !== currentMonth.toString()){
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  }, {
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email  }, {
                         headers: {
                           Authorization: `Bearer ${accessToken}`,
                         },
@@ -210,7 +225,7 @@ export default function Transactions({ userId }) {
                         cookies.set('lastMonthEmailSent', currentMonth.toString(), { path: '/' });
                     }
                   }
-                }
+                }}
  
  
             } catch (error) {

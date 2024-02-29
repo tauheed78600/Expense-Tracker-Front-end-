@@ -35,6 +35,7 @@ function Navbar({ setCurrentPage }) {
     cookies.remove('access_token');
     cookies.remove('userId');
     window.location.href = "/auth";
+    localStorage.clear();
   };
 
   const [logoutShow, setLogoutShow] = useState(false);
