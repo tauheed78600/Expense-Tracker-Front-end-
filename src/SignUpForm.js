@@ -78,7 +78,12 @@ const SignUpForm = () => {
   } else if (!/[!@#\$%\^&\*_]/.test(password)) {
       setPasswordError('Password must contain at least one special character');
       isValid = false;
-  } else {
+  }
+  else if (!/\d/.test(password)) {
+    setPasswordError('Password must contain at least one number');
+    isValid = false;
+}
+   else {
       setPasswordError('');
       isValid = true;
   }
