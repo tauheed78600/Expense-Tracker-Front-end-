@@ -7,6 +7,7 @@ import SpinnerComponent from './SpinnerComponent';
 
 
 const Analytics = ({ userId }) => {
+  const [selection, setSelection] = useState(1);
  
   const masterContent = {
     "fetchError":{
@@ -40,7 +41,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         setLoading(true);
         const expensesResponse = await axios.get(`http://localhost:3000/api/data/${userId}`);
         const categoriesResponse = await axios.get(`http://localhost:3000/api/data1/${userId}`);
-        const merchantsResponse = await axios.get(`http://localhost:3000/api/data2/${userId}`);
+        const merchantsResponse = await axios.get(`http://localhost:3000/api/data1/${userId}`);
         const paymentModesResponse = await axios.get(`http://localhost:3000/api/data3/${userId}`);
         setLoading(false);
         setExpensesData({
@@ -60,9 +61,12 @@ const [content, setContent] = useState(masterContent["fetchError"]);
   //create charts
   useEffect(() => {
     if (expensesData.expenses) {
-      createLineChart('lineChart', expensesData.expenses, 'date', 'amount');
-      createBarChart('barChart', expensesData.merchants, 'merchant', 'amount');
-      // createPieChart('pieChart1', expensesData.paymentModes, 'paymentMode', 'totalAmount');
+      if(selection === 1)
+        createLineChart('chart', expensesData.expenses, 'date', 'amount');
+      if(selection === 2)
+        createBarChart('chart', expensesData.merchants, 'merchant', 'amount');
+      if(selection === 3)
+        createPieChart('chart', expensesData.paymentModes, 'paymentMode', 'totalAmount');
     }
  
     // Cleanup function to destroy chart instances
@@ -73,7 +77,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         }
       });
     };
-  }, [expensesData]);
+  }, [expensesData, selection]);
   //Date transformation
   function tranform_date(date) {
     
@@ -111,6 +115,8 @@ const [content, setContent] = useState(masterContent["fetchError"]);
     data = data.sort(date_sort);
       
     const ctx = document.getElementById(canvasId).getContext('2d');
+    document.getElementById(canvasId).width = 700;
+    document.getElementById(canvasId).height = 500;
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }
@@ -151,6 +157,8 @@ const [content, setContent] = useState(masterContent["fetchError"]);
   const createBarChart = (canvasId, data, labelKey, valueKey) => {
     const colors = ['rgba(120,  28,  129,  1)', 'rgba(107,  178,  140,  1)', 'rgba(72,  139,  194,  1)', 'rgba(217,  33,  32,  1)'];
     const ctx = document.getElementById(canvasId).getContext('2d');
+    document.getElementById(canvasId).width = 700;
+    document.getElementById(canvasId).height = 500;
     
     data = data.reduce((accumulator, current) => {
       if (accumulator[current.merchant]) {
@@ -203,12 +211,15 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         }
       }
     });
+    console.log(`Bar chart for ${canvasId} created`);
   };
  
  
  
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
     const ctx = document.getElementById(canvasId).getContext('2d');
+    document.getElementById(canvasId).width = 500;
+    document.getElementById(canvasId).height = 500;
     if (chartRefs[canvasId]) {
       chartRefs[canvasId].destroy();
     }
@@ -233,20 +244,17 @@ const [content, setContent] = useState(masterContent["fetchError"]);
  
   return (
     <div className="analytics-container">
+      <div className='button-anal-div'>
+      <button type="button" class="btn btn-outline-danger button-anal" onClick={()=> {setSelection(1)}}>Line Chart</button>
+      <button type="button" class="btn btn-outline-danger button-anal" onClick={()=> {setSelection(2)}}>Bar Chart</button>
+      <button type="button" class="btn btn-outline-danger button-anal" onClick={()=> {setSelection(3)}}>Pie Chart</button>
+      </div>
+
       <SpinnerComponent state={loading} setState={setLoading}/>
       <PopupModal state={popupState} setState={handlePopupState} content={content}/>
       <div className="chart-row">
         <div className="chart-column">
-          <canvas id="lineChart" style={{"width":  "80vw", "height":  "40vh", "position": "relative"}} className="chart" st></canvas>
-        </div>
-        {/* <div className="chart-column">
-          <canvas id="pieChart" className="chart"></canvas>
-          <canvas id="pieChart1" className="chart"></canvas>
-        </div> */}
-      </div>
-      <div className="chart-row">
-        <div className="chart-column">
-          <canvas id="barChart" style={{"width":  "80vw", "height":  "40vh", "position": "relative"}} className="chart"></canvas>
+          <canvas id="chart" style={{ "position": "relative"}} className="chart" st></canvas>
         </div>
       </div>
     </div>
