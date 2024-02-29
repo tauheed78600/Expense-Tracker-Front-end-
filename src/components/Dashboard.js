@@ -29,6 +29,16 @@ const fetchData = async () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
+      const [popupState, setPopupState] = useState(false);
+ const [content, setContent] = useState(masterContent["fetchError"]);
+ const [userData, setUserData] = useState({});
+ const [isLoading, setIsLoading] = useState(true); // Ensure this is defined if you're using it
+ const [showUpdateModal, setShowUpdateModal] = useState(false); // State for showing the update modal
+ const [newUsername, setNewUsername] = useState(''); // State for the new username
+ const [newEmail, setNewEmail] = useState(''); // State for the new email
+
+
     console.log("response.data", response.data)
     console.log("userId in dashboard", userId)
     setUserData(response.data);
@@ -41,9 +51,7 @@ const fetchData = async () => {
 fetchData();
 }, [userId]);
 
-
-return (
-  
+return ( 
 <div className="container">
     <div className='h1'><h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1></div>
     <div className="section" id="name-section">
@@ -51,6 +59,10 @@ return (
     <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">accessibility</span>
     </div>
+    <div className='h1'>
+ <h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1>
+ <button className="edit-btn" onClick={() => setShowUpdateModal(true)}>Edit</button>
+</div>
     <div className="section" id="budget-section">
     <label htmlFor="monthly_budget">Monthly Budget:</label>
     <div id="monthly_budget" className="info">{userData.monthly_budget || 'Loading...'}</div>
@@ -67,7 +79,5 @@ return (
     <span className="material-icons-outlined text-green">mail</span>
     </div>
 </div>
-);
-};
-
-export default Dashboard;
+) 
+}
