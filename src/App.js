@@ -13,17 +13,19 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './index.css';
 import Homepage from './components/Homepage';
 import { NotFound } from './components/NotFound';
+import Cookies from 'universal-cookie';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [userId, setUserId] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [expenses, setExpenses] = useState([]); // Add state for expenses
+  const cookies = new Cookies();
 
   useEffect(() => {
-    // Check for accessToken in localStorage
-    const accessToken = localStorage.getItem('accessToken');
-    const userId = localStorage.getItem("userId")
+    // Check for accessToken in Cookies
+    const accessToken = cookies.get('access_token');
+    const userId = cookies.get("userId")
     if (accessToken) {
       setIsAuthenticated(true);
       // Fetch expenses for the authenticated user
@@ -58,7 +60,7 @@ function App() {
     const userId = responseData.userId;
     console.log('Login successful, userId:', userId);
     setUserId(userId); // Set userId in the state
-    localStorage.setItem('accessToken', responseData.accessToken); // Store accessToken in localStorage
+    cookies.set('access_token', responseData.accessToken, { path: '/' });
   };
 
   return (
@@ -70,13 +72,13 @@ function App() {
         <Route path="/forgotPassword" element={<ForgotPassword/>} />
         <Route path="/reset-password" element={<ResetPassword/>} />
         <Route path="/dashboard" element={
-          localStorage.getItem('accessToken') ? (
+          cookies.get('access_token') ? (
             <div className="app-container">
               <Navbar setCurrentPage={setCurrentPage} />
               <main className="grow">
-                {currentPage === 'dashboard' && <Dashboard userId={localStorage.getItem("userId")} expenses={expenses} setExpenses={setExpenses} /> }
-                {currentPage === 'transactions' && <Transactions userId={localStorage.getItem("userId")} />}
-                {currentPage === 'analytics' && <Analytics userId={localStorage.getItem("userId")} />}
+                {currentPage === 'dashboard' && <Dashboard userId={cookies.get("userId")} expenses={expenses} setExpenses={setExpenses} /> }
+                {currentPage === 'transactions' && <Transactions userId={cookies.get("userId")} />}
+                {currentPage === 'analytics' && <Analytics userId={cookies.get("userId")} />}
                 {currentPage === 'reportgenerate' && <ReportGenerate expenses={expenses}/>}
               </main>
             </div>  

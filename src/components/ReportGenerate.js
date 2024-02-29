@@ -140,7 +140,9 @@ const ReportGenerate = ({ expenses }) => {
 
  const handleAllFieldsReport = () => {
   // If only the start date is provided, set the end date to the current date
-  let endDate = periodEndDate ? new Date(periodEndDate) : currentDate();
+  let endDate = periodEndDate ? periodEndDate : currentDate();
+  endDate = endDate.slice(0,10);
+  
   
   var filteredExpenses = expenses;
   if(periodStartDate !== "")
@@ -219,7 +221,7 @@ const ReportGenerate = ({ expenses }) => {
                 <Dropdown.Toggle style={{"width":"200px","backgroundColor":"#e26f6f", "marginLeft":"50px", "marginTop":"40px"}} variant="success" id="dropdown-basic">
                     Choose Category
                 </Dropdown.Toggle>
-                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"250px" }}> 
+                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"220px" }}> 
                     {categories.map((cat, index) => ( 
                             <Form.Check
                             key={index}
