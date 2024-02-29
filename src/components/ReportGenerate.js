@@ -260,6 +260,21 @@ const ReportGenerate = () => {
         console.log(periodStartDate);
         document.getElementById("periodEndDate").max = currentDate();
       }
+
+      function show_selected_categories() {
+        var res = "";
+        if (selected_categories.length-1 > 0)
+        {
+            res += selected_categories[0];    
+            res += ", ..."
+        }
+        else
+        {
+          res += selected_categories[0];
+        }
+            
+        return res;
+    }
  
  
  
@@ -280,7 +295,13 @@ const ReportGenerate = () => {
                 <Col sm={10}>
                 <Dropdown>
                 <Dropdown.Toggle style={{"width":"200px","backgroundColor":"#e26f6f", "marginLeft":"50px", "marginTop":"40px"}} variant="success" id="dropdown-basic">
-                    Choose Category
+                  <span>
+                    {selected_categories.length === 0? 
+                    <>Choose Category
+                    </>
+                    :
+                    show_selected_categories()}
+                  </span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"220px" }}> 
                     {categories.map((cat, index) => ( 
