@@ -4,8 +4,30 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom'; 
 import "../styles.css";
 import axios from 'axios';
+import PopupModal from './PopupModal';
+import SpinnerComponent from "./SpinnerComponent";
+import * as Components from "../Components";
 
 const Homepage = () => {
+  const [popupState, setPopupState] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const masterContent = {
+    "error":{
+        "head": "Error",
+        "body": "Could not submit feedback form!"
+    },
+    "success": {
+        "head": "Success",
+        "body": "Feedback form submitted successfully!"
+    },
+    "empty": {
+        "head": "Error",
+        "body": "Please fill in both fields!"
+    }
+
+}
+const [content, setContent] = useState(masterContent["error"]);
 
   const [fullName, setFullName] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -22,25 +44,40 @@ const Homepage = () => {
   
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
-  
-    // Here you can handle the submission logic, e.g., send the data to a server
-    console.log('Full Name:', fullName);
-    console.log('Feedback:', feedback);
-
-    try {
-      const response = await axios.post(`http://localhost:3000/total/feedback/?fullName=${encodeURIComponent(fullName)}&message=${encodeURIComponent(feedback)}`)
-
-      console.log(response.data);
-      alert('Feedback sent successfully!');
-    } catch (error) {
-      console.error('Error sending feedback:', error);
-      alert('Failed to send feedback. Please try again.');
+    if(fullName === "" || feedback === "")
+    {
+      setContent(masterContent["empty"])
+      setPopupState(true);
     }
-  
-    // Reset the form fields
-    setFullName('');
-    setFeedback('');
+    else
+    {
+      // Here you can handle the submission logic, e.g., send the data to a server
+      console.log('Full Name:', fullName);
+      console.log('Feedback:', feedback);
+
+      try {
+        setLoading(true);
+        const response = await axios.post(`http://localhost:3000/total/feedback/?fullName=${encodeURIComponent(fullName)}&message=${encodeURIComponent(feedback)}`)
+        setLoading(false);
+        setContent(masterContent["success"]);
+        setPopupState(true);
+        
+      } catch (error) {
+        setLoading(false);
+        setContent(masterContent["error"]);
+        setPopupState(true);
+      }
+    
+      // Reset the form fields
+      setFullName('');
+      setFeedback('');
+    }
+    
   };
+
+  const handlePopupState = (state) => {
+    setPopupState(state);
+}
   
 
   return (
@@ -210,6 +247,10 @@ const Homepage = () => {
       {/* Footer */}
       <footer id="footer">
       <div className="social">
+        {<>
+          <SpinnerComponent state={loading} setState={setLoading}/>
+          <PopupModal state={popupState} setState={handlePopupState} content={content}/>
+        </>}
         <h1 className="feed-head">Feedback Form</h1>
         <form id="feedbackForm" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -236,7 +277,7 @@ const Homepage = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button type="aa" className="submitMail btn-primary mb-2" onClick={handleSubmit}>Submit</button>
+          <Components.Button type="aa" onClick={handleSubmit}>SUBMIT</Components.Button>
         </form>
         <p className="copyright">© Copyright 2024 Parkar Digital</p>
         <p>Made with ❤</p>
