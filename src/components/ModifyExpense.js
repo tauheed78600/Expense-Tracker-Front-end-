@@ -132,6 +132,10 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         "amountNegative": {
             "head": "Error",
             "body": "Amount cannot be negative"
+        },
+        "decimalError": {
+            "head": "Error",
+            "body": ""
         }
 
     }
@@ -338,7 +342,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                                     {modifyExpenseData.category !== "" ? modifyExpenseData.category : "Choose Category"}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', "width":"300px" }}>
                                     {
                                         categories.map((cat, index) => {
                                             return (
@@ -373,7 +377,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         Amount
                         </Form.Label>
                         <Col sm={8}>
-                        <Form.Control name = "amount" placeholder="" value={modifyExpenseData.amount} 
+                        <Form.Control type = "number" step = "0.01" name = "amount" placeholder="" value={modifyExpenseData.amount} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
                         <Form.Label id = "modify-expense-amount-error" column sm={12}>
                         </Form.Label>
