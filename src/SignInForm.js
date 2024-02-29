@@ -33,6 +33,10 @@ const SignInForm = ({ onLoginSuccess }) => {
     "detailError": {
       "head":"Error",
       "body":"Please fill the required fields correctly!"
+    },
+    "serverError": {
+      "head":"Error",
+      "body":"Could not reach server!"
     }
   }
   const [popupState, setPopupState] = useState(false);
@@ -109,7 +113,7 @@ const SignInForm = ({ onLoginSuccess }) => {
         }).
         catch((error)=>{
           console.log(error);
-          setContent(masterContent["loginError"]);
+          setContent(masterContent["serverError"]);
           setPopupState(true);
           setLoading(false);
         });

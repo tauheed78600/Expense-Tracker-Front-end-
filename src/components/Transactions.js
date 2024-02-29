@@ -396,10 +396,20 @@ export default function Transactions({ userId }) {
                                 expenses.slice((pageCounter-1)*itemCount, pageCounter*itemCount).map((row, index) => {
                                 return (
                                     <tr key={index} >
-                                        <td className="expense-table-index expense-table-th-td">{index+1+(pageCounter-1)*itemCount}</td>
+                                        <td className="expense-table-index">{index+1+(pageCounter-1)*itemCount}</td>
                                         {Object.values(row).map((value, cellIndex) => {
                                             if(cellIndex > 1)
-                                                return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
+                                            {
+                                                if(cellIndex === 2)
+                                                    return <td className="expense-table-th-td expense-table-date-td" key={cellIndex}>{value}</td>;
+                                                if(cellIndex === 4)
+                                                    return <td className="expense-table-th-td expense-table-merchant-td" key={cellIndex}>{value}</td>;
+                                                else if(cellIndex === 5)
+                                                    return <td className="expense-table-th-td expense-table-amount-td" key={cellIndex}>{value}</td>;
+                                                else
+                                                    return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
+                                            }
+                                                
                                         })}
                                         <td className="expense-table-th-td expense-table-edit-delete">
                                             <button className="expense-table-button" onClick={() => handleEditExpense(index)}><Pencil/></button>

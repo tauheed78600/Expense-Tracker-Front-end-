@@ -49,6 +49,14 @@ const ResetPassword = () => {
         return false;
       else if(value.length < 8)
         return false;
+        else if (!/[A-Z]/.test(value)) {
+          return false;
+      } else if (!/[!@#\$%\^&\*_]/.test(value)) {
+        return false;
+      }
+      else if (!/\d/.test(value)) {
+        return false;
+    }
       else
         return true;
     }
@@ -65,6 +73,14 @@ const ResetPassword = () => {
       {
         element.innerHTML = "Password needs to be at least 8 characters long!";
       }
+      else if (!/[A-Z]/.test(value)) {
+        element.innerHTML = 'Password must contain at least one uppercase character';
+    } else if (!/[!@#\$%\^&\*_]/.test(value)) {
+      element.innerHTML ='Password must contain at least one special character';
+    }
+    else if (!/\d/.test(value)) {
+      element.innerHTML ='Password must contain at least one number';
+  }
       else if(confirmNewPassword !== "" && value !== confirmNewPassword)
       {
         element.innerHTML = "Passwords do not match!";
@@ -88,6 +104,14 @@ const ResetPassword = () => {
       {
         element.innerHTML = "Password needs to be at least 8 characters long!";
       }
+      else if (!/[A-Z]/.test(value)) {
+        element.innerHTML = 'Password must contain at least one uppercase character';
+    } else if (!/[!@#\$%\^&\*_]/.test(value)) {
+      element.innerHTML ='Password must contain at least one special character';
+    }
+    else if (!/\d/.test(value)) {
+      element.innerHTML ='Password must contain at least one number';
+  }
       else if(value !== newPassword)
       {
         element.innerHTML = "Passwords do not match!";

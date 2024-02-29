@@ -75,7 +75,7 @@ function MonthlyBudgetModal() {
 
         "error": {
           "head": "Error",
-          "body": "Could not update budget!"
+          "body": "Could not update Budget!"
       },
       "numberError": {
         "head":"Error",
@@ -92,7 +92,11 @@ function MonthlyBudgetModal() {
       "emptyError": {
         "head":"Error",
         "body":"Please enter a New Budget!"
-      }
+      },
+      "sameBudgetError": {
+        "head":"Error",
+        "body":"New Budget cannot be same as current Budget!"
+      },
 
   }
 
@@ -116,6 +120,11 @@ function MonthlyBudgetModal() {
         else if(newBudget < 0)
         {
           setContent(masterContent["negativeError"]);
+          setPopupState(true);
+        }
+        else if(newBudget === currentBudget)
+        {
+          setContent(masterContent["sameBudgetError"]);
           setPopupState(true);
         }
         else if(newBudget < (currentBudget-remainingBudget))
