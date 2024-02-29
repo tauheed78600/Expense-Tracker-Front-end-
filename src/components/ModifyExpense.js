@@ -13,8 +13,12 @@ import { getCategories } from "./categories";
 import { Plus } from "lucide-react";
 import PopupModal from "./PopupModal";
 import SpinnerComponent from "./SpinnerComponent";
+import Cookies from "universal-cookie";
+
+
 export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense, setLoadExpense, show, setShow})
 {
+    const cookies = new Cookies();
     const [loading, setLoading] = useState(false);
     const errorMessage = {
         date: "modify-expense-date-error",
@@ -120,8 +124,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
 
-    const accessToken = ccokies.getItem("accessToken");
-
+    const accessToken = cookies.get('access_token');
     //validate expense form and submit changes to server
     const handleModifyExpense = (e) => {
         e.preventDefault();
@@ -162,7 +165,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             return;
         }
         var apiURL = "http://localhost:3000/expenses/addExpense";
-        const userId = localStorage.getItem('userId');
+        const userId = cookies.get('userId');
         const expenseData = {
             // Assuming you want to set the expenseId to  1
             userId:  userId, // Assuming you want to set the userId to  1

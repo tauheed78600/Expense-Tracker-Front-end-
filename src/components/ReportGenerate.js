@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
@@ -11,13 +11,17 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import "../styles/ReportGenerate.css";
+import Cookies from 'universal-cookie';
 
-const ReportGenerate = ({ expenses }) => {
+const ReportGenerate = () => {
+  const cookies = new Cookies();
  const [popupState, setPopupState] = useState(false);
  const handlePopupState = (state) => {
     setPopupState(state);
  }
  const [loading, setLoading] = useState(false);
+
+ const [expenses, setExpenses] = useState([]);
 
  const masterContent = {
     "error": {
@@ -36,6 +40,10 @@ const ReportGenerate = ({ expenses }) => {
       "head": "Error",
       "body": "Please enter a valid year!"
     },
+    "fetchError": {
+      "head":"Error",
+      "body":"Could not fetch data!"
+    }
  }
 
  const [content, setContent] = useState(masterContent["error"]);
@@ -48,6 +56,49 @@ const ReportGenerate = ({ expenses }) => {
  const [periodEndDate, setPeriodEndDate] = useState('');
  const [reportType, setReportType] = useState('');
  const categories = getCategories();
+
+ useEffect(() => {
+  const fetchExpenses = async () => {
+      try {
+          const userId = cookies.get('userId');
+          const accessToken = cookies.get('access_token');
+          const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+          
+          // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
+          var newArray = [];
+          for(var index in response.data)
+          {
+              var row = response.data[index];
+              //
+              row.date = row.date.slice(0, 10);
+              newArray.push({
+                  "userId": row.userId, 
+                  "expenseId":row.expenseId,
+                  "date":row.date, 
+                  "category":row.category, 
+                  "merchant":row.merchant, 
+                  "amount":row.amount, 
+                  "paymentMode":row.paymentMode});
+          }
+          setExpenses(newArray);
+          
+        
+
+
+      } catch (error) {
+          setContent(masterContent["fetchError"]);
+          setPopupState(true);
+      }
+  };
+  
+  fetchExpenses();
+}, []);
+
+
  
 
 
@@ -140,7 +191,9 @@ const ReportGenerate = ({ expenses }) => {
 
  const handleAllFieldsReport = () => {
   // If only the start date is provided, set the end date to the current date
-  let endDate = periodEndDate ? new Date(periodEndDate) : currentDate();
+  let endDate = periodEndDate ? periodEndDate : currentDate();
+  endDate = endDate.slice(0,10);
+  
   
   var filteredExpenses = expenses;
   if(periodStartDate !== "")
@@ -219,7 +272,7 @@ const ReportGenerate = ({ expenses }) => {
                 <Dropdown.Toggle style={{"width":"200px","backgroundColor":"#e26f6f", "marginLeft":"50px", "marginTop":"40px"}} variant="success" id="dropdown-basic">
                     Choose Category
                 </Dropdown.Toggle>
-                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"250px" }}> 
+                <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"220px" }}> 
                     {categories.map((cat, index) => ( 
                             <Form.Check
                             key={index}

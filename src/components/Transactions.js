@@ -19,8 +19,8 @@ import {
  
 import PopupModal from "./PopupModal.js";
 import Cookies from "universal-cookie";
- 
- 
+
+
 export default function Transactions({ userId }) {
     const cookies = new Cookies();
     const [popupState, setPopupState] = useState(false);
@@ -141,9 +141,9 @@ export default function Transactions({ userId }) {
             setPageCounter(pageCounter => Math.min(totalPages(), pageCounter));
         }
     }, [expenses]);
- 
+
     const accessToken = cookies.get('access_token');
- 
+
     //load expenses data for user
     useEffect(() => {
         const fetchExpenses = async () => {
@@ -251,7 +251,7 @@ export default function Transactions({ userId }) {
             data: {
             expense_id: expenses[index].expenseId,
             user_id: cookies.get("userId")
-        },
+        }, 
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },

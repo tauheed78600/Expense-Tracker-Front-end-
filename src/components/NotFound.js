@@ -3,6 +3,7 @@ import "../styles/NotFound.css";
 import * as Components from '../Components';
 import { useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
+import Cookies from 'universal-cookie';
 
 function FluidExample() {
   return <Image src={require("../assets/404.jpg")} fluid />;
@@ -10,10 +11,11 @@ function FluidExample() {
 
 
 export const NotFound = () => {
+    const cookies = new Cookies();
     const navigate = useNavigate();
     const handleReturn = useCallback(()=>{
         
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = cookies.get('access_token');
         if(accessToken)
         {
             navigate("/dashboard");

@@ -8,8 +8,10 @@ import SpinnerComponent from './components/SpinnerComponent';
 import PopupModal from './components/PopupModal';
 import ReCAPTCHA from "react-google-recaptcha";
 import "./styles/SignInForm.css";
+import Cookies from 'universal-cookie';
  
 const SignInForm = ({ onLoginSuccess }) => {
+  const cookies = new Cookies();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState('');
@@ -95,7 +97,7 @@ const SignInForm = ({ onLoginSuccess }) => {
         then((response)=>{
           login();
           console.log('Login API response:', response.data);
-          localStorage.setItem('accessToken', response.data.accessToken)
+          cookies.set('access_token', response.data.accessToken, { path: '/' });
           console.log(response)
           const userId = response.data.userId;
           console.log("response.data.userId",response.data.userId);

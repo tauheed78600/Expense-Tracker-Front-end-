@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
 import * as Components from './Components';
+import Cookies from 'universal-cookie';
 
 const Auth = ({ setCurrentPage, setUserId }) => {
+  const cookies = new Cookies();
   const [isSignUp, setIsSignUp] = useState(false);
 
   const toggleForm = () => {
@@ -19,7 +21,7 @@ const Auth = ({ setCurrentPage, setUserId }) => {
     console.log('Login successful, responseData:', responseData);
     const userId = responseData.userId;
     console.log('Login successful, userId:', userId);
-    localStorage.setItem('userId', userId);
+    cookies.set('userId', userId, { path: '/' });
     setUserId(userId); // Set userId in the state
   };
 
