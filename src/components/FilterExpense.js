@@ -11,6 +11,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { getCategories } from "./categories";
 import { Filter } from "lucide-react";
 import PopupModal from "./PopupModal";
+import { select } from "@material-tailwind/react";
 export default function FilterExpense({ onFilterExpense, expenseData, showFilter, setShowFilter }) {
     const masterContent = {
         "amountError":{
@@ -212,6 +213,26 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         }
     }, [showFilter]);
 
+    function show_selected_categories() {
+        var res = "";
+        for(var i = selected_categories.length-1; i >= 0; i--)
+        {
+            console.log(i-selected_categories.length-1);
+            if (selected_categories.length-1-i > 1)
+            {
+                res += ", ..."
+                return res;
+            }
+            res += selected_categories[i];
+            if (selected_categories.length > 0)
+                res += ", "
+            
+            
+                
+        }
+        return res;
+    }
+
         
 
 
@@ -262,8 +283,15 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                         </Form.Label>
                         <Col sm={10}>
                             <Dropdown>
-                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f"}} variant="success" id="dropdown-basic">
-                                    Choose Category
+                                <Dropdown.Toggle style={{"backgroundColor":"#e26f6f", "width": "300px"}} variant="success" id="dropdown-basic">
+                                    <span>
+                                    {selected_categories.length === 0? 
+                                    <>Choose Category
+                                    </>
+                                    :
+                                    show_selected_categories()}
+                                    </span>
+                                    
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto' }}> 
                                 {categories.map((cat, index) => ( 

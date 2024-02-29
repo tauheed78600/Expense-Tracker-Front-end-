@@ -250,6 +250,16 @@ const ReportGenerate = () => {
                     [...selected_categories, option]); 
             } 
         }; 
+
+      function setStartDateLimit() {
+        document.getElementById("periodStartDate").max = currentDate();
+      }
+      function setEndDateLimit() {
+        if(periodStartDate !== undefined)
+          document.getElementById("periodEndDate").min = periodStartDate;
+        console.log(periodStartDate);
+        document.getElementById("periodEndDate").max = currentDate();
+      }
  
  
  
@@ -331,7 +341,11 @@ const ReportGenerate = () => {
           type="date"
           id="periodStartDate"
           value={periodStartDate}
-          onChange={(e) => setPeriodStartDate(e.target.value)}
+          onClick={setStartDateLimit}
+          onChange={(e) => {
+            
+            setPeriodStartDate(e.target.value)}
+          }
           className="report-input"
         />
         </div>
@@ -341,7 +355,11 @@ const ReportGenerate = () => {
           type="date"
           id="periodEndDate"
           value={periodEndDate}
-          onChange={(e) => setPeriodEndDate(e.target.value)}
+          onClick={setEndDateLimit}
+          onChange={(e) => {
+            
+            setPeriodEndDate(e.target.value)
+          }}
           className="report-input"
         />
         </div>
