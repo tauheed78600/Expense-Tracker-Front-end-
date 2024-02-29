@@ -21,7 +21,7 @@ import PopupModal from "./PopupModal.js";
 import Cookies from "universal-cookie";
 
 
-export default function Transactions({ userId, setReportExpenses }) {
+export default function Transactions({ userId }) {
     const cookies = new Cookies();
     const [popupState, setPopupState] = useState(false);
     const handlePopupState = (state) => {
@@ -132,7 +132,6 @@ export default function Transactions({ userId, setReportExpenses }) {
     useEffect(() => {
         
         setExpenses(masterExpenses);
-        setReportExpenses(masterExpenses);
     }, [masterExpenses]);
 
     //rectify page count when expenses data changes
