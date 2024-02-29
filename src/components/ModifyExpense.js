@@ -120,7 +120,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
 
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = ccokies.getItem("accessToken");
 
     //validate expense form and submit changes to server
     const handleModifyExpense = (e) => {
