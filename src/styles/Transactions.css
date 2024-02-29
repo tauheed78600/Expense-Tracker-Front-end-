@@ -51,14 +51,29 @@
 }
 
 .expense-table-th-td {
+  min-width: 100px;
   height: 45px;
-  width: 200px;
 }
+
+.expense-table-date-td {
+  width: 150px;
+}
+
+.expense-table-merchant-td {
+  width: 150px;
+}
+
+.expense-table-amount-td {
+  width: 100px;
+}
+
 
 .expense-table-edit-delete {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 27px !important;
+  width: 150px !important;
 }
 
 #expense-table th {
@@ -91,7 +106,8 @@
 }
 
 .expense-table-index {
-  width: 50px;
+  height: 45px;
+  width: 50px !important;
   text-align: center !important;
 }
 
