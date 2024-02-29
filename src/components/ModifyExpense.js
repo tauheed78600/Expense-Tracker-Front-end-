@@ -64,7 +64,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         ||loadExpense.amount !== modifyExpenseData.amount
         ||loadExpense.paymentMode !== modifyExpenseData.paymentMode)
         {
-            console.log(loadExpense);
+            
             setModifyExpenseData({
                 "index": loadExpense.index,
                 "expenseId": loadExpense.expenseId,
@@ -75,6 +75,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 "paymentMode": loadExpense.paymentMode
             })
         }
+        console.log(loadExpense);
         /*if(loadExpense[0].split("-")[2].length != 2 )
             loadExpense[0] = swapDate(loadExpense[0]);*/
     }, [loadExpense]);
@@ -93,6 +94,49 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
     const setDateLimit = () => {
         document.getElementById("modify-expense-date").max = currentDate();
     }
+
+    const closeModifyExpense = () => {
+        handleClose();
+    }
+
+    const handlePopupState = (state) => {
+        setPopupState(state);
+    }
+
+    //json to store popup dialogue content
+    const masterContent = {
+        "add": {
+            "head": "Success",
+            "body": "Expense added successfully!"
+        },
+        "update":{
+            "head": "Success",
+            "body": "Expense updated successfully!"
+        },
+        "error": {
+            "head": "Error",
+            "body": "One or more fields empty!"
+        },
+        "amountError":{
+            "head": "Error",
+            "body": "Amount is not a number!"
+        },
+        "budgetLimitExceeded": {
+            "head": "Error",
+            "body": "Budget Limit Exceeded"
+        },
+        "editError": {
+            "head": "Error",
+            "body": "Could not edit expense!"
+        },
+        "amountNegative": {
+            "head": "Error",
+            "body": "Amount cannot be negative"
+        }
+
+    }
+
+    const [content, setContent] = useState(masterContent["error"]);
 
     //reset form data
     const resetData = () => {
@@ -207,9 +251,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         }
         else
         {
-            console.log("modifyExpenseData", modifyExpenseData.expenseId)
             apiURL = "http://localhost:3000/expenses/updateExpense";
-            console.log("mon")
             
             const expenseData = {
             // Assuming you want to set the expenseId to  1
@@ -221,7 +263,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 paymentMode: modifyExpenseData.paymentMode,
                 expenseId: modifyExpenseData.expenseId
             };
-            console.log(expenseData);
             axios.put(apiURL, expenseData,{
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
@@ -229,10 +270,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
               }).then((response) => {
                 setContent(masterContent["update"]);
                 setPopupState(true);
-                console.log(expenseData)
                 updateRow = {
                     "userId": userId, 
-                    "expenseId":response.data.expenseId,
+                    "expenseId":modifyExpenseData.expenseId,
                     "date":modifyExpenseData.date, 
                     "category":modifyExpenseData.category, 
                     "merchant":modifyExpenseData.merchant, 
@@ -258,48 +298,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setShow(false);}
     const handleShow = () => setShow(true);
 
-    const closeModifyExpense = () => {
-        handleClose();
-    }
-
-    const handlePopupState = (state) => {
-        setPopupState(state);
-    }
-
-    //json to store popup dialogue content
-    const masterContent = {
-        "add": {
-            "head": "Success",
-            "body": "Expense added successfully!"
-        },
-        "update":{
-            "head": "Success",
-            "body": "Expense updated successfully!"
-        },
-        "error": {
-            "head": "Error",
-            "body": "One or more fields empty!"
-        },
-        "amountError":{
-            "head": "Error",
-            "body": "Amount is not a number!"
-        },
-        "budgetLimitExceeded": {
-            "head": "Error",
-            "body": "Budget Limit Exceeded"
-        },
-        "editError": {
-            "head": "Error",
-            "body": "Could not edit expense!"
-        },
-        "amountNegative": {
-            "head": "Error",
-            "body": "Amount cannot be negative"
-        }
-
-    }
-
-    const [content, setContent] = useState(masterContent["error"]);
+    
     
 
     return (
