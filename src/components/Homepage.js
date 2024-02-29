@@ -236,7 +236,7 @@ const Homepage = () => {
               onChange={handleInputChange}
             />
           </div>
-          <button type="submit" className="submitMail btn-primary mb-2" onClick={handleSubmit}>Submit</button>
+          <button type="aa" className="submitMail btn-primary mb-2" onClick={handleSubmit}>Submit</button>
         </form>
         <p className="copyright">© Copyright 2024 Parkar Digital</p>
         <p>Made with ❤</p>
