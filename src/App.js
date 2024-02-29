@@ -63,6 +63,10 @@ function App() {
     cookies.set('access_token', responseData.accessToken, { path: '/' });
   };
 
+  const setAppExpense = (newExpenses) => {
+    setExpenses(newExpenses);
+  }
+
   return (
     <Router>
       <Routes>
@@ -77,9 +81,9 @@ function App() {
               <Navbar setCurrentPage={setCurrentPage} />
               <main className="grow">
                 {currentPage === 'dashboard' && <Dashboard userId={cookies.get("userId")} expenses={expenses} setExpenses={setExpenses} /> }
-                {currentPage === 'transactions' && <Transactions userId={cookies.get("userId")} />}
+                {currentPage === 'transactions' && <Transactions userId={cookies.get("userId")} setReportExpenses={setAppExpense}/>}
                 {currentPage === 'analytics' && <Analytics userId={cookies.get("userId")} />}
-                {currentPage === 'reportgenerate' && <ReportGenerate expenses={expenses}/>}
+                {currentPage === 'reportgenerate' && <ReportGenerate expenses={expenses} setExpenses={setAppExpense}/>}
               </main>
             </div>  
           ) : (

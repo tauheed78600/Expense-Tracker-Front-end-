@@ -12,7 +12,7 @@ import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import "../styles/ReportGenerate.css";
 
-const ReportGenerate = ({ expenses }) => {
+const ReportGenerate = ({ expenses, setAppExpenses }) => {
  const [popupState, setPopupState] = useState(false);
  const handlePopupState = (state) => {
     setPopupState(state);
