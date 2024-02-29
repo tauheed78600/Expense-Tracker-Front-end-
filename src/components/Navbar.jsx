@@ -1,5 +1,5 @@
 // Navbar.js
-import React from "react";
+import React, {useState} from "react";
 import {
   ArrowLeftRightIcon,
   BarChart3Icon,
@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import RightArrowIcon from "./../assets/icons/rightArrow.svg";
 import Logo from "../assets/Logo.png";
 import Cookies from "universal-cookie";
+import LogoutModal from "./LogoutModal";
 
 const variants = {
   expanded: { width: "20%" },
@@ -30,9 +31,13 @@ function Navbar({ setCurrentPage }) {
   };
 
   const handleLogout = () => {
+
     cookies.remove('access_token');
+    cookies.remove('userId');
     window.location.href = "/auth";
   };
+
+  const [logoutShow, setLogoutShow] = useState(false);
   
 
   return (
@@ -89,8 +94,12 @@ function Navbar({ setCurrentPage }) {
             </span>
           </div>
         </div>
-
-        <div className={`nav-links w-full ${currentPage === 'logout' ? 'active' : ''}`} onClick={() => handleLogout()}>
+        {
+          <>
+          <LogoutModal state={logoutShow} setState={setLogoutShow} handleLog={handleLogout}/>
+          </>
+        }
+        <div className={`nav-links w-full ${currentPage === 'logout' ? 'active' : ''}`} onClick={() => setLogoutShow(true)}>
           <div className="flex space-x-3 w-full p-2 rounded  ">
             <LogOut />
             <span className={!isExpanded ? "hidden" : "block"} style={{"userSelect":"none"}}>
