@@ -35,6 +35,10 @@ const SignUpForm = () => {
     "detailError": {
       "head":"Error",
       "body":"Please fill the required fields correctly!"
+    },
+    "serverError": {
+      "head":"Error",
+      "body":"Could not reach server!"
     }
   }
 
@@ -65,12 +69,26 @@ const SignUpForm = () => {
       setEmailError('');
     }
 
-    if (password.length <  8) {
-      setPasswordError('Password must be at least  8 characters long');
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long');
       isValid = false;
-    } else {
+  } else if (!/[A-Z]/.test(password)) {
+      setPasswordError('Password must contain at least one uppercase character');
+      isValid = false;
+  } else if (!/[!@#\$%\^&\*_]/.test(password)) {
+      setPasswordError('Password must contain at least one special character');
+      isValid = false;
+  }
+  else if (!/\d/.test(password)) {
+    setPasswordError('Password must contain at least one number');
+    isValid = false;
+}
+   else {
       setPasswordError('');
-    }
+      isValid = true;
+  }
+  
+    
 
     // Validate monthly budget (if required)
     if (!monthlyBudget || parseInt(monthlyBudget,  10) <=  0) {
@@ -112,26 +130,38 @@ const SignUpForm = () => {
       try {
         setLoading(true);
         // var monthlyBudget = 0
+        
         const response = await axios.post('http://localhost:3000/total/register/', {
           email,
           password,
           monthlyBudget,
           username 
         });
-        setLoading(false);
-        setContent(masterContent["signupSuccess"]);
-        setPopupState(true);
-        
-        // Handle successful signup (e.g., clear form, show success message)
+        console.log(response);
+        if(response.status === 201)
+        {
+          setLoading(false);
+          setContent(masterContent["signupSuccess"]);
+          setPopupState(true);
+          // Handle successful signup (e.g., clear form, show success message)
         console.log(response.data);
         setUsername(''); // Changed from setName to setUsername
         setEmail('');
         setPassword('');
         setMonthlyBudget(''); // Clear monthly budget as well
+        }
+        else {
+          setLoading(false);
+          setContent(masterContent["signupError"]);
+          setPopupState(true);
+        }
+        
+        
+        
       } catch (error) {
         setLoading(false);
         // Handle errors (e.g., show error message)
-        setContent(masterContent["signupError"]);
+        setContent(masterContent["serverError"]);
         setPopupState(true);
         setLoading(false);
       }

@@ -16,7 +16,7 @@ import {
     ArrowBigRight,
     ArrowBigLeft
   } from "lucide-react";
-
+ 
 import PopupModal from "./PopupModal.js";
 import Cookies from "universal-cookie";
 
@@ -27,9 +27,9 @@ export default function Transactions({ userId }) {
     const handlePopupState = (state) => {
         setPopupState(state);
     }
-
-    
-
+ 
+   
+ 
     const masterContent = {
         "budgetExceededError": {
           "head": "Warning",
@@ -51,25 +51,25 @@ export default function Transactions({ userId }) {
         "head": "Error",
         "body": "Could not fetch data!"
       }
-
-
+ 
+ 
   }
-
+ 
   const [content, setContent] = useState(masterContent["budgetExceededError"]);
     const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
     const cat = {
-        "Date":"date", 
-        "Category":"category", 
-        "Merchant":"merchant", 
-        "Amount":"amount", 
-        "Payment Mode":"paymentMode", 
+        "Date":"date",
+        "Category":"category",
+        "Merchant":"merchant",
+        "Amount":"amount",
+        "Payment Mode":"paymentMode",
         "Modify":"modify"
     };
-    
-
+   
+ 
     const itemCount = 10;
     const [pageCounter, setPageCounter] = useState(1);
-
+ 
     const [sortButtonState, setSortButtonState] = useState({
         "Date": false,
         "Category": false,
@@ -78,7 +78,7 @@ export default function Transactions({ userId }) {
         "Payment Mode": false
     });
     const [masterExpenses, setMasterExpenses] = useState([]);
-
+ 
     //to generate dummy rows based on length of expenses array
     const getDummyRows = () => {
         var dummyRowLength = expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
@@ -94,46 +94,46 @@ export default function Transactions({ userId }) {
         }
         return rows;
     }
-
+ 
     const [expenses, setExpenses] = useState([]);
-    
+   
     //returns total pages
-    const totalPages = () => 
+    const totalPages = () =>
     {
         return Math.max(Math.ceil(expenses.length/itemCount), 1);
     }
-
+ 
     //to go to first page on transactions
     const gotoFirstPage = () => {
         setPageCounter(prevState=> 1);
     }
-
+ 
     //to go to last page on transactions
     const gotoLastPage= () => {
         setPageCounter(prevState => totalPages());
     }
-    
+   
     //increase page count
     const increasePageCounter = () => {
         var total = totalPages();
         setPageCounter(prevState => Math.min(total, prevState+1) );
     }
-
+ 
     //decrease page count
     const decreasePageCounter = () => {
         setPageCounter(prevState => Math.max(1, prevState-1) );
     }
-
+ 
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
-
-
+ 
+ 
     //set expenses when master expeneses changes
     useEffect(() => {
-        
+       
         setExpenses(masterExpenses);
     }, [masterExpenses]);
-
+ 
     //rectify page count when expenses data changes
     useEffect(()=> {
         if(pageCounter > totalPages())
@@ -153,7 +153,7 @@ export default function Transactions({ userId }) {
                       Authorization: `Bearer ${accessToken}`,
                     },
                   });
-                
+               
                 // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
                 var newArray = [];
                 for(var index in response.data)
@@ -162,23 +162,34 @@ export default function Transactions({ userId }) {
                     //
                     row.date = row.date.slice(0, 10);
                     newArray.push({
-                        "userId": row.userId, 
+                        "userId": row.userId,
                         "expenseId":row.expenseId,
-                        "date":row.date, 
-                        "category":row.category, 
-                        "merchant":row.merchant, 
-                        "amount":row.amount, 
+                        "date":row.date,
+                        "category":row.category,
+                        "merchant":row.merchant,
+                        "amount":row.amount,
                         "paymentMode":row.paymentMode});
                 }
                 setMasterExpenses(newArray);
+               
+                const emailId = response.data.email  
                 
-                const emailId = response.data.email   
+                const response1 = await axios.get(`http://localhost:3000/total/${userId}`, {
+                            headers: {
+                              Authorization: `Bearer ${accessToken}`,
+                            },
+                          });
+                console.log("response1234", response1)
                 
-                if (response.data.remaining_budget <= response.data.monthly_budget *   0.1) {
+                if (localStorage.getItem("lastMonthNineReachedEmailSent") == 0)
+                {
+                    if (response1.data.remaining_budget <= response1.data.monthly_budget * 0.1) {
                     const currentMonth = new Date().getMonth();
+                    localStorage.setItem("lastMonthNineReachedEmailSent", 1)
                     const lastMonthNineReachedEmailSent = cookies.get('lastMonthNineReachedEmailSent');
+                    
                     if (lastMonthNineReachedEmailSent !== currentMonth.toString()) {
-                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId }, {
+                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email }, {
                             headers: {
                               Authorization: `Bearer ${accessToken}`,
                             },
@@ -191,14 +202,18 @@ export default function Transactions({ userId }) {
                         cookies.set('lastMonthNineReachedEmailSent', currentMonth.toString(), { path: '/' });
                     }
                   }
-                }
-                    
+                }}
+                   
                   // Check if the user has exceeded their monthly budget
-                  if (response.data.remaining_budget <=   0) {
+                  
+                  if (localStorage.getItem("remaininingBudgetZero") == 0)
+                  {
+                    localStorage.setItem("remaininingBudgetZero", 1)
+                    if (response1.data.remaining_budget <=   0) {
                     const currentMonth = new Date().getMonth();
                     const lastMonthEmailSent = cookies.get('lastMonthEmailSent');
                     if (lastMonthEmailSent !== currentMonth.toString()){
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: emailId  }, {
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email  }, {
                         headers: {
                           Authorization: `Bearer ${accessToken}`,
                         },
@@ -210,29 +225,29 @@ export default function Transactions({ userId }) {
                         cookies.set('lastMonthEmailSent', currentMonth.toString(), { path: '/' });
                     }
                   }
-                }
-
-
+                }}
+ 
+ 
             } catch (error) {
                 setContent(masterContent["fetchError"]);
                 setPopupState(true);
             }
         };
-        
+       
         fetchExpenses();
     }, [userId]);
-
-    
-
+ 
+   
+ 
     const [sendExpense, setSendExpense] = useState([]);
-
+ 
     //change expenses when expense form returns new expense
     const modifyAddExpense = (newExpense) => {
         var newMasterExpense = [...masterExpenses, newExpense];
         setSendExpense([]);
         setMasterExpenses(newMasterExpense);
     };
-
+ 
     //change expenses when expense form returns modified expense
     const modifyEditExpense = (index, newExpense) => {
         setMasterExpenses(prevArray => {
@@ -241,7 +256,7 @@ export default function Transactions({ userId }) {
             return newArray;
         });
     }
-
+ 
     //change expenses when expense is deleted and submit delete request to server
     const modifyDeleteExpense = (index) => {
         index = index + (pageCounter-1)*itemCount;
@@ -264,40 +279,40 @@ export default function Transactions({ userId }) {
                 newArray.splice(index,   1);
                 return newArray;
             });
-            
+           
         }).catch((error) => {
             setContent(masterContent["deleteError"]);
             setPopupState(true);
         });
-        
+       
     }
-
+ 
     const modifyFilterExpense = (filterData) => {
         setExpenses(filterData);
     }
-
+ 
     const resetFilter = () => {
         setExpenses(masterExpenses);
     }
-
-
-
+ 
+ 
+ 
     const handleEditExpense = (index) => {
         index = index+(pageCounter-1)*itemCount;
         setShow(true);
         setSendExpense({"index":index, ...expenses[index]});
     }
-
+ 
     const handleDeleteExpense = (index) => {
-
+ 
         modifyDeleteExpense(index);
     }
-
+ 
     function sortByColumn(arr, columnName) {
         return arr.sort((a, b) => {
             const aValue = columnName ===  "amount" ? parseFloat(a[columnName]) : a[columnName];
             const bValue = columnName ===  "amount" ? parseFloat(b[columnName]) : b[columnName];
-
+ 
             if (aValue < bValue) {
                 return -1;
             }
@@ -307,12 +322,12 @@ export default function Transactions({ userId }) {
             return   0;
         });
     }
-
+ 
     function sortByColumnReverse(arr, columnName) {
         return arr.sort((a, b) => {
             const aValue = columnName ===   "amount" ? parseFloat(a[columnName]) : a[columnName];
             const bValue = columnName ===   "amount" ? parseFloat(b[columnName]) : b[columnName];
-
+ 
             if (aValue > bValue) {
                 return -1;
             }
@@ -322,7 +337,7 @@ export default function Transactions({ userId }) {
             return   0;
         });
     }
-
+ 
     const sortTableBy = (value) => {
         const indexValueMap = {
             "date":   2,
@@ -342,7 +357,7 @@ export default function Transactions({ userId }) {
             newArray = sortByColumnReverse(newArray, value);
             setSortButtonState({ ...sortButtonState, [value]: false });
         }
-
+ 
         if (newArray !== expenses) {
             setExpenses(newArray);
         }
@@ -352,11 +367,11 @@ export default function Transactions({ userId }) {
             <PopupModal state={popupState} setState={handlePopupState} content={content}/>
             <div id = "expense-table">
                         <div id= "expense-table-options">
-                            <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense} 
+                            <ModifyExpense onAddExpense={modifyAddExpense} onEditExpense={modifyEditExpense}
                             loadExpense={sendExpense} setLoadExpense={setSendExpense} show={show} setShow={setShow}/>
-                            <FilterExpense onFilterExpense={modifyFilterExpense} 
+                            <FilterExpense onFilterExpense={modifyFilterExpense}
                             expenseData={masterExpenses} showFilter={showFilter} setShowFilter={setShowFilter}/>
-                            <button className="expense-table-button expense-table-options-button" 
+                            <button className="expense-table-button expense-table-options-button"
                             id = "reset-filter-button" onClick={resetFilter}><RotateCcw/></button>
                             <MonthlyBudgetModal/>
                         </div>
@@ -367,12 +382,12 @@ export default function Transactions({ userId }) {
                                 {
                                     tableHead.map((head, index) => (
                                         <>
-                                            
+                                           
                                             <th className = "expense-table-th expense-table-th-td" key = {index} onClick={()=>{sortTableBy(cat[head])}}>
                                                 {head}
                                             </th>
                                         </>
-                                        
+                                       
                                         )
                                     )
                                 }
@@ -381,10 +396,20 @@ export default function Transactions({ userId }) {
                                 expenses.slice((pageCounter-1)*itemCount, pageCounter*itemCount).map((row, index) => {
                                 return (
                                     <tr key={index} >
-                                        <td className="expense-table-index expense-table-th-td">{index+1+(pageCounter-1)*itemCount}</td>
+                                        <td className="expense-table-index">{index+1+(pageCounter-1)*itemCount}</td>
                                         {Object.values(row).map((value, cellIndex) => {
                                             if(cellIndex > 1)
-                                                return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
+                                            {
+                                                if(cellIndex === 2)
+                                                    return <td className="expense-table-th-td expense-table-date-td" key={cellIndex}>{value}</td>;
+                                                if(cellIndex === 4)
+                                                    return <td className="expense-table-th-td expense-table-merchant-td" key={cellIndex}>{value}</td>;
+                                                else if(cellIndex === 5)
+                                                    return <td className="expense-table-th-td expense-table-amount-td" key={cellIndex}>{value}</td>;
+                                                else
+                                                    return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
+                                            }
+                                                
                                         })}
                                         <td className="expense-table-th-td expense-table-edit-delete">
                                             <button className="expense-table-button" onClick={() => handleEditExpense(index)}><Pencil/></button>
@@ -404,17 +429,17 @@ export default function Transactions({ userId }) {
                                                 return (
                                                     <td className="expense-table-th-td" key={cellIndex+1}>{value}</td>
                                                 )
-                                                
+                                               
                                             })
                                         }
                                     </tr>
                                 )
                             })
                         }
-                        
-                        
+                       
+                       
                         </tbody>
-                        
+                       
                         </table>
                         {expenses.length > 10 &&    <div id="page-selector">
                                             {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}

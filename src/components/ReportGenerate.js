@@ -250,6 +250,31 @@ const ReportGenerate = () => {
                     [...selected_categories, option]); 
             } 
         }; 
+
+      function setStartDateLimit() {
+        document.getElementById("periodStartDate").max = currentDate();
+      }
+      function setEndDateLimit() {
+        if(periodStartDate !== undefined)
+          document.getElementById("periodEndDate").min = periodStartDate;
+        console.log(periodStartDate);
+        document.getElementById("periodEndDate").max = currentDate();
+      }
+
+      function show_selected_categories() {
+        var res = "";
+        if (selected_categories.length-1 > 0)
+        {
+            res += selected_categories[0];    
+            res += ", ..."
+        }
+        else
+        {
+          res += selected_categories[0];
+        }
+            
+        return res;
+    }
  
  
  
@@ -270,7 +295,13 @@ const ReportGenerate = () => {
                 <Col sm={10}>
                 <Dropdown>
                 <Dropdown.Toggle style={{"width":"200px","backgroundColor":"#e26f6f", "marginLeft":"50px", "marginTop":"40px"}} variant="success" id="dropdown-basic">
-                    Choose Category
+                  <span>
+                    {selected_categories.length === 0? 
+                    <>Choose Category
+                    </>
+                    :
+                    show_selected_categories()}
+                  </span>
                 </Dropdown.Toggle>
                 <Dropdown.Menu style={{ maxHeight: '150px', overflowY: 'auto', 'width':"220px" }}> 
                     {categories.map((cat, index) => ( 
@@ -331,7 +362,11 @@ const ReportGenerate = () => {
           type="date"
           id="periodStartDate"
           value={periodStartDate}
-          onChange={(e) => setPeriodStartDate(e.target.value)}
+          onClick={setStartDateLimit}
+          onChange={(e) => {
+            
+            setPeriodStartDate(e.target.value)}
+          }
           className="report-input"
         />
         </div>
@@ -341,7 +376,11 @@ const ReportGenerate = () => {
           type="date"
           id="periodEndDate"
           value={periodEndDate}
-          onChange={(e) => setPeriodEndDate(e.target.value)}
+          onClick={setEndDateLimit}
+          onChange={(e) => {
+            
+            setPeriodEndDate(e.target.value)
+          }}
           className="report-input"
         />
         </div>

@@ -2,17 +2,41 @@
 /* Analytics.css */
  
 .analytics-container {
+  margin-top: -80px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   padding:  20px;
-  height: 500px;
+  height: 900px;
 }
+
+.button-anal-div {
+  display: flex;
+  flex-direction: column;
+  margin-right: 100px;
+}
+
+.button-anal {
+  float: left;
+  height: 80px !important;
+  text-align: center;
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  padding: 10px 10px; 
+  
+  margin-bottom: 50px;
+  font-size: 18px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
+  width: 300px;
+  justify-content: space-between !important; 
+  gap: 10px !important; 
+ }
+
  
 .chart-row {
   display: flex;
-  width:  100%;
   margin-bottom:  20px;
 }
  
@@ -26,18 +50,9 @@
   flex-direction: column;
   display: flex;
   align-items: center;
-  height: 250%;
-  width:  50%; /* Ensure each column takes up half the width of the row */
 }
- 
-.chart {
-  width:  150%; /* Make the chart responsive to the column width */
-  max-width:  500px; /* Maximum width of the chart */
-  height: 800px; /* Adjust the height automatically based on the content */
-  margin-bottom:  10px; /* Adjusted margin for better spacing */
-  max-height: 800px;
-}
- 
+
+
 .chart canvas {
   border:  1px solid #3a1616;
   box-shadow:  2px  2px  5px rgba(0,  0,  0,  0.1);

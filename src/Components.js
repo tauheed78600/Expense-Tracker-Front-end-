@@ -61,6 +61,7 @@
   font-weight: bold; // Set the font weight to bold
   margin:  0; // Remove all margins
   text-align: center; // Center the text
+  color:blue;
   color: #333; // Set the text color
   font-size:  2em; // Set the font size
   margin-left:  140px;

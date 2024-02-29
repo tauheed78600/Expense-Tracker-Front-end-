@@ -33,6 +33,10 @@ const SignInForm = ({ onLoginSuccess }) => {
     "detailError": {
       "head":"Error",
       "body":"Please fill the required fields correctly!"
+    },
+    "serverError": {
+      "head":"Error",
+      "body":"Could not reach server!"
     }
   }
   const [popupState, setPopupState] = useState(false);
@@ -98,6 +102,8 @@ const SignInForm = ({ onLoginSuccess }) => {
           login();
           console.log('Login API response:', response.data);
           cookies.set('access_token', response.data.accessToken, { path: '/' });
+          localStorage.setItem("lastMonthNineReachedEmailSent", 0)
+          localStorage.setItem("remaininingBudgetZero", 0)
           console.log(response)
           const userId = response.data.userId;
           console.log("response.data.userId",response.data.userId);
@@ -107,7 +113,7 @@ const SignInForm = ({ onLoginSuccess }) => {
         }).
         catch((error)=>{
           console.log(error);
-          setContent(masterContent["loginError"]);
+          setContent(masterContent["serverError"]);
           setPopupState(true);
           setLoading(false);
         });
