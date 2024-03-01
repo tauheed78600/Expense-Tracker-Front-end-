@@ -134,24 +134,30 @@ const SignUpForm = () => {
       try {
         setLoading(true);
         // var monthlyBudget = 0
-        const response1 = await axios.get(`http://localhost:3000/total/getUsername/?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`)
-        console.log("response123", response1)
-        if (response1.data.status === 400)
-        {
-          setLoading(false);
-          setContent(masterContent["userNameOrEmailExistsError"]);
-          setPopupState(true);
-          return;
-        }
-        else if (response1.data.status === 200)
-        {
+        // const response1 = await axios.get(`http://localhost:3000/total/getUsername/?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`)
+        // console.log("response123", response1)
+        // if (response1.data.status === 400)
+        // {
+        //   setLoading(false);
+        //   setContent(masterContent["userNameOrEmailExistsError"]);
+        //   setPopupState(true);
+        //   return;
+        // }
+        
           const response = await axios.post('http://localhost:3000/total/register/', {
           email,
           password,
           monthlyBudget,
           username 
         });
-        console.log(response);
+        console.log("response1234", response);
+        if (response.data.status === 400)
+        {
+          setLoading(false);
+          setContent(masterContent["userNameOrEmailExistsError"]);
+          setPopupState(true);
+          return;
+        }
         if(response.status === 201)
         {
           setLoading(false);
@@ -169,7 +175,7 @@ const SignUpForm = () => {
           setContent(masterContent["signupError"]);
           setPopupState(true);
         }
-        }       
+             
         
       } catch (error) {
         setLoading(false);
