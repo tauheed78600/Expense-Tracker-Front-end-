@@ -81,7 +81,7 @@ export default function Transactions({ userId }) {
  
     //to generate dummy rows based on length of expenses array
     const getDummyRows = () => {
-        var dummyRowLength = expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
+        var dummyRowLength = expenses.length === 0 ? 10 : expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
         var rows = [];
         for(var i = 0; i < dummyRowLength; i++)
         {
@@ -362,6 +362,17 @@ export default function Transactions({ userId }) {
             setExpenses(newArray);
         }
     }
+    function showAddExpense() {
+        return (
+            <>
+            <div id = "show-add-expense-div">
+                <span id = "show-add-expense">Add an expense to get started</span>
+            </div>
+                
+            </>
+        );
+    }
+
      return (
         <div id = "transaction-div">
             <PopupModal state={popupState} setState={handlePopupState} content={content}/>
@@ -378,8 +389,9 @@ export default function Transactions({ userId }) {
                         <table>
                         <tbody>
                             <tr>
-                                <th className="expense-table-index">#</th>
-                                {
+                                <>
+                                    <th className="expense-table-index">#</th>
+                                    {
                                     tableHead.map((head, index) => (
                                         <>
                                            
@@ -391,7 +403,9 @@ export default function Transactions({ userId }) {
                                         )
                                     )
                                 }
+                                </>
                             </tr>
+                            
                             {
                                 expenses.slice((pageCounter-1)*itemCount, pageCounter*itemCount).map((row, index) => {
                                 return (
@@ -417,18 +431,25 @@ export default function Transactions({ userId }) {
                                         </td>
                                     </tr>
                                         );
-                                })
-                        }
+                                }
+                        )}
                         {
-                            pageCounter === totalPages() && getDummyRows().map((row, index) => {
+                             pageCounter === totalPages() && getDummyRows().map((row, index) => {
                                 return (
                                     <tr key = {(itemCount-expenses.length%itemCount)+index}>
                                         <td className="expense-table-index expense-table-th-td" key={0} >{""}</td>
                                         {
                                             row.map((value, cellIndex) => {
-                                                return (
-                                                    <td className="expense-table-th-td" key={cellIndex+1}>{value}</td>
-                                                )
+                                                {
+                                                    if(cellIndex === 2)
+                                                        return <td className="expense-table-th-td expense-table-date-td" key={cellIndex}>{value}</td>;
+                                                    if(cellIndex === 4)
+                                                        return <td className="expense-table-th-td expense-table-merchant-td" key={cellIndex}>{value}</td>;
+                                                    else if(cellIndex === 5)
+                                                        return <td className="expense-table-th-td expense-table-amount-td" key={cellIndex}>{value}</td>;
+                                                    else
+                                                        return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
+                                                }
                                                
                                             })
                                         }
