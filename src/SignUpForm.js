@@ -39,6 +39,10 @@ const SignUpForm = () => {
     "serverError": {
       "head":"Error",
       "body":"Could not reach server!"
+    },
+    "userNameOrEmailExistsError": {
+      "head": "Error",
+      "body": "Username or Email Id already exists"
     }
   }
 
@@ -130,8 +134,18 @@ const SignUpForm = () => {
       try {
         setLoading(true);
         // var monthlyBudget = 0
-        
-        const response = await axios.post('http://localhost:3000/total/register/', {
+        const response1 = await axios.get(`http://localhost:3000/total/getUsername/?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}`)
+        console.log("response123", response1)
+        if (response1.data.status === 400)
+        {
+          setLoading(false);
+          setContent(masterContent["userNameOrEmailExistsError"]);
+          setPopupState(true);
+          return;
+        }
+        else if (response1.data.status === 200)
+        {
+          const response = await axios.post('http://localhost:3000/total/register/', {
           email,
           password,
           monthlyBudget,
@@ -143,7 +157,7 @@ const SignUpForm = () => {
           setLoading(false);
           setContent(masterContent["signupSuccess"]);
           setPopupState(true);
-          // Handle successful signup (e.g., clear form, show success message)
+          
         console.log(response.data);
         setUsername(''); // Changed from setName to setUsername
         setEmail('');
@@ -155,8 +169,7 @@ const SignUpForm = () => {
           setContent(masterContent["signupError"]);
           setPopupState(true);
         }
-        
-        
+        }       
         
       } catch (error) {
         setLoading(false);
