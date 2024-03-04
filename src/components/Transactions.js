@@ -372,21 +372,32 @@ export default function Transactions({ userId }) {
             {1}
             </Pagination.Item>,
         );
-        if(pageCounter <= totalPages() && pageCounter >= offset)
+        if(pageCounter <= totalPages() && pageCounter > offset)
         {
             items.push(<Pagination.Ellipsis id="expense-table-selector-button" disabled/>)
         }
-        const start = Math.min(Math.max(2, pageCounter-Math.floor(offset/2)), totalPages()-offset);
-        const end = Math.max(Math.min(totalPages()-1, pageCounter+Math.floor(offset/2)), offset+1);
+        var start = 0;
+        var end = 0;
+        if(totalPages() > offset+2)
+        {
+            start = Math.min(Math.max(2, pageCounter-Math.floor(offset/2)), totalPages()-offset);
+            end = Math.max(Math.min(totalPages()-1, pageCounter+Math.floor(offset/2)), offset+1);
+        }
+        else
+        {
+            start = 2;
+            end = totalPages()-1;
+        }
         for (let number = start; number <= end; number++) 
         {
+            console.log(number);
             items.push(
                 <Pagination.Item id="expense-table-selector-button" key={number} onClick={()=>{setPageCounter(number)}}>
                 {number}
                 </Pagination.Item>,
             );
         }
-        if(pageCounter >= 1 && pageCounter <= (totalPages()-offset+1))
+        if(totalPages() > offset+1 && pageCounter >= 1 && pageCounter <= (totalPages()-offset))
         {
             items.push(<Pagination.Ellipsis id="expense-table-selector-button" disabled/>)
         }
