@@ -9,6 +9,7 @@ import axios from 'axios';
 import Excel from 'exceljs';
 import { saveAs } from 'file-saver';
 import MonthlyBudgetModal from "./MonthlyBudgetModal.js";
+import Pagination from 'react-bootstrap/Pagination';
 import {
     RotateCcw,
     Pencil,
@@ -56,18 +57,18 @@ export default function Transactions({ userId }) {
   }
  
   const [content, setContent] = useState(masterContent["budgetExceededError"]);
-    const tableHead = ["Date", "Category", "Merchant", "Amount", "Payment Mode", "Modify"];
+    const tableHead = ["Date", "Category", "Merchant", "Amount", "Mode", "Modify"];
     const cat = {
         "Date":"date",
         "Category":"category",
         "Merchant":"merchant",
         "Amount":"amount",
-        "Payment Mode":"paymentMode",
+        "Mode":"paymentMode",
         "Modify":"modify"
     };
    
  
-    const itemCount = 10;
+    const itemCount = 8;
     const [pageCounter, setPageCounter] = useState(1);
  
     const [sortButtonState, setSortButtonState] = useState({
@@ -75,13 +76,13 @@ export default function Transactions({ userId }) {
         "Category": false,
         "Merchant": false,
         "Amount": false,
-        "Payment Mode": false
+        "Mode": false
     });
     const [masterExpenses, setMasterExpenses] = useState([]);
  
     //to generate dummy rows based on length of expenses array
     const getDummyRows = () => {
-        var dummyRowLength = expenses.length === 0 ? 10 : expenses.length%10!==0?itemCount-expenses.length%itemCount:0;
+        var dummyRowLength = expenses.length === 0 ? itemCount : expenses.length%itemCount!==0?itemCount-expenses.length%itemCount:0;
         var rows = [];
         for(var i = 0; i < dummyRowLength; i++)
         {
@@ -362,16 +363,46 @@ export default function Transactions({ userId }) {
             setExpenses(newArray);
         }
     }
-    function showAddExpense() {
-        return (
-            <>
-            <div id = "show-add-expense-div">
-                <span id = "show-add-expense">Add an expense to get started</span>
-            </div>
-                
-            </>
+
+    function getPagination() {
+        const offset = 3;
+        let items = [];
+        items.push(
+            <Pagination.Item id="expense-table-selector-button" key={1} onClick={()=>{setPageCounter(1)}}>
+            {1}
+            </Pagination.Item>,
         );
+        if(pageCounter <= totalPages() && pageCounter >= offset)
+        {
+            items.push(<Pagination.Ellipsis id="expense-table-selector-button" disabled/>)
+        }
+        const start = Math.min(Math.max(2, pageCounter-Math.floor(offset/2)), totalPages()-offset);
+        const end = Math.max(Math.min(totalPages()-1, pageCounter+Math.floor(offset/2)), offset+1);
+        for (let number = start; number <= end; number++) 
+        {
+            items.push(
+                <Pagination.Item id="expense-table-selector-button" key={number} onClick={()=>{setPageCounter(number)}}>
+                {number}
+                </Pagination.Item>,
+            );
+        }
+        if(pageCounter >= 1 && pageCounter <= (totalPages()-offset+1))
+        {
+            items.push(<Pagination.Ellipsis id="expense-table-selector-button" disabled/>)
+        }
+        if(totalPages() > 1)
+        {
+            items.push(
+                <Pagination.Item id="expense-table-selector-button" key={totalPages()} onClick={()=>{setPageCounter(totalPages())}}>
+                {totalPages()}
+                </Pagination.Item>,
+            );
+        }
+        
+        return <Pagination>{items}</Pagination>;
     }
+
+
 
      return (
         <div id = "transaction-div">
@@ -387,7 +418,7 @@ export default function Transactions({ userId }) {
                             <MonthlyBudgetModal/>
                         </div>
                         <table>
-                        <tbody>
+                        <tbody id = "expense-tbody">
                             <tr>
                                 <>
                                     <th className="expense-table-index">#</th>
@@ -416,10 +447,14 @@ export default function Transactions({ userId }) {
                                             {
                                                 if(cellIndex === 2)
                                                     return <td className="expense-table-th-td expense-table-date-td" key={cellIndex}>{value}</td>;
+                                                if(cellIndex === 3)
+                                                    return <td className="expense-table-th-td expense-table-category-td" key={cellIndex}>{value}</td>;
                                                 if(cellIndex === 4)
                                                     return <td className="expense-table-th-td expense-table-merchant-td" key={cellIndex}>{value}</td>;
                                                 else if(cellIndex === 5)
                                                     return <td className="expense-table-th-td expense-table-amount-td" key={cellIndex}>{value}</td>;
+                                                else if(cellIndex === 6)
+                                                    return <td className="expense-table-th-td expense-table-payment-td" key={cellIndex}>{value}</td>;
                                                 else
                                                     return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
                                             }
@@ -462,13 +497,19 @@ export default function Transactions({ userId }) {
                         </tbody>
                        
                         </table>
-                        {expenses.length > 10 &&    <div id="page-selector">
+                        {/* {expenses.length > 10 &&    <div >
                                             {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" onClick={gotoFirstPage}>1</button>}
                                             {pageCounter !== 1 && <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={decreasePageCounter}>{"<"}</button>}
                                             <button className="expense-table-button expense-table-selector-button" style={{"text-decoration": "underline"}}>{pageCounter}</button>
                                             {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" style={{"fontSize":"14px"}} onClick={increasePageCounter}>{">"}</button>}
                                             {pageCounter !== totalPages() && <button className="expense-table-button expense-table-selector-button" onClick={gotoLastPage}>{totalPages()}</button>}
-                                        </div>}  
+                                        </div>}   */}
+                        {
+                            expenses.length > itemCount && 
+                            <div id="page-selector">
+                                {getPagination()}
+                            </div>
+                        }
                     </div>
     </div>
   );

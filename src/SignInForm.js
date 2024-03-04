@@ -1,5 +1,5 @@
 // SignInForm.js
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import * as Components from './Components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; 
@@ -20,6 +20,7 @@ const SignInForm = ({ onLoginSuccess }) => {
   const [emailError, setEmailError] = useState('');
   const [loading, setLoading] = useState(false);
   const captchaRef = useRef(null);
+  const [formValid, setFormValid] = useState(false);
 
   const masterContent = {
     "loginError": {
@@ -45,7 +46,18 @@ const SignInForm = ({ onLoginSuccess }) => {
     setPopupState(state);
 }
 
+const validForm = () => {
+  let isValid = true;
+
+  if (username.trim().length === 0) {
+    isValid = false;
+  }
+  if (password.length < 8) {
+    isValid = false;
+  }
   
+  return isValid;
+};
  
   const validateForm = () => {
     let isValid = true;
@@ -63,9 +75,19 @@ const SignInForm = ({ onLoginSuccess }) => {
     } else {
       setPasswordError('');
     }
- 
+    
     return isValid;
   };
+
+  useEffect(()=>{
+    if(validForm())
+    {
+      setFormValid(true);
+      setUsernameError('');
+      setPasswordError('');
+    }
+      
+  },[username, password])
  
   const validateEmail = () => {
     let isValid = true;
@@ -85,7 +107,15 @@ const SignInForm = ({ onLoginSuccess }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = captchaRef.current.getValue();
+    var token = null;
+    try{
+      token = captchaRef.current.getValue();
+    }
+    catch(error)
+    {
+      if(validForm())
+        token = true;
+    }
     
     if (validateForm()) {
       if(!token)
@@ -127,7 +157,13 @@ const SignInForm = ({ onLoginSuccess }) => {
       setContent(masterContent["detailError"]);
       setPopupState(true);
     }
-    captchaRef.current.reset();
+    try{
+      captchaRef.current.reset();
+    }
+    catch(error)
+    {
+      captchaRef = null;
+    }
   };
  
  
@@ -158,7 +194,8 @@ const SignInForm = ({ onLoginSuccess }) => {
           style={{"marginBottom":"20px"}}
         />
         {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-        <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>
+        {formValid === true &&(<ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>)}
+            
         <div style={{"display":"flex", "gap":"5px"}}>
               <Components.Button type='submit' id="button-signin">
                 Sign In</Components.Button>

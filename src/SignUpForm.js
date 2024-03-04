@@ -18,6 +18,7 @@ const SignUpForm = () => {
   const [loading, setLoading] = useState(false);
   const captchaRef = useRef(null);
   const timerId = useRef(null);
+  const [formValid, setFormValid] = useState(false);
 
   const masterContent = {
     "signupError": {
@@ -54,6 +55,36 @@ const SignUpForm = () => {
 
   // Regular expression for email validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const validForm = () => {
+    let isValid = true;
+    if (!username || username.trim().length ===  0) { // Changed from name to username
+      isValid = false;
+    }
+
+    if (!emailRegex.test(email)) {
+      isValid = false;
+    } 
+    if (password.length < 8) {
+      isValid = false;
+  } else if (!/[A-Z]/.test(password)) {
+      isValid = false;
+  } else if (!/[!@#\$%\^&\*_]/.test(password)) {
+      isValid = false;
+  }
+  else if (!/\d/.test(password)) {
+    isValid = false;
+}
+   else {
+      isValid = true;
+  }
+    // Validate monthly budget (if required)
+    if (!monthlyBudget || parseInt(monthlyBudget,  10) <=  0) {
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   // Function to validate email, password, and monthly budget
   const validateForm = () => {
@@ -105,7 +136,19 @@ const SignUpForm = () => {
     return isValid;
   };
 
+  useEffect(()=>{
+    if(validForm())
+    {
+      setFormValid(true);
+      setUsernameError('');
+      setEmailError('');
+      setPasswordError('');
+      setMonthlyBudgetError('');
+    }
+  },[username, email, password, monthlyBudget])
+
   useEffect(() => {
+    
     if (content.head === "Success") {
         timerId.current = setTimeout(() => {
             setPopupState(false);
@@ -120,7 +163,15 @@ const SignUpForm = () => {
 }, [content]);
 
   const handleSubmit = async (event) => {
-    const token = captchaRef.current.getValue();
+    var token = null;
+    try{
+      token = captchaRef.current.getValue();
+    }
+    catch(error)
+    {
+      if(validForm())
+        token = true;
+    }
     event.preventDefault();
 
     if (validateForm()) {
@@ -190,7 +241,14 @@ const SignUpForm = () => {
       setContent(masterContent["detailError"]);
       setPopupState(true);
     }
-    captchaRef.current.reset();
+    try{
+      captchaRef.current.reset();
+    }
+    catch(error)
+    {
+      captchaRef = null;
+    }
+    
   };
 
   return (
@@ -232,7 +290,7 @@ const SignUpForm = () => {
         style={{"marginBottom":"20px"}}
       />
       {monthlyBudgetError && <p style={{ color: 'red' }}>{monthlyBudgetError}</p>}
-      <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>
+      {formValid === true &&(<ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef}/>)}
       <Components.Button id="button-signup"type='submit'>Sign Up</Components.Button>
     </Components.Form>
     </>

@@ -230,7 +230,6 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       data: {
         labels: data.map(item => item[labelKey]),
         datasets: [{
-          label: 'Expenses by Category',
           data: data.map(item => item[valueKey]),
           backgroundColor: data.map((item, index) => {
             return colors[index % colors.length];
@@ -240,8 +239,16 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         }]
       },
       options: {
-        responsive: true
-      }
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Expenses by payment mode'
+          },
+        }
+      },
+      
+      
     });
     console.log(`Pie chart for ${canvasId} created`);
   };
