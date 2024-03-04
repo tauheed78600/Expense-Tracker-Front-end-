@@ -217,6 +217,8 @@ const [content, setContent] = useState(masterContent["fetchError"]);
  
  
   const createPieChart = (canvasId, data, labelKey, valueKey) => {
+    const colors = ['rgba(120,  28,  129,  1)', 'rgba(107,  178,  140,  1)', 'rgba(72,  139,  194,  1)', 'rgba(217,  33,  32,  1)'];
+
     const ctx = document.getElementById(canvasId).getContext('2d');
     document.getElementById(canvasId).width = 500;
     document.getElementById(canvasId).height = 500;
@@ -230,8 +232,10 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         datasets: [{
           label: 'Expenses by Category',
           data: data.map(item => item[valueKey]),
-          backgroundColor: 'rgba(248,   206,   86,   0.2)',
-          borderColor: 'rgba(255,   206,   86,   1)',
+          backgroundColor: data.map((item, index) => {
+            return colors[index % colors.length];
+          }),
+          borderColor: 'rgba(255,   255,   255,   1)',
           borderWidth:   1
         }]
       },
