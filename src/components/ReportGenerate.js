@@ -13,6 +13,7 @@ import Row from 'react-bootstrap/Row';
 import "../styles/ReportGenerate.css";
 import Cookies from 'universal-cookie';
 
+
 const ReportGenerate = () => {
   const cookies = new Cookies();
  const [popupState, setPopupState] = useState(false);
@@ -43,6 +44,14 @@ const ReportGenerate = () => {
     "fetchError": {
       "head":"Error",
       "body":"Could not fetch data!"
+    },
+    "noDataFound": {
+      "head": "Error",
+      "body": "No data found!",
+    },
+    "yearlyErrorRange": {
+      "head":"Error",
+      "body":"Year out of range!"
     }
  }
 
@@ -113,7 +122,14 @@ const ReportGenerate = () => {
   {  var filteredExpenses = expenses.filter((expense)=> {
       return expense["date"].slice(0,10) === dailyReportDate;
     });
-    saveExcel(filteredExpenses);}
+    if(filteredExpenses.length === 0)
+    {
+      setContent(masterContent["noDataFound"]);
+      setPopupState(true);
+    }
+    else{
+      saveExcel(filteredExpenses);
+    }}
  };
  const handleMonthlyReport = () => {
   if(monthlyReportMonth === "")
@@ -125,14 +141,27 @@ const ReportGenerate = () => {
   {  var filteredExpenses = expenses.filter((expense)=> {
       return expense["date"].slice(0,7) === monthlyReportMonth;
     });
-    saveExcel(filteredExpenses);
+    if(filteredExpenses.length === 0)
+    {
+      setContent(masterContent["noDataFound"]);
+      setPopupState(true);
+    }
+    else{
+      saveExcel(filteredExpenses);
+    }
   }
  };
 
  const handleYearlyReport = () => {
-  if(yearlyReportYear === "")
+  console.log(currentDate().slice(0,4))
+  if(yearlyReportYear === "" || isNaN(yearlyReportYear))
   {
     setContent(masterContent["yearlyReportError"]);
+    setPopupState(true);
+  }
+  else if(yearlyReportYear > currentDate().slice(0,4) || yearlyReportYear < 1970)
+  {
+    setContent(masterContent["yearlyErrorRange"])
     setPopupState(true);
   }
   else
@@ -140,7 +169,14 @@ const ReportGenerate = () => {
       var filteredExpenses = expenses.filter((expense)=> {
       return expense["date"].slice(0,4) === yearlyReportYear;
     });
-    saveExcel(filteredExpenses);
+    if(filteredExpenses.length === 0)
+    {
+      setContent(masterContent["noDataFound"]);
+      setPopupState(true);
+    }
+    else{
+      saveExcel(filteredExpenses);
+    }
   }
  };
 

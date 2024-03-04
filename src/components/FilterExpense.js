@@ -34,7 +34,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         category: "",
         merchant: "",
         amount: "",
-        payment_mode_filter: ""
+        paymentMode: ""
     })
 
     //reset the filter
@@ -46,7 +46,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
             category: "",
             merchant: "",
             amount: "",
-            payment_mode_filter: ""
+            paymentMode: ""
         });
     }
 
@@ -141,11 +141,11 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
             setPopupState(true);
             return;
         }
-        if(filterData.dateFrom)
+        if(filterData.dateFrom !== "")
         {
             newArray = filterDateFrom(newArray, filterData.dateFrom);
         }
-        if(filterData.dateTo)
+        if(filterData.dateTo !== "")
         {
             newArray = filterDateTo(newArray, filterData.dateTo);
         }
@@ -162,18 +162,19 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
             
                 
         }
-        if(filterData.merchant)
+        if(filterData.merchant !== "")
         {
             newArray = filterString(newArray, "merchant", filterData.merchant);
         }
-        if(filterData.amount)
+        if(filterData.amount !== "")
         {
             newArray = filterNumber(newArray, "amount", filterData.amount);
         }
-        if(filterData.payment_mode_filter)
+        if(filterData.paymentMode !== "")
         {
-            newArray = filterPayment(newArray, filterData.payment_mode_filter);
+            newArray = filterPayment(newArray, filterData.paymentMode);
         }
+        console.log(filterData.paymentMode);
         onFilterExpense(newArray);
         setShowFilter(false);
         set_Selected_categories([]);
@@ -347,7 +348,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
                             value="Credit"
                             checked={filterData.payment_mode === 'Credit'} 
                             onChange={(e)=>{handleFilterChange(e.target.name, e.target.value)}}
-                            name="payment_mode"
+                            name="paymentMode"
                             id="mode1"
                             />
                             <Form.Check
