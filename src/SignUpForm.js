@@ -88,9 +88,10 @@ const SignUpForm = () => {
 
   // Function to validate email, password, and monthly budget
   const validateForm = () => {
+    console.log(validateForm())
     let isValid = true;
 
-    if (!username || username.trim().length ===  0) { // Changed from name to username
+    if (username === "" || username.trim().length ===  0) { // Changed from name to username
       setUsernameError('Username is required'); // Changed from setNameError to setUsernameError
       isValid = false;
     } else {
@@ -126,7 +127,7 @@ const SignUpForm = () => {
     
 
     // Validate monthly budget (if required)
-    if (!monthlyBudget || parseInt(monthlyBudget,  10) <=  0) {
+    if (monthlyBudget === "" || parseInt(monthlyBudget,  10) <=  0) {
       setMonthlyBudgetError('Monthly budget is required and must be greater than  0');
       isValid = false;
     } else {
