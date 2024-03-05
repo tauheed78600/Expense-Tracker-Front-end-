@@ -97,7 +97,7 @@ const SignUpForm = () => {
       setUsernameError(''); // Changed from setNameError to setUsernameError
     }
 
-    if (!emailRegex.test(email)) {
+    if (email === "" || !emailRegex.test(email)) {
       setEmailError('Invalid email address');
       isValid = false;
     } else {
@@ -214,7 +214,6 @@ const SignUpForm = () => {
           setLoading(false);
           setContent(masterContent["signupSuccess"]);
           setPopupState(true);
-          
         console.log(response.data);
         setUsername(''); // Changed from setName to setUsername
         setEmail('');
