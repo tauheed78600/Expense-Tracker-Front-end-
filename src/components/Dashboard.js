@@ -30,7 +30,7 @@ const fetchData = async () => {
             Authorization: `Bearer ${accessToken}`,
         },
         });
-
+        console.log(response.data);
     console.log("response.data", response.data)
     console.log("userId in dashboard", userId)
     setUserData(response.data);
