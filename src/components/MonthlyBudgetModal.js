@@ -24,7 +24,7 @@ function MonthlyBudgetModal() {
         const accessToken = cookies.get('access_token');
         try {
           setLoading(true);
-            const response = await axios.get(`http://localhost:3000/total/${userId}`, {
+            const response = await axios.get(`http://localhost:3000/total/${accessToken}`, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
@@ -136,7 +136,7 @@ function MonthlyBudgetModal() {
           const userId = cookies.get('userId');
           try {
             setLoading(true); 
-            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${userId}`, {}, {
+            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${accessToken}`, {}, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },

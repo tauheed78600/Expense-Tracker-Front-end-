@@ -227,11 +227,14 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         setLoading(true);
         if(Object.keys(loadExpense).length ===  0)
         {
-            axios.post(apiURL,expenseData,  {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
+            axios.post(apiURL, expenseData, {
+                params: {
+                    token: accessToken
                 },
-              }).then((response) => {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }).then((response) => {
                 setContent(masterContent["add"]);
                 setPopupState(true);
                 updateRow = {
@@ -267,11 +270,14 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 paymentMode: modifyExpenseData.paymentMode,
                 expenseId: modifyExpenseData.expenseId
             };
-            axios.put(apiURL, expenseData,{
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
+            axios.put(apiURL, expenseData, {
+                params: {
+                    token: accessToken
                 },
-              }).then((response) => {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }).then((response) => {
                 setContent(masterContent["update"]);
                 setPopupState(true);
                 updateRow = {

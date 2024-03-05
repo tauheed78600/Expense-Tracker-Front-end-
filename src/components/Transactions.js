@@ -148,7 +148,7 @@ export default function Transactions({ userId }) {
     useEffect(() => {
         const fetchExpenses = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+                const response = await axios.get(`http://localhost:3000/expenses/${accessToken}`, {
                     headers: {
                       Authorization: `Bearer ${accessToken}`,
                     },
@@ -174,7 +174,7 @@ export default function Transactions({ userId }) {
                
                 const emailId = response.data.email  
                 
-                const response1 = await axios.get(`http://localhost:3000/total/${userId}`, {
+                const response1 = await axios.get(`http://localhost:3000/total/${accessToken}`, {
                             headers: {
                               Authorization: `Bearer ${accessToken}`,
                             },
@@ -189,7 +189,7 @@ export default function Transactions({ userId }) {
                     const lastMonthNineReachedEmailSent = cookies.get('lastMonthNineReachedEmailSent');
                     
                     if (lastMonthNineReachedEmailSent !== currentMonth.toString()) {
-                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email }, {
+                        const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { token: accessToken }, {
                             headers: {
                               Authorization: `Bearer ${accessToken}`,
                             },
@@ -213,7 +213,7 @@ export default function Transactions({ userId }) {
                     const currentMonth = new Date().getMonth();
                     const lastMonthEmailSent = cookies.get('lastMonthEmailSent');
                     if (lastMonthEmailSent !== currentMonth.toString()){
-                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { email: response1.data.email  }, {
+                    const response = await axios.post(`http://localhost:3000/total/send-email/budget-exceeded`, { token: accessToken   }, {
                         headers: {
                           Authorization: `Bearer ${accessToken}`,
                         },
@@ -262,15 +262,19 @@ export default function Transactions({ userId }) {
         index = index + (pageCounter-1)*itemCount;
         console.log("expenses[index].expenseId", expenses[index].expenseId)
         console.log(expenses[index]);
+        
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
-            expense_id: expenses[index].expenseId,
-            user_id: cookies.get("userId")
-        }, 
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
+                expense_id: expenses[index].expenseId,      
+                user_id: cookies.get("userId")
             },
-          },).
+            params: {
+                token: accessToken
+            },
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }).
         then((response) => {
             setContent(masterContent["delete"]);
             setPopupState(true);

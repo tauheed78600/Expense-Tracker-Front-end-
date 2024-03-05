@@ -60,9 +60,10 @@ const ReportGenerate = () => {
  useEffect(() => {
   const fetchExpenses = async () => {
       try {
-          const userId = cookies.get('userId');
+          // const userId = cookies.get('userId');
           const accessToken = cookies.get('access_token');
-          const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+          
+          const response = await axios.get(`http://localhost:3000/expenses/${accessToken}`, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
