@@ -155,7 +155,6 @@ export default function Transactions({ userId }) {
                     },
                   });
                
-                // const response = await axios.get(`http://localhost:3000/expenses/3`);/'
                 var newArray = [];
                 for(var index in response.data)
                 {

@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../styles/Dashboard.css'; 
 import 'material-icons/iconfont/material-icons.css';
 import Cookies from 'universal-cookie';
-
+import DashboardModal from "./DashboardModal.js";
 
 const Dashboard = ({ userId }) => {
   const cookies = new Cookies();
@@ -14,11 +14,18 @@ const Dashboard = ({ userId }) => {
         "body": "Could not fetch data"
     }
 
-}
+};
+
 const [popupState, setPopupState] = useState(false);
 
 const [content, setContent] = useState(masterContent["fetchError"]);
 const [userData, setUserData] = useState({});
+const [newUsername, setNewUsername] = useState('');
+const [newEmail, setNewEmail] = useState('');
+const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+const [showDashboard, setShowDashboard] = useState(false);
+
 //load user data
 useEffect(() => {
 const accessToken = cookies.get('access_token');
@@ -40,17 +47,69 @@ const fetchData = async () => {
     }
 };
 
+const handleUpdateModal= () => {
+  
+}
+
+
 fetchData();
 }, [userId]);
 
-
+const handleUpdate = async () => {
+  const updateUserEndpoint = `http://localhost:3000/total/updateUser/${userId}`;
+ 
+  try {
+     const response = await axios.put(updateUserEndpoint, {
+       username: newUsername,
+       email: newEmail,
+     }, {
+       headers: {
+         Authorization: `Bearer ${cookies.get('access_token')}`, // Use backticks for template literals
+       },
+     });
+ 
+     if (response.data) {
+       setUserData(response.data);
+       setShowUpdateModal(false);
+     } else {
+       console.error('Failed to update user data');
+     }
+  } catch (error) {
+     console.error('Error updating user data:', error);
+  }
+ };
+  // Implement your update logic here. For example, you might make an API call to update the user data.
+  const showDashboardWithAnimation = () => {
+    setShowDashboard(true);
+ };
 return (
-  
-<div className="container">
-    <div className='h1'><h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1></div>
-    <div className="section" id="name-section">
+
+  <div className="container">
+    <DashboardModal
+     state={showUpdateModal} 
+     setState = {setShowUpdateModal} 
+     content = {content}
+     newUsername={newUsername}
+     setNewUsername={setNewUsername}
+     newEmail={newEmail}
+     serNewEmail={setNewEmail}
+    />
+    <div className='h1'>
+    <h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1>
+    {/*<div className="section" id="name-section">
     <label htmlFor="name">UserName:</label>
-    <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
+    <div className='h1'>
+<div className="userDash" style={{ marginBottom: '10' }}>User Dashboard*/}
+ <button className="edit-btn" onClick={() => setShowUpdateModal(true)}>🖉</button>
+  </div>
+  {/*<div className={`modal-animation-wrapper ${showUpdateModal ? 'show' : ''}`}>*/}
+  
+
+ 
+ <div className="section" id="name-section">
+  <label htmlFor="name">UserName:</label>
+  <input type="text" id="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
+  <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">accessibility</span>
     </div>
     <div className="section" id="budget-section">
@@ -65,6 +124,7 @@ return (
     </div>
     <div className="section" id="email-section">
     <label htmlFor="email">Email:</label>
+    <input type="email" id="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)}/>
     <div id="email" className="info">{userData.email || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">mail</span>
     </div>
