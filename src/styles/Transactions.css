@@ -1,6 +1,6 @@
 /* Dashboard.css */
 #transaction-div {
-  margin-left: 10%;
+  margin-left: 8%;
 }
 #budget-options {
   margin-left: -10%;
@@ -63,7 +63,7 @@
 }
 
 .expense-table-category-td {
-  min-width: 150px;
+  min-width: 170px;
   width: 200px;
 }
 
