@@ -123,7 +123,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         },
         "budgetLimitExceeded": {
             "head": "Error",
-            "body": "Budget Limit Exceeded"
+            "body": "Budget Limit Exceeded!"
         },
         "editError": {
             "head": "Error",
@@ -131,11 +131,11 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         },
         "amountNegative": {
             "head": "Error",
-            "body": "Amount cannot be negative"
+            "body": "Amount cannot be negative!"
         },
-        "decimalError": {
-            "head": "Error",
-            "body": ""
+        "merchantFieldEmpty": {
+            "head":"error",
+            "body":"Merchant cannot be blank!"
         }
 
     }
@@ -208,6 +208,12 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         if(modifyExpenseData.amount !== "" && parseFloat(modifyExpenseData.amount) < 0)
         {
             setContent(masterContent["amountNegative"]);
+            setPopupState(true);
+            return;
+        }
+        if(modifyExpenseData.merchant.trim().length === 0)
+        {
+            setContent(masterContent["merchantFieldEmpty"]);
             setPopupState(true);
             return;
         }
