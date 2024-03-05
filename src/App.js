@@ -31,7 +31,7 @@ function App() {
       // Fetch expenses for the authenticated user
       const fetchExpenses = async () => {
         try {
-          const response = await axios.get(`http://localhost:3000/expenses/${userId}`, {
+          const response = await axios.get(`http://localhost:3000/expenses/${accessToken}`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
