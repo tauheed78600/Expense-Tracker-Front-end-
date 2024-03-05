@@ -1,6 +1,6 @@
 /* Dashboard.css */
 #transaction-div {
-  margin-left: 10%;
+  margin-left: 8%;
 }
 #budget-options {
   margin-left: -10%;
@@ -38,13 +38,16 @@
 
 /* New styles for tables and buttons */
 #expense-table {
-  margin-left: -5%;
+  margin-left: -50px;
   width:   100%;
+  
   border-collapse: collapse;
 }
 
+
 #expense-table th,
 #expense-table td {
+  
   border:   2px solid #ddd;
   padding:   4px;
   text-align: left;
@@ -56,23 +59,35 @@
 }
 
 .expense-table-date-td {
-  width: 150px;
+  min-width: 150px;
 }
 
+.expense-table-category-td {
+  min-width: 170px;
+  width: 200px;
+}
+
+
 .expense-table-merchant-td {
-  width: 150px;
+  min-width: 150px;
+  width: 250px;
 }
 
 .expense-table-amount-td {
-  width: 100px;
+  min-width: 100px;
 }
+
+.expense-table-payment-td {
+  min-width: 100px;
+}
+
 
 
 .expense-table-edit-delete {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 27px !important;
+  padding: 25px !important;
   width: 150px !important;
 }
 
@@ -116,25 +131,29 @@
 }
 
 #page-selector {
-  margin-left: -10%;
   justify-content: center;
   height: 100px;
   display: flex;
   margin-top: 10px;
 }
-.expense-table-selector-button {
+#expense-table-selector-button {
+  background-color: #e26f6f;
+  color: white;
   user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 12px;
-  padding: 10px;
+  padding:   5px   10px;
+  border: none;
+  border-radius:   5px;
+  cursor: pointer;
+  margin-right:   7px;
   height: 30px !important;
 }
 
 #expense-table-options {
-  margin-left: -10%;
   display: flex;
   align-items: center;
   justify-content: center;
