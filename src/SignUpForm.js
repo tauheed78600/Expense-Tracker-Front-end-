@@ -58,11 +58,11 @@ const SignUpForm = () => {
 
   const validForm = () => {
     let isValid = true;
-    if (!username || username.trim().length ===  0) { // Changed from name to username
+    if (username === "" || username.trim().length ===  0) { // Changed from name to username
       isValid = false;
     }
 
-    if (!emailRegex.test(email)) {
+    if (email === "" || !emailRegex.test(email)) {
       isValid = false;
     } 
     if (password.length < 8) {
@@ -75,9 +75,6 @@ const SignUpForm = () => {
   else if (!/\d/.test(password)) {
     isValid = false;
 }
-   else {
-      isValid = true;
-  }
     // Validate monthly budget (if required)
     if (!monthlyBudget || parseInt(monthlyBudget,  10) <=  0) {
       isValid = false;
@@ -88,7 +85,6 @@ const SignUpForm = () => {
 
   // Function to validate email, password, and monthly budget
   const validateForm = () => {
-    console.log(validateForm())
     let isValid = true;
 
     if (username === "" || username.trim().length ===  0) { // Changed from name to username
@@ -119,15 +115,10 @@ const SignUpForm = () => {
     setPasswordError('Password must contain at least one number');
     isValid = false;
 }
-   else {
-      setPasswordError('');
-      isValid = true;
-  }
-  
     
 
     // Validate monthly budget (if required)
-    if (monthlyBudget === "" || parseInt(monthlyBudget,  10) <=  0) {
+    if (!monthlyBudget || parseInt(monthlyBudget,  10) <=  0) {
       setMonthlyBudgetError('Monthly budget is required and must be greater than  0');
       isValid = false;
     } else {
@@ -174,7 +165,7 @@ const SignUpForm = () => {
         token = true;
     }
     event.preventDefault();
-
+    
     if (validateForm()) {
       if(!token)
       {
