@@ -25,23 +25,23 @@ function PopupModal({state, setState, content}) {
 const [newEmail, setNewEmail] = useState('');
 const [errorMessage, setErrorMessage] = useState('');
   const handleUpdate = async () => {
-   
-  const updateUserEndpoint = `http://localhost:3000/total/updateUser/${userId}`;
-   
-    try {
-       const response = await axios.put(updateUserEndpoint, {
-         username: newUsername,
-         email: newEmail,
-       }, {
-         headers: {
-           Authorization: `Bearer ${cookies.get('access_token')}`, // Use backticks for template literals
-         },
-       });
+    // await axios.post(`http://localhost:3000/total/login/?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`).
+console.log("accessToken in dashboardModal", cookies.get("access_token"))
+console.log("newUsername", newUsername, "newEmail", newEmail)
+const updateUserEndpointURL = `http://localhost:3000/total/updateUser/?token=${encodeURIComponent(cookies.get('access_token'))}&username=${encodeURIComponent(newUsername)}&email=${encodeURIComponent(newEmail)}`;
+
+try {
+ const response = await axios.post(updateUserEndpointURL, {}, {
+    headers: {
+      Authorization: `Bearer ${cookies.get('access_token')}`,
+    },
+ });
    
        if (response.data) {
          setUserData(response.data);
          setShow(false);
          setUpdateSuccess(true);
+         window.location.reload()
        } else {
          console.error('Failed to update user data');
        }
@@ -56,6 +56,7 @@ const [errorMessage, setErrorMessage] = useState('');
   useEffect(()=>{
     setShow(state);
   }, [state]);
+  useEffect(()=>{},[userData]);
 
   return (
     <>
