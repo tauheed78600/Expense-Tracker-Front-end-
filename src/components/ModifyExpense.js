@@ -171,11 +171,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
         }
         setModifyExpenseData({...modifyExpenseData, [name] : value});
     }
-
-    function roundToTwoDecimalPlaces(num) {
-        return Math.round(num * 100) / 100;
-       }
-
     const accessToken = cookies.get('access_token');
     //validate expense form and submit changes to server
     const handleModifyExpense = (e) => {
@@ -216,7 +211,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             setPopupState(true);
             return;
         }
-        modifyExpenseData.amount = roundToTwoDecimalPlaces(modifyExpenseData.amount);
         var apiURL = "http://localhost:3000/expenses/addExpense";
         const userId = cookies.get('userId');
         const expenseData = {
