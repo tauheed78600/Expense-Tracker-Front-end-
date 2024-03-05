@@ -41,7 +41,7 @@ const SignInForm = ({ onLoginSuccess }) => {
     }
   }
   const [popupState, setPopupState] = useState(false);
-  const [content, setContent] = useState(masterContent["loginError"]);
+  const [content, setContent] = useState(masterContent["serverError"]);
   const handlePopupState = (state) => {
     setPopupState(state);
 }
@@ -143,7 +143,7 @@ const validForm = () => {
         }).
         catch((error)=>{
           console.log(error);
-          setContent(masterContent["serverError"]);
+          setContent(masterContent["loginError"]);
           setPopupState(true);
           setLoading(false);
         });
@@ -151,6 +151,9 @@ const validForm = () => {
       } catch (error) {
         // Handle errors (e.g., show error message)
         console.log(error);
+        setContent(masterContent["serverError"]);
+        setPopupState(true);
+        setLoading(false);
       }}
     }
     else{
