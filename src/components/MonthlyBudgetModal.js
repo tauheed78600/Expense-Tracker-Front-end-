@@ -102,6 +102,11 @@ function MonthlyBudgetModal() {
 
   const [content, setContent] = useState(masterContent["error"]);
 
+  function roundToTwoDecimalPlaces(num) {
+    return Math.round(num * 100) / 100;
+   }
+
+
 
   const accessToken = cookies.get('access_token');
 
@@ -134,6 +139,7 @@ function MonthlyBudgetModal() {
         }
         else {
           const userId = cookies.get('userId');
+          newBudget = roundToTwoDecimalPlaces(newBudget);
           try {
             setLoading(true); 
             const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${accessToken}`, {}, {
