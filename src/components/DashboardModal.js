@@ -3,6 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Cookies from 'universal-cookie';
 import axios from 'axios';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function PopupModal({state, setState, content}) {
   const [show, setShow] = useState(false);
@@ -61,14 +64,27 @@ const [errorMessage, setErrorMessage] = useState('');
           <Modal.Title><h2>Update User Information</h2></Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <Form>
+            <Form.Group as={Row} className="mb-3" controlId="formHorizontalUsername">
+              <Form.Label sm={4} htmlFor="username">Username:</Form.Label>
+              <Col sm={8}>
+                <Form.Control type="text" id="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
+              </Col>
+            
+            </Form.Group>
+              
+            <Form.Group as={Row} className="mb-3" controlId="formHorizontalUsername">
+              <Form.Label sm={4} htmlFor="email">Email:</Form.Label>
+              <Col sm={8}>
+                <Form.Control type="email" id="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
+              </Col>
+            </Form.Group>
+          </Form>
           <div>
-          <label htmlFor="username">Username:</label>
-          <input type="text" id="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
+          
+          
           </div>
-          <div>
-          <label htmlFor="email">Email:</label>
-          <input type="email" id="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
-          </div>
+          
           {updateSuccess && <p className="success-message">User information updated successfully!</p>}
         </Modal.Body>
         <Modal.Footer>
