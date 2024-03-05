@@ -161,9 +161,9 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
 
     //set data on input value change
     const handleModifyExpenseChange = (name, value) => {
-        if(value === "")
+        if(value === "" || value.trim().length === 0)
         {
-            document.getElementById(errorMessage[name]).innerHTML = name + " cannoty be empty!";
+            document.getElementById(errorMessage[name]).innerHTML = name + " cannot be empty!";
         }
         else
         {
@@ -382,7 +382,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                         Amount
                         </Form.Label>
                         <Col sm={8}>
-                        <Form.Control type = "number" step = "0.01" name = "amount" placeholder="" value={modifyExpenseData.amount} 
+                        <Form.Control type = "number" step = "1" name = "amount" placeholder="" value={modifyExpenseData.amount} 
                         onChange={(e)=>{handleModifyExpenseChange(e.target.name, e.target.value)}}/>
                         <Form.Label id = "modify-expense-amount-error" column sm={12}>
                         </Form.Label>
