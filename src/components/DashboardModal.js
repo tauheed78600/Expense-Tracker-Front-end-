@@ -15,13 +15,9 @@ function DashboardModal({state, setState, userData, setUserData}) {
   const [popupState, setPopupState] = useState('')
 
   const masterContent = {
-    "username": {
+    "updated": {
         "head": "Success",
-        "body": "Username Updated!"
-    },
-    "email":{
-        "head": "Success",
-        "body": "Email Updated!"
+        "body": "Details Updated!"
     },
     "usernameError": {
         "head": "Error",
@@ -74,8 +70,8 @@ useEffect(()=>{
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const handleUpdate = async () => {
-
-    console.log(emailRegex.test(newEmail));
+    var tempData = userData;
+    // console.log(emailRegex.test(newEmail));
     if(!emailRegex.test(newEmail))
     {
       setContent(masterContent["emailInvalid"]);
@@ -91,19 +87,20 @@ const handleUpdate = async () => {
     else if(newUsername !== currentUsername)
     {
       const updateUserEndpointURL = `http://localhost:3000/total/updateUsername/?token=${encodeURIComponent(cookies.get('access_token'))}&username=${encodeURIComponent(newUsername)}`;
-      console.log("inside first condition")
+      // console.log("inside first condition")
           try {
           const response = await axios.put(updateUserEndpointURL, {}, {
               headers: {
                 Authorization: `Bearer ${cookies.get('access_token')}`,
               },
           });
-          console.log("response in 1st condition", response.data)
-          console.log(response.data);
+          // console.log("response in 1st condition", response.data)
+          // console.log(response.data);
+          console.log(response)
           if (response.data.status===200) {
-            setUserData({...userData, "user_name": newUsername});
+            tempData = {...tempData, "user_name": newUsername};
             setCurrentUsername(newUsername);
-            setContent(masterContent["username"]);
+            setContent(masterContent["updated"]);
             setPopupState(true);
             
           } else {
@@ -119,20 +116,20 @@ const handleUpdate = async () => {
       };
       if (newEmail !== currentEmail) {
         const updateUserEndpointURL = `http://localhost:3000/total/updateEmail/?token=${encodeURIComponent(cookies.get('access_token'))}&email=${encodeURIComponent(newEmail)}`;
-        console.log("inside second condition")
+        // console.log("inside second condition")
             try {
             const response = await axios.put(updateUserEndpointURL, {}, {
                 headers: {
                   Authorization: `Bearer ${cookies.get('access_token')}`,
                 },
             });
-            console.log("response in 2nd condition", response)
+            // console.log("response in 2nd condition", response)
         
             if (response.data.status===200) {
-              setUserData({...userData, "email": newEmail});
+              tempData = {...tempData, "email": newEmail};
               setCurrentEmail(newEmail);
-              setContent(masterContent["email"]);
-                setPopupState(true)
+              setContent(masterContent["updated"]);
+              setPopupState(true)
             } else {
               setContent(masterContent["emailExists"]);
                 setPopupState(true)
@@ -142,6 +139,7 @@ const handleUpdate = async () => {
             setPopupState(true)
           } 
         };
+        setUserData(tempData);
 
   
 } 
@@ -162,7 +160,7 @@ const handlePopupState = (state) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group as={Row} className="mb-3" controlId="formHorizontalUsername">
+            <Form.Group as={Row} className="mb-3">
               <Form.Label sm={4} htmlFor="username">Username:</Form.Label>
               <Col sm={8}>
                 <Form.Control type="text" id="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
@@ -170,7 +168,7 @@ const handlePopupState = (state) => {
             
             </Form.Group>
               
-            <Form.Group as={Row} className="mb-3" controlId="formHorizontalUsername">
+            <Form.Group as={Row} className="mb-3">
               <Form.Label sm={4} htmlFor="email">Email:</Form.Label>
               <Col sm={8}>
                 <Form.Control type="email" id="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />

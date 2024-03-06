@@ -36,7 +36,7 @@ function App() {
               Authorization: `Bearer ${accessToken}`,
             },
           });
-          console.log("response in report", response.data)
+          // console.log("response in report", response.data)
           setExpenses(response.data);
         } catch (error) {
           console.error('Error fetching expenses:', error);
@@ -48,7 +48,7 @@ function App() {
     }
   }, [isAuthenticated]); // Re-run the effect when isAuthenticated changes
 
-  console.log('App component currentPage:', currentPage);
+  // console.log('App component currentPage:', currentPage);
 
   // Call this function after the user logs in
   const handleLoginSuccess = (responseData) => {
@@ -56,9 +56,9 @@ function App() {
       console.error('Login response data is missing accessToken or userId:', responseData);
       return;
     }
-    console.log('Login successful, responseData:', responseData);
+    // console.log('Login successful, responseData:', responseData);
     const userId = responseData.userId;
-    console.log('Login successful, userId:', userId);
+    // console.log('Login successful, userId:', userId);
     setUserId(userId); // Set userId in the state
     cookies.set('access_token', responseData.accessToken, { path: '/' });
   };
@@ -67,10 +67,10 @@ function App() {
     <Router>
       <Routes>
       <Route path="*" element={<NotFound />}/>
-        <Route path="/" element={<Homepage />} /> {/* Add this line for the homepage route */}
-        <Route path="/auth" element={<Auth onLoginSuccess={handleLoginSuccess} setUserId={setUserId} />} />
-        <Route path="/forgotPassword" element={<ForgotPassword/>} />
-        <Route path="/reset-password" element={<ResetPassword/>} />
+        <Route path="/" element={cookies.get('access_token') ? (<Navigate to = "/dashboard"/>) : (<Homepage />)} /> {/* Add this line for the homepage route */}
+        <Route path="/auth" element={cookies.get('access_token') ? (<Navigate to = "/dashboard"/>):(<Auth onLoginSuccess={handleLoginSuccess} setUserId={setUserId} />)} />
+        <Route path="/forgotPassword" element={cookies.get('access_token') ? (<Navigate to = "/dashboard"/>):(<ForgotPassword/>)} />
+        <Route path="/reset-password" element={cookies.get('access_token') ? (<Navigate to = "/dashboard"/>):(<ResetPassword/>)} />
         <Route path="/dashboard" element={
           cookies.get('access_token') ? (
             <div className="app-container">

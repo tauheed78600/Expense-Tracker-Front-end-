@@ -150,7 +150,7 @@ function MonthlyBudgetModal() {
               {
                   setContent(masterContent["updateSuccess"]);
                   setPopupState(true);
-                  console.log("Budget goal set successfully:", response.data);
+                  // console.log("Budget goal set successfully:", response.data);
                   setCurrentBudget(newBudget);
               setRemainingBudget(newBudget-currentBudget+remainingBudget);
               }

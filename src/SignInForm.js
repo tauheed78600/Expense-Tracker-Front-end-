@@ -130,19 +130,19 @@ const validForm = () => {
         await axios.post(`http://localhost:3000/total/login/?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`).
         then((response)=>{
           login();
-          console.log('Login API response:', response.data);
+          // console.log('Login API response:', response.data);
           cookies.set('access_token', response.data.accessToken, { path: '/' });
           localStorage.setItem("lastMonthNineReachedEmailSent", 0)
           localStorage.setItem("remaininingBudgetZero", 0)
-          console.log(response)
+          // console.log(response)
           const userId = response.data.userId;
-          console.log("response.data.userId",response.data.userId);
+          // console.log("response.data.userId",response.data.userId);
           setLoading(false);
           onLoginSuccess(response.data); 
           navigate('/dashboard');
         }).
         catch((error)=>{
-          console.log(error);
+          // console.log(error);
           setContent(masterContent["loginError"]);
           setPopupState(true);
           setLoading(false);

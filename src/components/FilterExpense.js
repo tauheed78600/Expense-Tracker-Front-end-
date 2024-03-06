@@ -174,7 +174,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         {
             newArray = filterPayment(newArray, filterData.paymentMode);
         }
-        console.log(filterPayment(newArray, filterData.paymentMode));
+        // console.log(filterPayment(newArray, filterData.paymentMode));
         onFilterExpense(newArray);
         setShowFilter(false);
         set_Selected_categories([]);
@@ -218,7 +218,7 @@ export default function FilterExpense({ onFilterExpense, expenseData, showFilter
         var res = "";
         for(var i = selected_categories.length-1; i >= 0; i--)
         {
-            console.log(i-selected_categories.length-1);
+            // console.log(i-selected_categories.length-1);
             if (selected_categories.length-1-i > 1)
             {
                 res += ", ..."

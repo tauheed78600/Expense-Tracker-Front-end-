@@ -229,7 +229,7 @@ const SignUpForm = () => {
           monthlyBudget,
           username 
         });
-        console.log("response1234", response);
+        // console.log("response1234", response);
         if (response.data.status === 400)
         {
           setLoading(false);
@@ -242,7 +242,7 @@ const SignUpForm = () => {
           setLoading(false);
           setContent(masterContent["signupSuccess"]);
           setPopupState(true);
-        console.log(response.data);
+        // console.log(response.data);
         setUsername(''); // Changed from setName to setUsername
         setEmail('');
         setPassword('');

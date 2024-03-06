@@ -29,7 +29,7 @@ const [showDashboard, setShowDashboard] = useState(false);
 //load user data
 useEffect(() => {
 const accessToken = cookies.get('access_token');
-console.log("accessToke indashboard", accessToken)
+// console.log("accessToke indashboard", accessToken)
 const fetchData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/total/getUser/${accessToken}`, {
@@ -38,8 +38,8 @@ const fetchData = async () => {
         },
         });
         console.log(response.data);
-    console.log("response.data", response.data)
-    console.log("userId in dashboard", userId)
+    // console.log("response.data", response.data)
+    // console.log("userId in dashboard", userId)
     setUserData(response.data);
     } catch (error) {
     setContent(masterContent["fetchError"]);

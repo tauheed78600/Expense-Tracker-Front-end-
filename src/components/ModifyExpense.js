@@ -75,7 +75,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 "paymentMode": loadExpense.paymentMode
             })
         }
-        console.log(loadExpense);
+        // console.log(loadExpense);
         /*if(loadExpense[0].split("-")[2].length != 2 )
             loadExpense[0] = swapDate(loadExpense[0]);*/
     }, [loadExpense]);

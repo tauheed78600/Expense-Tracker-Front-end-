@@ -18,9 +18,9 @@ const Auth = ({ setCurrentPage, setUserId }) => {
       console.error('Login response data is missing userId:', responseData);
       return;
     }
-    console.log('Login successful, responseData:', responseData);
+    // console.log('Login successful, responseData:', responseData);
     const userId = responseData.userId;
-    console.log('Login successful, userId:', userId);
+    // console.log('Login successful, userId:', userId);
     cookies.set('userId', userId, { path: '/' });
     setUserId(userId); // Set userId in the state
   };

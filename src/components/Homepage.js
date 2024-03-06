@@ -52,8 +52,8 @@ const [content, setContent] = useState(masterContent["error"]);
     else
     {
       // Here you can handle the submission logic, e.g., send the data to a server
-      console.log('Full Name:', fullName);
-      console.log('Feedback:', feedback);
+      // console.log('Full Name:', fullName);
+      // console.log('Feedback:', feedback);
 
       try {
         setLoading(true);

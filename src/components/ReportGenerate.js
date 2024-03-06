@@ -154,7 +154,7 @@ const ReportGenerate = () => {
  };
 
  const handleYearlyReport = () => {
-  console.log(currentDate().slice(0,4))
+  // console.log(currentDate().slice(0,4))
   if(yearlyReportYear === "" || isNaN(yearlyReportYear))
   {
     setContent(masterContent["yearlyReportError"]);
@@ -184,7 +184,7 @@ const ReportGenerate = () => {
 
 
  const saveExcel = async (expenses) => {
-  console.log("Expenses to be saved:", expenses);
+  // console.log("Expenses to be saved:", expenses);
     try {
       setLoading(true);
       const workbook = new Excel.Workbook();
@@ -199,7 +199,7 @@ const ReportGenerate = () => {
       ];
 
       expenses.forEach(expense => {
-        console.log("Adding expense to Excel:", expense);
+        // console.log("Adding expense to Excel:", expense);
         let formattedDate;
         if (expense.date instanceof Date) {
           formattedDate = expense.date.toISOString().split('T')[0];
@@ -255,7 +255,7 @@ const ReportGenerate = () => {
       }));
     }
     filteredExpenses = temp;
-    console.log(filteredExpenses)
+    // console.log(filteredExpenses)
   }
   
   if(merchantFilter !== "")
@@ -277,7 +277,7 @@ const ReportGenerate = () => {
         useState([]); 
 
         const toggleCat = (option) => { 
-          console.log(option)
+          // console.log(option)
             if (selected_categories.includes(option)) { 
                 set_Selected_categories( 
                     selected_categories.filter((item) =>  
@@ -294,7 +294,7 @@ const ReportGenerate = () => {
       function setEndDateLimit() {
         if(periodStartDate !== undefined)
           document.getElementById("periodEndDate").min = periodStartDate;
-        console.log(periodStartDate);
+        // console.log(periodStartDate);
         document.getElementById("periodEndDate").max = currentDate();
       }
 
