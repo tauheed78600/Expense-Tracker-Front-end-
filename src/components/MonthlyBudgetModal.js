@@ -103,6 +103,7 @@ function MonthlyBudgetModal() {
   const [content, setContent] = useState(masterContent["error"]);
 
 
+
   const accessToken = cookies.get('access_token');
 
   //submit budget change request to server
@@ -134,9 +135,10 @@ function MonthlyBudgetModal() {
         }
         else {
           const userId = cookies.get('userId');
+          
           try {
             setLoading(true); 
-            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&userId=${accessToken}`, {}, {
+            const response = await axios.put(`http://localhost:3000/expenses/budget-goal?monthly_budget=${newBudget}&token=${accessToken}`, {}, {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
@@ -149,10 +151,11 @@ function MonthlyBudgetModal() {
                   setContent(masterContent["updateSuccess"]);
                   setPopupState(true);
                   console.log("Budget goal set successfully:", response.data);
+                  setCurrentBudget(newBudget);
+              setRemainingBudget(newBudget-currentBudget+remainingBudget);
               }
               // Update the displayed budget goal state
-              setCurrentBudget(newBudget);
-              setRemainingBudget(newBudget-currentBudget+remainingBudget);
+              
           } catch (error) {
             setContent(masterContent["error"]);
             setPopupState(true);
