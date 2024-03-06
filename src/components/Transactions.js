@@ -179,7 +179,7 @@ export default function Transactions({ userId }) {
                               Authorization: `Bearer ${accessToken}`,
                             },
                           });
-                console.log("response1234", response1)
+                // console.log("response1234", response1)
                 
                 if (localStorage.getItem("lastMonthNineReachedEmailSent") == 0)
                 {
@@ -260,8 +260,8 @@ export default function Transactions({ userId }) {
     //change expenses when expense is deleted and submit delete request to server
     const modifyDeleteExpense = (index) => {
         index = index + (pageCounter-1)*itemCount;
-        console.log("expenses[index].expenseId", expenses[index].expenseId)
-        console.log(expenses[index]);
+        // console.log("expenses[index].expenseId", expenses[index].expenseId)
+        // console.log(expenses[index]);
         
         axios.delete('http://localhost:3000/expenses/deleteExpense', {
             data: {
@@ -393,7 +393,7 @@ export default function Transactions({ userId }) {
         }
         for (let number = start; number <= end; number++) 
         {
-            console.log(number);
+            // console.log(number);
             items.push(
                 <Pagination.Item id="expense-table-selector-button" key={number} onClick={()=>{setPageCounter(number)}}>
                 {number}

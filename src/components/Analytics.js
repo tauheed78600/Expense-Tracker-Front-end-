@@ -145,7 +145,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
           },
           title: {
             display: true,
-            text: 'Expenses Over Time' 
+            text: 'Expenses By Date' 
           },
         }
       }
@@ -211,7 +211,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
         }
       }
     });
-    console.log(`Bar chart for ${canvasId} created`);
+    // console.log(`Bar chart for ${canvasId} created`);
   };
  
  
@@ -250,7 +250,7 @@ const [content, setContent] = useState(masterContent["fetchError"]);
       
       
     });
-    console.log(`Pie chart for ${canvasId} created`);
+    // console.log(`Pie chart for ${canvasId} created`);
   };
  
   return (
