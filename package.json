@@ -16,6 +16,8 @@
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.0.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "lucide-react": "^0.331.0",
     "material-icons": "^1.13.12",
     "react": "^18.1.0",

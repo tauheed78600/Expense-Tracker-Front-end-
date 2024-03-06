@@ -461,14 +461,14 @@ export default function Transactions({ userId }) {
                                             {
                                                 if(cellIndex === 2)
                                                     return <td className="expense-table-th-td expense-table-date-td" key={cellIndex}>{value}</td>;
-                                                if(cellIndex === 3)
+                                                else if(cellIndex === 3)
                                                     return <td className="expense-table-th-td expense-table-category-td" key={cellIndex}>{value}</td>;
-                                                if(cellIndex === 4)
+                                                else if(cellIndex === 4)
                                                     return <td className="expense-table-th-td expense-table-merchant-td" key={cellIndex}>{value}</td>;
                                                 else if(cellIndex === 5)
-                                                    return <td className="expense-table-th-td expense-table-amount-td" key={cellIndex}>{value}</td>;
+                                                    return <td key={cellIndex}>{value}</td>;
                                                 else if(cellIndex === 6)
-                                                    return <td className="expense-table-th-td expense-table-payment-td" key={cellIndex}>{value}</td>;
+                                                    return <td key={cellIndex}>{value}</td>;
                                                 else
                                                     return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
                                             }
@@ -492,10 +492,14 @@ export default function Transactions({ userId }) {
                                                 {
                                                     if(cellIndex === 2)
                                                         return <td className="expense-table-th-td expense-table-date-td" key={cellIndex}>{value}</td>;
-                                                    if(cellIndex === 4)
+                                                    else if(cellIndex === 3)
+                                                        return <td className="expense-table-th-td expense-table-category-td" key={cellIndex}>{value}</td>;
+                                                    else if(cellIndex === 4)
                                                         return <td className="expense-table-th-td expense-table-merchant-td" key={cellIndex}>{value}</td>;
                                                     else if(cellIndex === 5)
                                                         return <td className="expense-table-th-td expense-table-amount-td" key={cellIndex}>{value}</td>;
+                                                    else if(cellIndex === 6)
+                                                        return <td className="expense-table-th-td expense-table-payment-td" key={cellIndex}>{value}</td>;
                                                     else
                                                         return <td className="expense-table-th-td" key={cellIndex}>{value}</td>;
                                                 }

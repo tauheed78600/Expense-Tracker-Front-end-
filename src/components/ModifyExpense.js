@@ -225,7 +225,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             date: modifyExpenseData.date,
             category: modifyExpenseData.category,
             merchant: modifyExpenseData.merchant,
-            amount: Math.floor(modifyExpenseData.amount),
+            amount: modifyExpenseData.amount,
             paymentMode: modifyExpenseData.paymentMode
         };
         var updateRow ={};
@@ -256,7 +256,6 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 closeModifyExpense();
                 
             }).catch((error) => {
-
                 setContent(masterContent["budgetLimitExceeded"]);
                 setPopupState(true);
             });
@@ -271,7 +270,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 date: modifyExpenseData.date,
                 category: modifyExpenseData.category,
                 merchant: modifyExpenseData.merchant,
-                amount: Math.floor(modifyExpenseData.amount),
+                amount: modifyExpenseData.amount,
                 paymentMode: modifyExpenseData.paymentMode,
                 expenseId: modifyExpenseData.expenseId
             };

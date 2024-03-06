@@ -104,8 +104,7 @@ return (
 
  
  <div className="section" id="name-section">
-  <label htmlFor="name">UserName:</label>
-  <input type="text" id="username" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
+  <label htmlFor="name">UserName:</label> 
   <div id="name" className="info">{userData.user_name || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">accessibility</span>
     </div>
@@ -121,7 +120,6 @@ return (
     </div>
     <div className="section" id="email-section">
     <label htmlFor="email">Email:</label>
-    <input type="email" id="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)}/>
     <div id="email" className="info">{userData.email || 'Loading...'}</div>
     <span className="material-icons-outlined text-green">mail</span>
     </div>
