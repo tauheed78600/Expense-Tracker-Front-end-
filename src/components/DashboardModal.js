@@ -15,21 +15,21 @@ function DashboardModal({state, setState, userData, setUserData}) {
   const [popupState, setPopupState] = useState('')
 
   const masterContent = {
-    "Username": {
+    "username": {
         "head": "Success",
         "body": "Username Updated!"
     },
-    "Email":{
+    "email":{
         "head": "Success",
         "body": "Email Updated!"
     },
-    "UsernameError": {
+    "usernameError": {
         "head": "Error",
         "body": "Username already exists!"
     },
-    "EmailError":{
+    "emailExists":{
         "head": "Error",
-        "body": "Email address is not in valid format!"
+        "body": "Email address is linked to another user!"
     },
     "error": {
       "head":"Error",
@@ -38,10 +38,14 @@ function DashboardModal({state, setState, userData, setUserData}) {
     "usernameInvalid": {
       "head":"Error",
       "body":"Username invalid!"
+    },
+    "emailInvalid": {
+      "head":"Error",
+      "body":"Email invalid!"
     }
   }
 
-  const [content, setContent] = useState(masterContent["EmailError"])
+  const [content, setContent] = useState(masterContent["error"])
 
   
 
@@ -74,7 +78,7 @@ const handleUpdate = async () => {
     console.log(emailRegex.test(newEmail));
     if(!emailRegex.test(newEmail))
     {
-      setContent(masterContent["EmailError"]);
+      setContent(masterContent["emailInvalid"]);
       setPopupState(true);
       return;
     }
@@ -96,14 +100,14 @@ const handleUpdate = async () => {
           });
           console.log("response in 1st condition", response.data)
           console.log(response.data);
-          if (response.status===200) {
+          if (response.data.status===200) {
             setUserData({...userData, "user_name": newUsername});
             setCurrentUsername(newUsername);
-            setContent(masterContent["Username"]);
+            setContent(masterContent["username"]);
             setPopupState(true);
             
           } else {
-            setContent(masterContent["UsernameError"]);
+            setContent(masterContent["usernameError"]);
             setPopupState(true);
             return;
           }
@@ -124,13 +128,13 @@ const handleUpdate = async () => {
             });
             console.log("response in 2nd condition", response)
         
-            if (response.status===200) {
+            if (response.data.status===200) {
               setUserData({...userData, "email": newEmail});
               setCurrentEmail(newEmail);
-              setContent(masterContent["Email"]);
+              setContent(masterContent["email"]);
                 setPopupState(true)
             } else {
-              setContent(masterContent["EmailError"]);
+              setContent(masterContent["emailExists"]);
                 setPopupState(true)
             }
           } catch (error) {
