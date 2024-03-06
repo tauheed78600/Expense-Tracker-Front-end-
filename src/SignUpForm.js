@@ -61,10 +61,18 @@ const SignUpForm = () => {
     if (username === "" || username.trim().length ===  0) { // Changed from name to username
       isValid = false;
     }
-
+    if(username.includes(' ')){
+      isValid = false;
+    }
+    if(email.includes(' ')){
+      isValid = false;
+    }
     if (email === "" || !emailRegex.test(email)) {
       isValid = false;
     } 
+    if(password.includes(' ')){
+      isValid = false;
+    }
     if (password.length < 8) {
       isValid = false;
   } else if (!/[A-Z]/.test(password)) {
@@ -94,11 +102,39 @@ const SignUpForm = () => {
       setUsernameError(''); // Changed from setNameError to setUsernameError
     }
 
+    if(username.includes(' '))
+    {
+      setUsernameError('Username cannot contain space!')
+      isValid = false
+    }
+    else
+    {
+      setUsernameError('');
+    }
+
     if (email === "" || !emailRegex.test(email)) {
       setEmailError('Invalid email address');
       isValid = false;
     } else {
       setEmailError('');
+    }
+
+    if(email.includes(' '))
+    {
+      setEmailError('Email cannot contain space!')
+      isValid = false
+    }
+    else
+    {
+      setUsernameError('');
+    }
+
+    if(password.includes(' ')){
+      setPasswordError('Password must be at least 8 characters long');
+      isValid = false;
+    }
+    else {
+      setPasswordError('');
     }
 
     if (password.length < 8) {

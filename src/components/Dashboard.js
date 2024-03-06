@@ -88,11 +88,8 @@ return (
     <DashboardModal
      state={showUpdateModal} 
      setState = {setShowUpdateModal} 
-     content = {content}
-     newUsername={newUsername}
-     setNewUsername={setNewUsername}
-     newEmail={newEmail}
-     serNewEmail={setNewEmail}
+     userData={userData}
+     setUserData={setUserData}
     />
     <div className='h1'>
     <h1 className="userDash" style={{ marginBottom: '10' }}>User Dashboard</h1>
