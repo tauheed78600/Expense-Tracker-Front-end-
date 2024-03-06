@@ -225,7 +225,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
             date: modifyExpenseData.date,
             category: modifyExpenseData.category,
             merchant: modifyExpenseData.merchant,
-            amount: modifyExpenseData.amount,
+            amount: Math.floor(modifyExpenseData.amount),
             paymentMode: modifyExpenseData.paymentMode
         };
         var updateRow ={};
@@ -271,7 +271,7 @@ export default function ModifyExpense({ onAddExpense, onEditExpense, loadExpense
                 date: modifyExpenseData.date,
                 category: modifyExpenseData.category,
                 merchant: modifyExpenseData.merchant,
-                amount: modifyExpenseData.amount,
+                amount: Math.floor(modifyExpenseData.amount),
                 paymentMode: modifyExpenseData.paymentMode,
                 expenseId: modifyExpenseData.expenseId
             };
