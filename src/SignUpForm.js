@@ -130,7 +130,7 @@ const SignUpForm = () => {
     }
 
     if(password.includes(' ')){
-      setPasswordError('Password must be at least 8 characters long');
+      setPasswordError('Password cannot contain space!');
       isValid = false;
     }
     else {
