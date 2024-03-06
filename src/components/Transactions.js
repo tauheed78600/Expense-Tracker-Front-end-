@@ -375,7 +375,7 @@ export default function Transactions({ userId }) {
             {1}
             </Pagination.Item>,
         );
-        if(pageCounter <= totalPages() && pageCounter > offset)
+        if(pageCounter <= totalPages() && pageCounter > offset && totalPages() > offset+2)
         {
             items.push(<Pagination.Ellipsis id="expense-table-selector-button" disabled/>)
         }
@@ -400,7 +400,7 @@ export default function Transactions({ userId }) {
                 </Pagination.Item>,
             );
         }
-        if(totalPages() > offset+1 && pageCounter >= 1 && pageCounter <= (totalPages()-offset))
+        if(totalPages() > offset+1 && pageCounter >= 1 && pageCounter <= (totalPages()-offset)  && totalPages() > offset+2)
         {
             items.push(<Pagination.Ellipsis id="expense-table-selector-button" disabled/>)
         }
